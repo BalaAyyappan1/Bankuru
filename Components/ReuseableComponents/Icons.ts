@@ -1,0 +1,7 @@
+
+//Background
+export {default as BgLines} from '@/public/Bg/image 17.png';
+export {default as Circle1} from "@/public/Bg/Ellipse 47.png";
+
+//Home
+export {default as ScrollDownIcon} from "@/public/Home/Frame 1321317434.svg";
