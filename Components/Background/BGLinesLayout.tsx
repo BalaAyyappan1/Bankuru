@@ -17,7 +17,7 @@ const BGLinesLayout: React.FC<BGLinesLayoutProps> = ({ children}) => {
             <Image
               src={BgLines}
               alt={`Background ${index + 1}`}
-              className="object-cover w-full"
+              className="object-cover w-full "
              
               priority={index === 0}
             />

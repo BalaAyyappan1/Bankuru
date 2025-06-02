@@ -1,11 +1,121 @@
+"use client";
 import React from 'react'
+import Image from 'next/image'
+import { VisionImage1, VisionImage2 } from '../ReuseableComponents/Icons';
+import { motion } from 'framer-motion';
 
 const Vision = () => {
+
+  const contents = [
+    {
+      title: '	Innovation First – We think ahead',
+      description: "We constantly push boundaries and explore new technologies to create groundbreaking solutions. Innovation isn't just a buzzword for us—it's our foundation. We invest in research, encourage experimentation, and celebrate creative thinking at every level.",
+      image: VisionImage1
+    },
+    {
+      title: '	User-Centric – We solve real problems',
+      description: "We design with empathy, putting users at the heart of everything we build. Every product decision begins with understanding user needs. We conduct extensive research, gather feedback, and iterate constantly to ensure our solutions truly serve the people who use them.",
+      image: VisionImage2
+    },
+    {
+      title: '	Focus on Purpose - No noise, just purpose',
+      description: "Simplicity is the ultimate sophistication. We focus on what truly matters — creating products that are intuitive, efficient, and purposeful.",
+      image: VisionImage2
+    },
+    {
+      title: '	Creating Impact - Homegrown Ideas, Global Impact',
+      description: "Rooted in India but with a global vision, we create solutions that transcend boundaries. We believe that great ideas can come from anywhere and reach everywhere.",
+      image: VisionImage1
+    },
+  ]
+
+
+
+  const getImagePosition = (index: number) => {
+    const positions = [
+      "xl:-bottom-25 xl:-right-20 -top-23 -right-18 xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "xl:-top-28 xl:-right-23 -top-28 -left-20  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "xl:-bottom-24 xl:-left-24 -top-24 -right-24 text-end xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "-top-24 -left-24 text-end xl:w-[300px] lg:w-[280px] md:w-[220px] sm:w-[200px] w-[180px]",
+    ];
+    return positions[index % positions.length];
+  };
+
+  const getTextPosition = (index: number) => {
+    const positions = [
+      "xl:top-6 xl:left-7 lg:top-6 lg:left-6 md:top-5 md:left-5 sm:bottom-5 sm:left-5 bottom-5 left-5 text-start xl:w-[465px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
+      "xl:bottom-10 xl:left-10 lg:bottom-7 lg:left-7 md:bottom-2 md:left-6 sm:bottom-2 sm:right-6 bottom-2 right-5  xl:text-start text-end xl:w-[465px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
+      "xl:top-10 xl:right-10 lg:top-7 lg:right-7 md:top-5 md:right-5 sm:bottom-5 sm:left-5 bottom-5 left-5 xl:text-end text-start xl:w-[490px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
+      "xl:bottom-10 xl:right-10 lg:bottom-7 lg:right-7 md:bottom-5 md:right-5 sm:bottom-5 sm:right-5 bottom-5 right-5 text-end xl:w-[490px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
+    ];
+    return positions[index % positions.length];
+  };
+
+
   return (
-    <div className='relative bg-transparent h-screen w-full'>
-      Vision
+    <div className="relative flex flex-col space-y-15 bg-transparent h-screen w-full">
+      <h1 className="text-[42px] text-white font-bold text-center">
+        Our Vision
+      </h1>
+
+
+      <div className='grid md:grid-cols-2 grid-cols-1 gap-4 md:px-15 px-5'>
+        {contents.map((content, index) => (
+          <motion.div
+            key={index}
+            className="relative flex flex-col items-center justify-center bg-[linear-gradient(220.79deg,_rgba(255,255,255,0.1)_0%,_rgba(45,52,103,0.2)_100%)] rounded-[20px] xl:h-[252px] lg:h-[200px] md:h-[150px] sm:h-[150px] h-[130px]  overflow-hidden group cursor-pointer"
+            initial="rest"
+            whileHover="hover"
+            animate="rest"
+            variants={{
+              rest: {
+                scale: 1,
+                y: 0
+              },
+              hover: {
+                scale: 1.02,
+                y: -3
+              }
+            }}
+            transition={{
+              duration: 0.3,
+              ease: "easeInOut"
+            }}
+          >
+            <div className={`absolute ${getTextPosition(index)} z-10`}>
+              <h2 className="xl:text-[24px] lg:text-[20px] md:text-[15px] sm:text-[12px] text-[12px] text-white font-bold xl::leading-8 lg:leading-6 ">{content.title}</h2>
+              <p className="xl:text-[16px] lg:text-[14px] md:text-[12px] sm:text-[10px] text-[12px] text-[#BEBCBA] xl:leading-5 lg:leading-4 md:leading-3.5 sm:leading-3.5 leading-3 mt-1">{content.description}</p>
+            </div>
+
+            <motion.div
+              className={`absolute ${getImagePosition(index)}`}
+              variants={{
+                rest: {
+                  scale: 1,
+                  rotate: 0,
+                  y: 0
+                },
+                hover: {
+                  scale: 1.1,
+                  rotate: 2,
+                  y: -5
+                }
+              }}
+              transition={{
+                duration: 0.4,
+                ease: "easeOut",
+                type: "spring",
+                stiffness: 300,
+                damping: 20
+              }}
+            >
+              <Image src={content.image} alt={content.title} />
+            </motion.div>
+          </motion.div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
 export default Vision
