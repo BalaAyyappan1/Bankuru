@@ -7,5 +7,5 @@ export {default as Circle1} from "@/public/Bg/Ellipse 47.png";
 export {default as ScrollDownIcon} from "@/public/Home/Frame 1321317434.svg";
 
 //Vision
-export {default as VisionImage1} from "@/public/vision/image1.png";
-export {default as VisionImage2} from "@/public/vision/image2.png";
+export {default as VisionImage1} from "@/public/Vision/image1.png";
+export {default as VisionImage2} from "@/public/Vision/image2.png";
