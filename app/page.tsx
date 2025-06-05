@@ -32,9 +32,9 @@ export default function Home() {
           <div className="mt-[120px] mb-[150px]">
           <Message />
           </div>
-          {/* <div className="mt-[120px] mb-[150px]">
+          <div className="mt-[120px] mb-[150px]">
           <Mission />
-          </div> */}
+          </div>
         </BGCircleLayout>
       </BGLinesLayout>
       <Footer />
