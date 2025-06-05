@@ -5,7 +5,7 @@ export {default as CompanyLogo} from "@/public/companyLogo.png";
 
 
 //Background
-export {default as BgLines} from '@/public/Bg/image 17.png';
+export const BGLine = 'https://res.cloudinary.com/dek8wxl7o/image/upload/v1749123162/image_17_zqelur.webp'
 export {default as Circle1} from "@/public/Bg/Ellipse 47.png";
 
 //Home

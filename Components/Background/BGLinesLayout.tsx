@@ -1,7 +1,8 @@
 // components/BGLinesLayout.tsx
 import React, { ReactNode } from 'react';
 import Image from 'next/image';
-import { BgLines } from '../ReuseableComponents/Icons';
+import { BGLine } from '../ReuseableComponents/Icons';
+
 
 interface BGLinesLayoutProps {
   children: ReactNode;
@@ -12,13 +13,14 @@ const BGLinesLayout: React.FC<BGLinesLayoutProps> = ({ children}) => {
   return (
     <div className="relative min-h-screen overflow-hidden w-full">
       <div className="absolute inset-0 -z-50 flex flex-col h-full">
-        {Array.from({ length: 15 }).map((_, index) => (
+        {Array.from({ length: 50 }).map((_, index) => (
           <div key={index} className="relative flex-1 w-full">
             <Image
-              src={BgLines}
+              src={BGLine}
               alt={`Background ${index + 1}`}
-              className="object-cover w-full "
-             
+              className="object-cover w-full"
+              width={1000}
+              height={1000}
               priority={index === 0}
             />
           </div>
