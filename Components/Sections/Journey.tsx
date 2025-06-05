@@ -2,7 +2,7 @@ import React from 'react'
 
 const Journey = () => {
   return (
-    <div className='relative bg-transparent h-screen w-full'>
+    <div id='journey-section' className='relative bg-transparent h-screen w-full'>
       Journey
     </div>
   )

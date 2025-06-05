@@ -6,6 +6,10 @@ import About from "@/Components/Sections/About";
 import Vision from "@/Components/Sections/Vision";
 import Journey from "@/Components/Sections/Journey";
 import Footer from "@/Components/Sections/Footer";
+import Building from "@/Components/Sections/Building";
+import Message from "@/Components/Sections/Message";
+import Mission from "@/Components/Sections/Mission";
+import TopNav from "@/Components/Sections/TopNav";
 
 export default function Home() {
 
@@ -15,10 +19,22 @@ export default function Home() {
 
       <BGLinesLayout>
         <BGCircleLayout>
+          <TopNav />
           <Hero />
+          <div className="mt-[120px] mb-[150px]">
           <About />
+          </div>
+          <div className="">
+            </div>
           <Vision />
           <Journey />
+          <Building />
+          <div className="mt-[120px] mb-[150px]">
+          <Message />
+          </div>
+          <div className="mt-[120px] mb-[150px]">
+          <Mission />
+          </div>
         </BGCircleLayout>
       </BGLinesLayout>
       <Footer />

@@ -33,27 +33,27 @@ const Vision = () => {
 
   const getImagePosition = (index: number) => {
     const positions = [
-      "xl:-bottom-25 xl:-right-20 -top-23 -right-18 xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "xl:-top-28 xl:-right-23 -top-28 -left-20  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "xl:-bottom-24 xl:-left-24 -top-24 -right-24 text-end xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "-top-24 -left-24 text-end xl:w-[300px] lg:w-[280px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-bottom-25 2xl:-right-20 xl:-bottom-25 xl:-right-20 lg:-bottom-25 lg:-right-20 md:-bottom-25 md:-right-20 bottom-6 -right-15   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-top-28 2xl:-right-23 xl:-top-28 xl:-right-23 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-bottom-24 2xl:-left-24 xl:-bottom-24 xl:-left-24 lg:-bottom-24 lg:-left-24 md:-bottom-24 md:-left-24  text-end xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-top-24 2xl:-left-24 xl:-top-24 xl:-left-24 lg:-top-24 lg:-left-24 md:-top-24 md:-left-24 sm:-top-24 sm:-left-24 text-end xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
     ];
     return positions[index % positions.length];
   };
 
   const getTextPosition = (index: number) => {
     const positions = [
-      "xl:top-6 xl:left-7 lg:top-6 lg:left-6 md:top-5 md:left-5 sm:bottom-5 sm:left-5 bottom-5 left-5 text-start xl:w-[465px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
-      "xl:bottom-10 xl:left-10 lg:bottom-7 lg:left-7 md:bottom-2 md:left-6 sm:bottom-2 sm:right-6 bottom-2 right-5  xl:text-start text-end xl:w-[465px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
-      "xl:top-10 xl:right-10 lg:top-7 lg:right-7 md:top-5 md:right-5 sm:bottom-5 sm:left-5 bottom-5 left-5 xl:text-end text-start xl:w-[490px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
-      "xl:bottom-10 xl:right-10 lg:bottom-7 lg:right-7 md:bottom-5 md:right-5 sm:bottom-5 sm:right-5 bottom-5 right-5 text-end xl:w-[490px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
+      "xl:top-6 xl:left-7 lg:top-6 lg:left-6 md:top-5 md:left-5 bottom-5 left-5  text-start xl:w-[465px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
+      "xl:bottom-10 xl:right-10 lg:bottom-7 lg:left-7 md:bottom-2 md:left-6 bottom-2 right-6  text-start xl:w-[465px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
+      "xl:top-10 xl:right-10 lg:top-7 lg:right-7 md:top-5 md:right-5 bottom-5 right-45   xl:w-[490px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
+      "xl:bottom-10 xl:right-10 lg:bottom-7 lg:right-7 md:bottom-5 md:right-5 bottom-5 right-5  text-end xl:w-[490px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
     ];
     return positions[index % positions.length];
   };
 
 
   return (
-    <div className="relative flex flex-col space-y-15 bg-transparent h-screen w-full">
+    <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent h-screen w-full">
       <h1 className="text-[42px] text-white font-bold text-center">
         Our Vision
       </h1>

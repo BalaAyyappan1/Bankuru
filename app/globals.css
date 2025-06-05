@@ -45,3 +45,46 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+
+
+.gradient-text-alt1 {
+  background: linear-gradient(90deg, #2D3467 35%, #FFFDFA 39.9%, #D9D9D9 20%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+
+
+.gradient-text-alt2 {
+  background: linear-gradient(90deg, #D9D9D9 20%, #FFFDFA 60.1%, #2D3467 64%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+
+.MissionCard1 {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+  color: #DEDCD9;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 20px;
+  height: 150px;
+  padding: 1rem;
+}
+
+.MissionCard2 {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.1));
+  color: #DEDCD9;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 20px;
+  height: 150px;
+  padding: 1rem;
+}
+
+/* Add more if needed */
