@@ -15,20 +15,22 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-
-
       <BGLinesLayout>
         <BGCircleLayout>
           <TopNav />
           <Hero />
-          <div className="mt-[120px] mb-[150px]">
+          <div className="mt-[120px] xl:mb-[150px]"> 
           <About />
           </div>
-          <div className="">
-            </div>
+          <div className=" mb-[150px]">
           <Vision />
+
+            </div>
           <Journey />
+          <div className="mt-[120px] mb-[150px]"> 
           <Building />
+
+          </div>
           <div className="mt-[120px] mb-[150px]">
           <Message />
           </div>

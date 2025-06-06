@@ -53,7 +53,7 @@ const Vision = () => {
 
 
   return (
-    <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent h-screen w-full">
+    <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent  w-full">
       <h1 className="text-[42px] text-white font-bold text-center">
         Our Vision
       </h1>

@@ -26,7 +26,7 @@ function Model({ modelPath, scrollY }: ModelProps) {
   );
 }
 
-export default function StaticModel({ modelPath = '/building.glb' }) {
+export default function StaticModel({ modelPath = '/buildlightchg.glb' }) {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function StaticModel({ modelPath = '/building.glb' }) {
         >
           {/* Lighting optimized for better model visibility */}
           <ambientLight intensity={0.2} />
-          <directionalLight position={[10, 10, 5]} intensity={0.8} castShadow />
+          <directionalLight position={[1, 10, 1]} intensity={0.8} castShadow />
           <pointLight position={[-10, -10, -10]} intensity={0.3} />
 
           {/* Model with scroll-based rotation */}

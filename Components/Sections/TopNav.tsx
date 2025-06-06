@@ -127,7 +127,7 @@ const TopNav = () => {
 
   return (
     <>
-      <header className=" w-full z-50 bg-[#yourBackgroundColor] mt-[54px] px-4 py-2 lg:px-[82px]">
+      <header className="absolute w-full z-50 bg-[#yourBackgroundColor] mt-[54px] px-4 py-2 lg:px-[82px]">
         <div className="flex justify-between items-center max-w-screen-xl mx-auto">
           {/* Logo */}
           <div className="flex items-center gap-1">

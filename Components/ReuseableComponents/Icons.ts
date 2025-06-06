@@ -38,3 +38,9 @@ export {default as LinkLogo} from "@/public/Footer/linkLogo.png";
 export {default as xLogo} from "@/public/Footer/xLogo.png";
 export {default as YouLogo} from "@/public/Footer/YouLogo.png";
 
+// Journey
+export {default as Begining} from "@/public/Journey/begin.svg"
+export {default as One} from "@/public/Journey/one.svg"
+export {default as Way} from "@/public/Journey/way.svg"
+
+

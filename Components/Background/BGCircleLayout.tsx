@@ -20,8 +20,8 @@ const BGCircleLayout: React.FC<BGCircleLayoutProps> = ({ children }) => {
                 index === 0
                   ? "scale-135 opacity-100"
                   : index === 1
-                  ? " opacity-20"
-                  : "opacity-50"
+                  ? " opacity-30 "
+                  : "opacity-50 scale-115"
               }`}
               priority={index === 0}
             />

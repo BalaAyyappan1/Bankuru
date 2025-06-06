@@ -48,6 +48,7 @@ const Mission: React.FC = () => {
         start: "top top",
         end: "+=150%", 
         scrub: 1,
+        pinType: "fixed",
         pin: true, // Pin the section
         pinSpacing: true, // Add spacing after pinned section
         anticipatePin: 1,
