@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Image from 'next/image';
@@ -10,14 +10,22 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Journey = () => {
   const dottedLineRef = useRef<SVGSVGElement | null>(null);
-  const containerRef = useRef(null)
+  const containerRef = useRef(null);
+  const animationsInitialized = useRef(false);
 
-  useEffect(() => {
+  const initAnimations = useCallback(() => {
+    // Clean up existing animations first
+    ScrollTrigger.getAll().forEach((trigger) => {
+      if (trigger.vars.trigger === containerRef.current) {
+        trigger.kill();
+      }
+    });
+
     const paths = dottedLineRef.current?.querySelectorAll('.animated-segment');
     if (!paths || paths.length === 0) return;
 
-    // Set initial state for all paths
-    paths.forEach(path => {
+    // Reset all paths to initial state
+    paths.forEach((path) => {
       const length = (path as SVGPathElement).getTotalLength();
       gsap.set(path, {
         strokeDasharray: length,
@@ -25,10 +33,8 @@ const Journey = () => {
       });
     });
 
-    // Create ScrollTrigger animation for each path segment
+    // Create animations for each path
     paths.forEach((path, index) => {
-      const length = (path as SVGPathElement).getTotalLength();
-      
       gsap.to(path, {
         strokeDashoffset: 0,
         duration: 1,
@@ -38,14 +44,70 @@ const Journey = () => {
           start: `top+=${index * 20}% center`,
           end: `top+=${(index + 1) * 20}% center`,
           scrub: 1,
-          toggleActions: "play none none reverse"
-        }
+          toggleActions: "play none none reverse",
+          invalidateOnRefresh: true,
+        },
       });
     });
 
-    // Cleanup ScrollTrigger instances on unmount
+    animationsInitialized.current = true;
+  }, []);
+
+  useEffect(() => {
+    // Reset the flag
+    animationsInitialized.current = false;
+
+    // Initialize animations with a slight delay to ensure DOM is ready
+    const initTimer = setTimeout(() => {
+      initAnimations();
+      
+      // Refresh ScrollTrigger after initialization
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    }, 50);
+
+    // Set up resize observer
+    const resizeObserver = new ResizeObserver(() => {
+      if (animationsInitialized.current) {
+        ScrollTrigger.refresh();
+      }
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    // Cleanup function
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      clearTimeout(initTimer);
+      resizeObserver.disconnect();
+      
+      // Clean up only the ScrollTrigger instances created by this component
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.vars.trigger === containerRef.current) {
+          trigger.kill();
+        }
+      });
+      
+      animationsInitialized.current = false;
+    };
+  }, []); // Empty dependency array to run only once
+
+  // Additional effect to handle visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && animationsInitialized.current) {
+        setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 100);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
