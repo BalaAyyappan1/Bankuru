@@ -9,62 +9,45 @@ import { Begining, Way, One } from '../ReuseableComponents/Icons';
 gsap.registerPlugin(ScrollTrigger);
 
 const Journey = () => {
-  const dottedLineRef = useRef(null)
+  const dottedLineRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef(null)
 
   useEffect(() => {
-    // Get all the path elements (multiple segments)
     const paths = dottedLineRef.current?.querySelectorAll('.animated-segment');
     if (!paths || paths.length === 0) return;
 
-    // Calculate total length of all segments
-    let totalLength = 0;
-    const segmentLengths = [];
-    
+    // Set initial state for all paths
     paths.forEach(path => {
-      const length = path.getTotalLength();
-      segmentLengths.push(length);
-      totalLength += length;
-    });
-
-    // Set initial state for all segments
-    paths.forEach(path => {
-      const length = path.getTotalLength();
+      const length = (path as SVGPathElement).getTotalLength();
       gsap.set(path, {
         strokeDasharray: length,
-        strokeDashoffset: length
+        strokeDashoffset: length,
       });
     });
 
-    // Create timeline for sequential animation
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top center",
-        end: "bottom center",
-        scrub: 1,
-      }
-    });
-
-    // Animate each segment sequentially
-    let currentProgress = 0;
-    segmentLengths.forEach((length, index) => {
-      const segmentDuration = length / totalLength;
+    // Create ScrollTrigger animation for each path segment
+    paths.forEach((path, index) => {
+      const length = (path as SVGPathElement).getTotalLength();
       
-      tl.to(paths[index], {
+      gsap.to(path, {
         strokeDashoffset: 0,
-        duration: segmentDuration,
-        ease: "none"
-      }, currentProgress);
-      
-      currentProgress += segmentDuration;
+        duration: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: `top+=${index * 20}% center`,
+          end: `top+=${(index + 1) * 20}% center`,
+          scrub: 1,
+          toggleActions: "play none none reverse"
+        }
+      });
     });
 
-    // Cleanup function
+    // Cleanup ScrollTrigger instances on unmount
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, [])
+  }, []);
 
   return (
     <div
@@ -100,7 +83,7 @@ const Journey = () => {
             </filter>
           </defs>
 
-          {/* Background dotted paths (static) - exactly as your original */}
+          {/* Background dotted paths (static) */}
           <path
             d="M50 10 
                L50 30 
@@ -165,7 +148,7 @@ const Journey = () => {
             opacity="0.3"
           />
 
-          {/* Animated glowing line segments - matching your gaps exactly */}
+          {/* Animated glowing line segments */}
           <g ref={dottedLineRef}>
             <path
               className="animated-segment"
@@ -321,15 +304,7 @@ const Journey = () => {
           Scaling globally ("New verticals & partnerships")
         </span>
       </div>
-
-
-
-
-
-      {/* MOBILE */}
-      
     </div>
-
   );
 }
 

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Begining, One, Way } from '../ReuseableComponents/Icons';
 
 const JourneyMobile = () => {
-  const dottedLineRef = useRef(null)
+  const dottedLineRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -13,22 +13,23 @@ const JourneyMobile = () => {
 
     // Calculate total length and set up each segment
     let totalLength = 0;
-    const segmentLengths = [];
+    const segmentLengths: number[] = [];
+    
     
     segments.forEach(segment => {
       // Calculate length manually for line elements
-      const x1 = parseFloat(segment.getAttribute('x1'));
-      const y1 = parseFloat(segment.getAttribute('y1'));
-      const x2 = parseFloat(segment.getAttribute('x2'));
-      const y2 = parseFloat(segment.getAttribute('y2'));
+      const x1 = parseFloat(segment.getAttribute('x1') || '0');
+      const y1 = parseFloat(segment.getAttribute('y1') || '0');
+      const x2 = parseFloat(segment.getAttribute('x2') || '0');
+      const y2 = parseFloat(segment.getAttribute('y2') || '0');
       const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
       
       segmentLengths.push(length);
       totalLength += length;
       
       // Set initial state for each segment
-      segment.style.strokeDasharray = `${length} ${length}`;
-      segment.style.strokeDashoffset = length;
+      segment.style.strokeDasharray = `${length}`;
+      segment.style.strokeDashoffset = `${length}`;
     });
 
     let ticking = false;
@@ -45,27 +46,38 @@ const JourneyMobile = () => {
           const rect = container.getBoundingClientRect();
           const windowHeight = window.innerHeight;
           
-          // More aggressive trigger points for mobile
-          const start = rect.top - windowHeight * 0.8;
-          const end = rect.bottom - windowHeight * 0.2;
-          const progress = Math.max(0, Math.min(1, -start / (end - start)));
+          // Calculate scroll progress - when container comes into view
+          const containerTop = rect.top;
+          const containerHeight = rect.height;
           
-          // Debug logging (remove in production)
-          // console.log('Scroll progress:', progress);
+          // Start animation when container is 80% visible from bottom
+          const startPoint = windowHeight * 0.8;
+          // End animation when container top reaches 20% from top
+          const endPoint = windowHeight * 0.2;
           
-          // Animate segments sequentially
-          let currentProgress = 0;
+          // Calculate progress based on how much of container has scrolled past
+          let progress = 0;
+          if (containerTop <= startPoint) {
+            const scrolled = startPoint - containerTop;
+            const totalScrollDistance = containerHeight + startPoint - endPoint;
+            progress = Math.max(0, Math.min(1, scrolled / totalScrollDistance));
+          }
+          
+          // Animate segments sequentially based on progress
+          const totalSegments = segmentLengths.length;
           segmentLengths.forEach((length, index) => {
-            const segmentProgress = length / totalLength;
-            const segmentStart = currentProgress;
+            // Each segment gets an equal portion of the total progress
+            const segmentStart = index / totalSegments;
+            const segmentEnd = (index + 1) / totalSegments;
             
+            let segmentProgress = 0;
             if (progress >= segmentStart) {
-              const segmentCompletion = Math.min(1, (progress - segmentStart) / segmentProgress);
-              const offset = length * (1 - segmentCompletion);
-              segments[index].style.strokeDashoffset = `${offset}px`;
+              segmentProgress = Math.min(1, (progress - segmentStart) / (segmentEnd - segmentStart));
             }
             
-            currentProgress += segmentProgress;
+            // Calculate the dash offset
+            const offset = length * (1 - segmentProgress);
+            segments[index].style.strokeDashoffset = `${offset}`;
           });
           
           ticking = false;
@@ -114,11 +126,11 @@ const JourneyMobile = () => {
           style={{ willChange: 'transform' }}
         >
           <defs>
-            <linearGradient id="glowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <linearGradient id="glowGradientMobile" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#56549B" stopOpacity="1" />
               <stop offset="100%" stopColor="#7FB3D3" stopOpacity="1" />
             </linearGradient>
-            <filter id="glow" x="-200%" y="-200%" width="400%" height="400%">
+            <filter id="glowMobile" x="-200%" y="-200%" width="400%" height="400%">
               <feGaussianBlur stdDeviation="3" result="coloredBlur" />
               <feMerge>
                 <feMergeNode in="coloredBlur" />
@@ -146,10 +158,10 @@ const JourneyMobile = () => {
           {/* Animated glowing line segments with gaps */}
           <g
             ref={dottedLineRef}
-            stroke="url(#glowGradient)"
+            stroke="url(#glowGradientMobile)"
             strokeWidth="4"
             strokeLinecap="round"
-            filter="url(#glow)"
+            filter="url(#glowMobile)"
             style={{ willChange: 'stroke-dashoffset' }}
           >
             <line className="glow-segment" x1="2" y1="50" x2="2" y2="180" />
