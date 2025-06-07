@@ -191,7 +191,7 @@ const Footer = () => {
             preload="auto"
           >
 
-            <source src="/Footer/FooterBG.mp4" type="video/mp4" />
+            <source src="https://res.cloudinary.com/dek8wxl7o/video/upload/v1749279396/elements_tlntt0.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
 

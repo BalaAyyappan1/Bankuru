@@ -18,7 +18,7 @@ const About = () => {
 
     {/* 3D model */}
     <div className="max-w-[50%] ">
-      <BuildingModel modelPath="/buildlightchg.glb" />
+      <BuildingModel modelPath="/building.glb" />
     </div>
  
   </div>

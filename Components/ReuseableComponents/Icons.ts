@@ -6,8 +6,8 @@ export {default as CompanyLogo} from "@/public/companyLogo.png";
 
 //Background
 export const BGLine = 'https://res.cloudinary.com/dek8wxl7o/image/upload/v1749123162/image_17_zqelur.webp'
-export {default as Circle1} from "@/public/Bg/Ellipse 47.png";
-
+// export {default as Circle1} from "@/public/Bg/Ellipse 47.png";
+export const Circle1 = 'https://res.cloudinary.com/dek8wxl7o/image/upload/v1749279282/Ellipse_47_m6wns7.webp'
 //Home
 export {default as ScrollDownIcon} from "@/public/Home/Frame 1321317434.svg";
 

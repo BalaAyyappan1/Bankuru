@@ -32,7 +32,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
   );
 }
 
-export default function StaticModel({ modelPath = '/blexprtmodel.glb' }) {
+export default function StaticModel({ modelPath = '/ball.glb' }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

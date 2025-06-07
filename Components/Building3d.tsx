@@ -26,7 +26,7 @@ function Model({ modelPath, scrollY }: ModelProps) {
   );
 }
 
-export default function StaticModel({ modelPath = '/buildlightchg.glb' }) {
+export default function StaticModel({ modelPath = '/building.glb' }) {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {

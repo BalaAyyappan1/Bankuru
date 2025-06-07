@@ -11,7 +11,7 @@ const Hero = () => {
   return (
     <div id='home-section' className="relative bg-transparent h-100dvh  w-full">
       {/* Middle Contents */}
-      <RotatingModel modelPath="/blexprtmodel.glb" />
+      <RotatingModel modelPath="/ball.glb" />
       {/* <video loop  muted>
   <source src="/ball1.webm"  />
   Your browser does not support the video tag.

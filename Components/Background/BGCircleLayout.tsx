@@ -16,6 +16,9 @@ const BGCircleLayout: React.FC<BGCircleLayoutProps> = ({ children }) => {
             <Image
               src={Circle1}
               alt={`Background ${index + 1}`}
+              width={1000}
+              height={1000}
+
               className={`object-cover xl:w-full lg:w-full md:w-full sm:w-full 
                 xl:h-full lg:h-[110%] md:h-[120%] h-full  w-[]
                 ${
