@@ -40,7 +40,7 @@ export default function StaticModel({ modelPath = '/buildlightchg.glb' }) {
 
   return (
     <div className="flex  justify-center items-center  w-full">
-      <div className="w-100 xl:h-[650px] lg:h-[500px] md:h-[400px] xl:mt-80  mt-10">
+      <div className="w-100 xl:h-[650px] lg:h-[500px] md:h-[500px] h-[400px] xl:mt-80  mt-10">
         <Canvas
           shadows
           gl={{ antialias: true }}

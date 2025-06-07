@@ -10,6 +10,7 @@ import Building from "@/Components/Sections/Building";
 import Message from "@/Components/Sections/Message";
 import Mission from "@/Components/Sections/Mission";
 import TopNav from "@/Components/Sections/TopNav";
+import JourneyMobile from "@/Components/Sections/JourneyMobile";
 
 export default function Home() {
 
@@ -19,22 +20,33 @@ export default function Home() {
         <BGCircleLayout>
           <TopNav />
           <Hero />
-          <div className="mt-[120px] xl:mb-[150px]"> 
+          <div className="md:mt-[120px] mt-[100px] xl:mb-[150px]"> 
           <About />
           </div>
-          <div className=" mb-[150px]">
+          <div className=" md:mb-[150px] mb-[100px]"> 
           <Vision />
 
             </div>
-          <Journey />
-          <div className="mt-[120px] mb-[150px]"> 
+            <>
+  {/* Desktop and tablet */}
+  <div className="hidden md:block">
+    <Journey />
+  </div>
+
+  {/* Mobile only */}
+  <div className="block md:hidden">
+    <JourneyMobile />
+  </div>
+</>
+
+          <div className="md:mt-[120px] md:mb-[150px]"> 
           <Building />
 
           </div>
-          <div className="mt-[120px] mb-[150px]">
+          <div className="md:mt-[120px] md:mb-[150px]">
           <Message />
           </div>
-          <div className="mt-[120px] mb-[150px]">
+          <div className="md:mt-[120px] mb-[150px]">
           <Mission />
           </div>
         </BGCircleLayout>

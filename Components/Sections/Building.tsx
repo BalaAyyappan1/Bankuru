@@ -51,11 +51,11 @@ const Building = () => {
             alt="AI Tools"
             className="w-full h-[300px]"
           />
-          <div className='absolute inset-0  flex md:flex-row flex-col-reverse mt-10 justify-between items-center text-center md:px-24 py-6 space-y-2'>
-            <Image src={QuickCook} alt="BioAlphaLogo" className='w-80 ' />
+          <div className='absolute inset-0  flex md:flex-row flex-col md:mt-10 justify-between items-center text-center md:px-24 md:py-6 md:-mt-10 md:space-y-2'>
+            <Image src={QuickCook} alt="QuickCook" className='md:w-80 md:h-full  w-34 h-[600px] ' />
 
-            <div className=" flex flex-col justify-center md:items-end  items-center text-center px-4 md:py-6 py-3  md:space-y-2">
-              <h2 className="text-xl sm:text-2xl md:text-3xl text-end font-semibold text-white">
+            <div className=" flex flex-col justify-center md:items-end  items-center text-center px-4 md:py-6 md:py-3  pb-10  md:space-y-2">
+              <h2 className="text-xl sm:text-2xl md:text-3xl text-end font-semibold text-white ">
                 Quick 2 Cook
               </h2>
               <p className="text-sm sm:text-base md:text-end text-center text-[#BEBCBA] max-w-md">

@@ -3,13 +3,14 @@
 import { Canvas } from '@react-three/fiber';
 import { useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ModelProps {
   modelPath: string;
+  isMobile: boolean;
 }
 
-function Model({ modelPath }: ModelProps) {
+function Model({ modelPath, isMobile }: ModelProps) {
   const { scene } = useGLTF(modelPath);
   const modelRef = useRef<THREE.Group>(null);
 
@@ -22,14 +23,29 @@ function Model({ modelPath }: ModelProps) {
     }
   }, []);
 
+  const modelScale = isMobile ? 0.8 : 1.5;
+
   return (
-    <group ref={modelRef} scale={1.5}>
+    <group ref={modelRef} scale={modelScale}>
       <primitive object={scene} />
     </group>
-  );  
+  );
 }
 
 export default function StaticModel({ modelPath = '/blexprtmodel.glb' }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <Canvas
@@ -40,23 +56,23 @@ export default function StaticModel({ modelPath = '/blexprtmodel.glb' }) {
         {/* Lighting */}
         <ambientLight intensity={3} />
         <directionalLight 
-          position={[10, 90, 5]} 
-          intensity={1} 
+          position={[10, 90, 5]}
+          intensity={1}
           castShadow
         />
         <pointLight position={[0, -10, 0]} intensity={1.5} />
 
-        <OrbitControls 
+        <OrbitControls
           enableZoom={false}
           enablePan={false}
           minDistance={3}
           maxDistance={10}
           autoRotate={true}
-          autoRotateSpeed={1.5} // Adjust speed as needed (default is 1)
+          autoRotateSpeed={1.5}
         />
 
         {/* model */}
-        <Model modelPath={modelPath} />
+        <Model modelPath={modelPath} isMobile={isMobile} />
       </Canvas>
     </div>
   );

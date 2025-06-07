@@ -5,7 +5,7 @@ import { BioAlphaLogo, BuildingImage1, PlaceHolder } from '../ReuseableComponent
 
 const Message = () => {
   return (
-    <div className="relative bg-transparent w-full h-[467px] ">
+    <div className="relative bg-transparent w-full h-[467px] px-6 md:px-0">
       <div className="flex flex-col md:-space-y-5 -space-y-2">
         <h1 className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center gradient-text-alt2 inline-block">
           More coming soon
