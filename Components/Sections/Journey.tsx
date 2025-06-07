@@ -11,7 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
 const Journey = () => {
   const dottedLineRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isReady, setIsReady] = useState(false);
   const animationsRef = useRef<any[]>([]);
 
   useEffect(() => {
@@ -33,8 +32,7 @@ const Journey = () => {
       });
     };
 
-    // Initial cleanup
-    cleanup();
+  
 
     const initializeAnimations = () => {
       if (!dottedLineRef.current || !containerRef.current) return;
@@ -109,7 +107,6 @@ const Journey = () => {
         animationsRef.current.push(animation);
       });
 
-      setIsReady(true);
     };
 
     // Multiple initialization attempts to ensure it works
@@ -164,16 +161,6 @@ const Journey = () => {
       cleanup();
     };
   }, []); // Empty dependency array - run once on mount
-
-  // Force refresh when component is ready
-  useEffect(() => {
-    if (isReady) {
-      const refreshTimer = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 50);
-      return () => clearTimeout(refreshTimer);
-    }
-  }, [isReady]);
 
   return (
     <div
