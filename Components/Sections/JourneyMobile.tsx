@@ -5,7 +5,7 @@ import { Begining, One, Way } from '../ReuseableComponents/Icons';
 
 const JourneyMobile = () => {
   const dottedLineRef = useRef<SVGSVGElement | null>(null);
-  const containerRef = useRef(null)
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const segments = dottedLineRef.current?.querySelectorAll('.glow-segment');
@@ -15,7 +15,7 @@ const JourneyMobile = () => {
     let totalLength = 0;
     const segmentLengths: number[] = [];
     
-    
+
     segments.forEach(segment => {
       // Calculate length manually for line elements
       const x1 = parseFloat(segment.getAttribute('x1') || '0');
@@ -28,8 +28,10 @@ const JourneyMobile = () => {
       totalLength += length;
       
       // Set initial state for each segment
-      segment.style.strokeDasharray = `${length}`;
-      segment.style.strokeDashoffset = `${length}`;
+    if (segment instanceof SVGElement) {
+    segment.style.strokeDasharray = `${length}`;
+    segment.style.strokeDashoffset = `${length}`;
+}
     });
 
     let ticking = false;
@@ -77,7 +79,7 @@ const JourneyMobile = () => {
             
             // Calculate the dash offset
             const offset = length * (1 - segmentProgress);
-            segments[index].style.strokeDashoffset = `${offset}`;
+     (segments[index] as SVGElement).style.strokeDashoffset = `${offset}`;
           });
           
           ticking = false;
