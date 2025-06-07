@@ -587,7 +587,7 @@ const Footer = () => {
           </div>
 
 
-          <div className='flex flex-col items-center justify-center w-full space-y-5'>
+          <div className='flex flex-col items-center justify-center w-[237px] mx-auto space-y-5'>
             <div className='flex flex-wrap items-center justify-center gap-4 text-center'>
               {mobileContents.map((item, index) => (
                 <Link
@@ -603,7 +603,7 @@ const Footer = () => {
 
 
 
-            <div className='pb-5 md:pb-5'>
+            <div className='pb-5 md:pb-5 text-[12px]'>
               © designed &  developed by  <Link href={'https://www.theinternetcompany.one/'} target="_blank" rel="noopener noreferrer" className='hover:underline'>TIC GLOBAL</Link>.
             </div>
           </div>

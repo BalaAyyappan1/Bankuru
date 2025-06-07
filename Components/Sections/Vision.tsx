@@ -34,7 +34,7 @@ const Vision = () => {
   const getImagePosition = (index: number) => {
     const positions = [
       "2xl:-bottom-25 2xl:-right-20 xl:-bottom-25 xl:-right-20 lg:-bottom-25 lg:-right-20 md:-bottom-25 md:-right-20 bottom-6 -right-15   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "2xl:-top-28 2xl:-right-23 xl:-top-28 xl:-right-23 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6  xl:left-auto -left-15  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-top-28 2xl:-right-23 xl:-top-28 xl:-right-23 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 -left-15 xl:left-auto lg:left-auto md:left-auto   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
       "2xl:-bottom-24 2xl:-left-24 xl:-bottom-24 xl:-left-24 lg:-bottom-24 lg:-left-24 md:-bottom-24 md:-left-24 bottom-10 -right-15  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
       "2xl:-top-24 2xl:-left-24 xl:-top-24 xl:-left-24 lg:-top-24 lg:-left-24 md:-top-24 md:-left-24 -top-24 -left-24 text-end xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
     ];
@@ -44,8 +44,8 @@ const Vision = () => {
   const getTextPosition = (index: number) => {
     const positions = [
       "xl:top-6 xl:left-7 lg:top-6 lg:left-6 md:top-5 md:left-5 bottom-5 left-5  text-start xl:w-[465px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
-      "xl:bottom-10 xl:right-10 lg:bottom-7 lg:left-7 md:bottom-2 md:left-6 bottom-2 right-6  xl:text-start text-end  xl:w-[465px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
-      "xl:top-10 xl:right-10 lg:top-7 lg:right-7 md:top-5 md:right-5 bottom-5 right-60 text-start  xl:w-[490px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
+      "xl:bottom-10 xl:right-10 lg:bottom-7 lg:left-7 md:bottom-2 md:left-6 bottom-2 right-6  xl:text-start lg:text-start md:text-start text-end  xl:w-[465px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
+      "xl:top-10 xl:right-10 lg:top-7 lg:right-7 md:top-5 md:right-5 bottom-5 xl:left-auto lg:left-auto md:left-auto left-5   xl:text-end lg:text-end md:text-end text-start   xl:w-[490px] lg:w-[350px] md:w-[250px]  sm:w-[450px] w-[310px]",
       "xl:bottom-10 xl:right-10 lg:bottom-7 lg:right-7 md:bottom-5 md:right-5 bottom-5 right-5  text-end xl:w-[490px] lg:w-[350px] md:w-[250px] sm:w-[450px] w-[310px]",
     ];
     return positions[index % positions.length];
