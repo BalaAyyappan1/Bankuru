@@ -5,7 +5,10 @@ import { Begining, One, Way } from '../ReuseableComponents/Icons';
 
 const JourneyMobile = () => {
   const dottedLineRef = useRef<SVGSVGElement | null>(null);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+
+ 
 
   useEffect(() => {
     const segments = dottedLineRef.current?.querySelectorAll('.glow-segment');
