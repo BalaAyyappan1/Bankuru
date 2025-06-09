@@ -88,8 +88,6 @@ const Mission: React.FC = () => {
 
   useEffect(() => {
     if (!containerRef.current || typeof window === 'undefined') return;
-
-    let rafId: number;
     
     // Create a separate ScrollTrigger just for video scrubbing
     ScrollTrigger.create({
@@ -151,7 +149,6 @@ const Mission: React.FC = () => {
     });
 
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
       if (tlRef.current) {
         tlRef.current.kill();
       }
