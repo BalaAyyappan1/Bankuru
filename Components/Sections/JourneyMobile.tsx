@@ -7,9 +7,6 @@ const JourneyMobile = () => {
   const dottedLineRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-
- 
-
   useEffect(() => {
     const segments = dottedLineRef.current?.querySelectorAll('.glow-segment');
     if (!segments || segments.length === 0) return;
@@ -18,7 +15,6 @@ const JourneyMobile = () => {
     let totalLength = 0;
     const segmentLengths: number[] = [];
     
-
     segments.forEach(segment => {
       // Calculate length manually for line elements
       const x1 = parseFloat(segment.getAttribute('x1') || '0');
@@ -30,11 +26,12 @@ const JourneyMobile = () => {
       segmentLengths.push(length);
       totalLength += length;
       
-      // Set initial state for each segment
-    if (segment instanceof SVGElement) {
-    segment.style.strokeDasharray = `${length}`;
-    segment.style.strokeDashoffset = `${length}`;
-}
+      // Set initial state for each segment - FIXED: Make lines invisible initially
+      if (segment instanceof SVGElement) {
+        segment.style.strokeDasharray = `${length}`;
+        segment.style.strokeDashoffset = `${length}`; // This hides the line initially
+        segment.style.opacity = '1'; // Ensure opacity is set
+      }
     });
 
     let ticking = false;
@@ -51,22 +48,25 @@ const JourneyMobile = () => {
           const rect = container.getBoundingClientRect();
           const windowHeight = window.innerHeight;
           
-          // Calculate scroll progress - when container comes into view
+          // IMPROVED: Better scroll progress calculation
           const containerTop = rect.top;
           const containerHeight = rect.height;
           
-          // Start animation when container is 80% visible from bottom
-          const startPoint = windowHeight * 0.8;
-          // End animation when container top reaches 20% from top
-          const endPoint = windowHeight * 0.2;
+          // Start animation when container enters viewport
+          const startPoint = windowHeight;
+          // End when container exits viewport from top
+          const endPoint = 0;
           
-          // Calculate progress based on how much of container has scrolled past
+          // Calculate progress - container fully in view = 100% progress
           let progress = 0;
-          if (containerTop <= startPoint) {
+          if (containerTop <= startPoint && containerTop >= -containerHeight) {
             const scrolled = startPoint - containerTop;
-            const totalScrollDistance = containerHeight + startPoint - endPoint;
+            const totalScrollDistance = containerHeight + startPoint;
             progress = Math.max(0, Math.min(1, scrolled / totalScrollDistance));
           }
+          
+          // DEBUG: Add console log to check if scroll is working
+          console.log('Scroll Progress:', progress);
           
           // Animate segments sequentially based on progress
           const totalSegments = segmentLengths.length;
@@ -80,9 +80,13 @@ const JourneyMobile = () => {
               segmentProgress = Math.min(1, (progress - segmentStart) / (segmentEnd - segmentStart));
             }
             
-            // Calculate the dash offset
+            // Calculate the dash offset - FIXED: Ensure proper animation
             const offset = length * (1 - segmentProgress);
-     (segments[index] as SVGElement).style.strokeDashoffset = `${offset}`;
+            const segmentElement = segments[index] as SVGElement;
+            segmentElement.style.strokeDashoffset = `${offset}`;
+            
+            // DEBUG: Log segment animation
+            console.log(`Segment ${index}: progress=${segmentProgress}, offset=${offset}`);
           });
           
           ticking = false;
@@ -135,8 +139,9 @@ const JourneyMobile = () => {
               <stop offset="0%" stopColor="#56549B" stopOpacity="1" />
               <stop offset="100%" stopColor="#7FB3D3" stopOpacity="1" />
             </linearGradient>
-            <filter id="glowMobile" x="-200%" y="-200%" width="400%" height="400%">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            {/* IMPROVED: Better glow effect */}
+            <filter id="glowMobile" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
               <feMerge>
                 <feMergeNode in="coloredBlur" />
                 <feMergeNode in="SourceGraphic" />
