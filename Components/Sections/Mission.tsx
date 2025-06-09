@@ -273,7 +273,7 @@ const Mission: React.FC = () => {
             className={`
               rounded-lg
               ${isMobile 
-                ? 'w-full h-auto aspect-square max-w-[300px] mx-auto' 
+                ? 'hidden' 
                 : 'h-[500px] w-[500px]'
               }
             `}
