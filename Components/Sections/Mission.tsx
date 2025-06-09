@@ -19,6 +19,7 @@ const Mission: React.FC = () => {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const videoScrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const lastProgressRef = useRef<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState<boolean>(false);
@@ -89,22 +90,40 @@ const Mission: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current || typeof window === 'undefined') return;
     
-    // Create a separate ScrollTrigger just for video scrubbing
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top bottom",
-      end: "bottom top",
-      scrub: 0.5,
-      onUpdate: (self) => {
-        updateVideo(self.progress);
-      },
-      onEnter: () => {
-        console.log('Video scroll trigger entered');
-      },
-      onLeave: () => {
-        console.log('Video scroll trigger left');
+    // Clean up existing video ScrollTrigger
+    if (videoScrollTriggerRef.current) {
+      videoScrollTriggerRef.current.kill();
+    }
+    
+    // Create a separate ScrollTrigger just for video scrubbing only when video is loaded
+    if (isVideoLoaded) {
+      videoScrollTriggerRef.current = ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 0.5,
+        onUpdate: (self) => {
+          updateVideo(self.progress);
+        },
+        onEnter: () => {
+          console.log('Video scroll trigger entered');
+        },
+        onLeave: () => {
+          console.log('Video scroll trigger left');
+        }
+      });
+    }
+
+    return () => {
+      if (videoScrollTriggerRef.current) {
+        videoScrollTriggerRef.current.kill();
+        videoScrollTriggerRef.current = null;
       }
-    });
+    };
+  }, [updateVideo, isVideoLoaded]);
+
+  useEffect(() => {
+    if (!containerRef.current || typeof window === 'undefined') return;
 
     // Mobile-optimized ScrollTrigger settings for cards animation
     const scrollTriggerConfig = {
@@ -151,10 +170,23 @@ const Mission: React.FC = () => {
     return () => {
       if (tlRef.current) {
         tlRef.current.kill();
+        tlRef.current = null;
       }
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      // Note: videoScrollTriggerRef cleanup is handled in the separate useEffect
     };
-  }, [cards.length, updateVideo, isMobile, isVideoLoaded]);
+  }, [cards.length, isMobile]);
+
+  // Cleanup all ScrollTriggers on unmount
+  useEffect(() => {
+    return () => {
+      if (videoScrollTriggerRef.current) {
+        videoScrollTriggerRef.current.kill();
+      }
+      if (tlRef.current) {
+        tlRef.current.kill();
+      }
+    };
+  }, []);
 
   // Enhanced video load handler
   const handleVideoLoad = useCallback(() => {
