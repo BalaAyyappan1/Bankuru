@@ -44,35 +44,45 @@ const Mission: React.FC = () => {
   // Detect mobile devices
   useEffect(() => {
     const checkMobile = () => {
-      const isMobileDevice = window.innerWidth < 768 || 
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const screenWidth = window.innerWidth;
+      const isSmallScreen = screenWidth < 768;
+      const isMediumScreen = screenWidth >= 768 && screenWidth < 1024;
+      
+      // Only treat as mobile if it's a small screen OR medium screen with touch
+      const isMobileDevice = isSmallScreen || 
+        (isMediumScreen && 'ontouchstart' in window && 
+         /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent));
+      
       setIsMobile(isMobileDevice);
     };
-
+    
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Optimized video update function with mobile considerations
+  // Fixed video update function - now properly scrubs through video
   const updateVideo = useCallback((progress: number) => {
     if (!videoRef.current || !isVideoLoaded) return;
     
-    // Reduce video updates on mobile for better performance
-    const threshold = isMobile ? 0.05 : 0.01;
-    const progressDiff = Math.abs(progress - lastProgressRef.current);
-    if (progressDiff < threshold) return;
-    
-    lastProgressRef.current = progress;
-    
     const videoDuration = videoRef.current.duration;
-    if (videoDuration && !isNaN(videoDuration)) {
-      // Use requestAnimationFrame for smoother video scrubbing
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.currentTime = progress * videoDuration;
-        }
-      });
+    if (!videoDuration || isNaN(videoDuration)) return;
+    
+    // Calculate target time based on scroll progress
+    const targetTime = Math.max(0, Math.min(progress * videoDuration, videoDuration - 0.1));
+    
+    // Only update if there's a meaningful difference
+    const currentTime = videoRef.current.currentTime;
+    const timeDiff = Math.abs(targetTime - currentTime);
+    const threshold = isMobile ? 0.1 : 0.05; // Minimum time difference to update
+    
+    if (timeDiff >= threshold) {
+      try {
+        videoRef.current.currentTime = targetTime;
+        lastProgressRef.current = progress;
+      } catch (error) {
+        console.warn('Error updating video time:', error);
+      }
     }
   }, [isMobile, isVideoLoaded]);
 
@@ -81,25 +91,30 @@ const Mission: React.FC = () => {
 
     let rafId: number;
     
-    // Mobile-optimized ScrollTrigger settings
+    // Create a separate ScrollTrigger just for video scrubbing
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 0.5,
+      onUpdate: (self) => {
+        updateVideo(self.progress);
+      },
+      onEnter: () => {
+        console.log('Video scroll trigger entered');
+      },
+      onLeave: () => {
+        console.log('Video scroll trigger left');
+      }
+    });
+
+    // Mobile-optimized ScrollTrigger settings for cards animation
     const scrollTriggerConfig = {
       trigger: containerRef.current,
       start: isMobile ? "top 90%" : "center 80%",
       end: isMobile ? "bottom 10%" : "bottom 20%",
-      scrub: isMobile ? 1 : 0.5, // Slower scrub on mobile for better performance
+      scrub: isMobile ? 1 : 0.5,
       refreshPriority: isMobile ? -2 : -1,
-      onUpdate: (self: any) => {
-        // Throttle updates more aggressively on mobile
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-          updateVideo(self.progress);
-        });
-      },
-      onEnter: () => {
-        if (videoRef.current) {
-          videoRef.current.pause();
-        }
-      }
     };
 
     tlRef.current = gsap.timeline({
@@ -142,22 +157,45 @@ const Mission: React.FC = () => {
       }
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, [cards.length, updateVideo, isMobile]);
+  }, [cards.length, updateVideo, isMobile, isVideoLoaded]);
 
-  // Enhanced video load handler for mobile
+  // Enhanced video load handler
   const handleVideoLoad = useCallback(() => {
     if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-      // Optimize preload strategy for mobile
-      videoRef.current.preload = isMobile ? 'metadata' : 'auto';
+      const video = videoRef.current;
+      
+      // Ensure video is ready for scrubbing
+      video.currentTime = 0;
+      video.muted = true;
+      video.preload = 'auto';
+      
+      // Test if video duration is available
+      if (video.duration && !isNaN(video.duration)) {
+        console.log('Video loaded successfully, duration:', video.duration);
+        setIsVideoLoaded(true);
+      } else {
+        // If duration not available, try again after a short delay
+        setTimeout(() => {
+          if (video.duration && !isNaN(video.duration)) {
+            console.log('Video duration loaded after delay:', video.duration);
+            setIsVideoLoaded(true);
+          }
+        }, 100);
+      }
+    }
+  }, []);
+
+  // Handle when video can play through
+  const handleVideoCanPlayThrough = useCallback(() => {
+    if (videoRef.current && !isVideoLoaded) {
+      console.log('Video can play through');
       setIsVideoLoaded(true);
     }
-  }, [isMobile]);
+  }, [isVideoLoaded]);
 
   // Handle video error on mobile
   const handleVideoError = useCallback(() => {
-    console.warn('Video failed to load on mobile device');
+    console.warn('Video failed to load');
     setIsVideoLoaded(false);
   }, []);
 
@@ -212,16 +250,17 @@ const Mission: React.FC = () => {
             `}
             muted
             playsInline
-            preload={isMobile ? 'metadata' : 'auto'}
+            preload="auto"
             onLoadedData={handleVideoLoad}
+            onLoadedMetadata={handleVideoLoad}
+            onCanPlayThrough={handleVideoCanPlayThrough}
             onError={handleVideoError}
             style={{
               willChange: 'auto',
               backfaceVisibility: 'hidden'
             }}
           >
-            <source src="/fam.webm" type="video/webm" />
-            <source src="/fam.mp4" type="video/mp4" />
+            <source src="/for-chrome.webm" type="video/webm" />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -268,9 +307,6 @@ const Mission: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* Mobile-specific loading indicator */}
-      
     </div>
   );
 };

@@ -20,34 +20,35 @@ export default function Home() {
         <BGCircleLayout>
           <TopNav />
           <Hero />
-          <div className="md:mt-[120px] mt-[100px] xl:mb-[150px]"> 
-          <About />
+          <div className="md:mt-[120px] mt-[100px] xl:mb-[150px]">
+            <About />
           </div>
-          <div className=" md:mb-[150px] mb-[100px]"> 
-          <Vision />
-
-            </div>
-            <>
-  {/* Desktop and tablet */}
-  <div className="hidden md:block">
-    <Journey />
-  </div>
-
-  {/* Mobile only */}
-  <div className="block md:hidden">
-    <JourneyMobile />
-  </div>
-</>
-
-          <div className="md:mt-[120px] md:mb-[150px]"> 
-          <Building />
+          <div className=" md:mb-[150px] mb-[100px]">
+            <Vision />
 
           </div>
+          <>
+        
+<div className="hidden md:block">
+  <Journey />
+</div>
+
+
+<div className="block md:hidden">
+  <JourneyMobile />
+</div>
+
+          </>
+
           <div className="md:mt-[120px] md:mb-[150px]">
-          <Message />
+            <Building />
+
           </div>
-          <div className="md:mt-[120px] mb-[150px]">
-          <Mission />
+          <div className=" md:mt-[120px] md:mb-[150px]">
+            <Message />
+          </div>
+          <div className="md:mt-[120px] lg:mt-[120px] mb-[150px]">
+            <Mission />
           </div>
         </BGCircleLayout>
       </BGLinesLayout>

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Building = () => {
   return (
-    <div className="relative bg-transparent min-h-screen w-full px-4 py-10">
+    <div className="relative bg-transparent w-full px-4 py-10">
       {/* Header Section */}
       <div className="flex flex-col justify-center items-center space-y-2 text-center px-2">
         <h1 className="text-3xl sm:text-4xl md:text-[42px] font-semibold text-[#FFFDFA]">
@@ -24,7 +24,7 @@ const Building = () => {
           <Image
             src={BuildingImage1}
             alt="AI Tools"
-            className="w-full h-[300px]"
+            className="w-full md:h-full h-[300px]"
           />
           <div className='absolute inset-0  flex md:flex-row flex-col-reverse mt-10 justify-between items-center text-center md:px-24 py-6 space-y-2'>
             <div className=" flex flex-col justify-center md:items-start items-center text-center px-4 md:py-6 py-3  md:space-y-2">
@@ -49,7 +49,7 @@ const Building = () => {
           <Image
             src={BuildingImage2}
             alt="AI Tools"
-            className="w-full h-[300px]"
+            className="w-full md:h-full h-[300px]"
           />
           <div className='absolute inset-0  flex md:flex-row flex-col md:mt-10 justify-between items-center text-center md:px-24 md:py-6 md:-mt-10 md:space-y-2'>
             <Image src={QuickCook} alt="QuickCook" className='md:w-80 md:h-full  w-34 h-[600px] ' />
