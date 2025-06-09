@@ -54,9 +54,9 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
         camera={{ position: [0, 0, 5], fov: 50 }}
       >
         {/* Lighting */}
-        <ambientLight intensity={3} />
+        <ambientLight intensity={5.5} />
         <directionalLight 
-          position={[10, 90, 5]}
+          position={[90, 10, 5]}
           intensity={1}
           castShadow
         />
@@ -67,6 +67,7 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
           enablePan={false}
           minDistance={3}
           maxDistance={10}
+          enableRotate={false}
           autoRotate={true}
           autoRotateSpeed={1.5}
         />
