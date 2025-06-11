@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollDownIcon } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
 import { motion } from "framer-motion";
@@ -7,16 +7,15 @@ import RotatingModel from '../Ball';
 import Link from 'next/link';
 
 const Hero = () => {
+  const [activeSection, setActiveSection] = useState('building-section');
+
 
 
   return (
     <div id='home-section' className="relative bg-transparent h-100dvh  w-full">
       {/* Middle Contents */}
       <RotatingModel modelPath="/ball.glb" />
-      {/* <video loop  muted>
-  <source src="/ball1.webm"  />
-  Your browser does not support the video tag.
-</video> */}
+
 
       <div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
@@ -29,12 +28,30 @@ const Hero = () => {
           Driven by innovation, powered by purpose — we create products that
           make life better
         </p>
-<Link href={"#building-section"}>
-<button className="bg-transparent border-1 border-[#FFFFFF2E] w-[150px] h-[42px] rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white">
-          See our works
-        </button>
-</Link>
-        
+        <Link
+          href={"#building-section"}
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveSection('building-section');
+
+            const element = document.getElementById('building-section');
+            if (element) {
+              const navbarHeight = 80;
+              const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+              const offsetPosition = elementPosition - navbarHeight;
+
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+              });
+            }
+          }}
+        >
+          <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[150px] h-[42px] rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white">
+            See our works
+          </button>
+        </Link>
+
       </div>
 
       {/* Bottom Contents */}

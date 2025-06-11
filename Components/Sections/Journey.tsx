@@ -294,7 +294,7 @@ const Journey = () => {
 
       {/* The Beginning */}
       <div className="absolute top-[26.5%] left-[2%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-6xl w-full">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 xl:max-w-6xl max-w-4xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-right md:flex-1">
             The Begining
           </span>
@@ -317,7 +317,7 @@ const Journey = () => {
 
       {/* What's Ahead */}
       <div className="absolute top-[46%] -left-[3%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
-        <div className="flex flex-col md:flex-row-reverse items-center gap-4 md:gap-8 max-w-6xl w-full">
+        <div className="flex flex-col md:flex-row-reverse items-center gap-4 md:gap-8 xl:max-w-6xl max-w-4xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-left md:flex-1">
             What's Ahead?
           </span>
@@ -340,7 +340,7 @@ const Journey = () => {
 
       {/* Milestone One */}
       <div className="absolute top-[70.5%] left-[10%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-6xl w-full">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 xl:max-w-6xl max-w-4xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold  md:text-right md:flex-1">
             Milestone One
           </span>
@@ -362,8 +362,8 @@ const Journey = () => {
       </div>
 
       {/* Q3 2025 */}
-      <div className="absolute top-[84.3%] left-[16.5%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-3xl w-full">
+      <div className="absolute top-[84%] left-[16.5%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
+        <div className="flex flex-col md:flex-row items-center gap-4 xl:gap-8 xl:max-w-3xl lg:max-w-xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-center md:text-right md:w-1/4 flex-shrink-0">
             Q3 2025
           </span>
@@ -376,7 +376,7 @@ const Journey = () => {
       </div>
 
       {/* 2026 */}
-      <div className="absolute bottom-0 2xl:left-[13%] left-[16%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
+      <div className="absolute -bottom-1 xl:left-[16%] left-[16%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-6xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-center md:text-right md:w-1/4 flex-shrink-0">
             2026

@@ -40,11 +40,11 @@ export default function Home() {
 
           </>
 
-          <div className="md:mt-[120px] md:mb-[150px]">
+          <div className="mt-[120px] md:mb-[150px]">
             <Building />
 
           </div>
-          <div className=" md:mt-[120px] md:mb-[150px]">
+          <div className=" xl:mt-[120px] xl::mb-[150px]">
             <Message />
           </div>
           <div className="md:mt-[120px] lg:mt-[120px] mb-[150px]">
