@@ -34,7 +34,7 @@ const Building = () => {
               <p className="text-sm sm:text-base md:text-start text-center text-[#BEBCBA] max-w-md">
                 An ecosystem around sustainable consulting and environmental impact, blending expertise with technology
               </p>
-              <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[120px] h-[40px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33]">
+              <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[120px] h-[40px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33] text-white">
                 View
               </button>
             </div>
@@ -49,7 +49,7 @@ const Building = () => {
           <Image
             src={BuildingImage2}
             alt="AI Tools"
-            className="w-full md:h-full h-[300px]"
+            className="w-full md:h-full h-[320px]"
           />
           <div className='absolute inset-0  flex md:flex-row flex-col md:mt-10 justify-between items-center text-center md:px-24 md:py-6 md:-mt-10 md:space-y-2'>
             <Image src={QuickCook} alt="QuickCook" className='md:w-90 md:h-auto  w-34 h-[600px] ' />
@@ -62,7 +62,7 @@ const Building = () => {
                 Launching August 2025, this mobile app helps busy students and professionals simplify
                 meal prep with smart recipes, pantry tracking, and easy cooking guides—all in one tap
               </p>
-              <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[154px] h-[41px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33]">
+              <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[154px] h-[41px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33] text-white">
                 Keep me update
               </button>
             </div>

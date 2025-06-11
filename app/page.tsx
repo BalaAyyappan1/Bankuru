@@ -28,15 +28,15 @@ export default function Home() {
 
           </div>
           <>
-        
-<div className="hidden md:block">
-  <Journey />
-</div>
+
+            <div className="hidden md:block">
+              <Journey />
+            </div>
 
 
-<div className="block md:hidden">
-  <JourneyMobile />
-</div>
+            <div className="block md:hidden">
+              <JourneyMobile />
+            </div>
 
           </>
 
@@ -44,7 +44,7 @@ export default function Home() {
             <Building />
 
           </div>
-          <div className=" xl:mt-[120px] xl::mb-[150px]">
+          <div className=" xl:mt-[120px] xl::mb-[150px]  mt-10">
             <Message />
           </div>
           <div className="md:mt-[120px] lg:mt-[120px] mb-[150px]">

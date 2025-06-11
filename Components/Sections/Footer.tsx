@@ -413,11 +413,11 @@ const Footer = () => {
         </div>
       </div>
       {/* mobile */}
-      <div id='contact-section' className="relative w-full block md:hidden px-5">
+      <div id='contact-section' className="relative w-full block md:hidden px-5 -mt-50">
         <div className="bg-[#2D34674A] h-full flex flex-col space-y-10 justify-center items-start rounded-[28px] px-5">
           <div className="flex flex-row gap-2 items-start justify-center  mt-8">
 
-            <h1 className='font-bold text-[30px] leading-8'>
+            <h1 className='font-bold text-[30px] leading-8 text-white'>
               Be Part of the Journey
             </h1>
           </div>
@@ -427,8 +427,6 @@ const Footer = () => {
             <span>Phone No. : 144 - 23940193</span>
             <span>Address : 123 Innovation Drive, Tech City, TC 12345</span>
           </div>
-
-
 
 
           <div className="w-full flex flex-col space-y-6 ">
@@ -462,11 +460,16 @@ const Footer = () => {
 
             {/* Email Field */}
             <div className="flex flex-col space-y-2">
-              
+            <label
+                htmlFor="email"
+                className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
+              >
+                Email
+              </label>
               <input
                 id="email"
                 type="email"
-                placeholder='Email'
+                
                 required
                 value={formData.email}
                 onChange={handleInputChangeEvent('email')}
@@ -576,7 +579,7 @@ const Footer = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className='bg-transparent border-1 border-[#FFFFFF2E] max-w-md mx-auto px-8 py-3 rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33]'
+              className='bg-transparent border-1 border-[#FFFFFF2E] max-w-md mx-auto px-8 py-3 rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white'
             >
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
