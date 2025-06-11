@@ -6,15 +6,16 @@ import { Begining, One, Way } from '../ReuseableComponents/Icons';
 const JourneyMobile = () => {
   const dottedLineRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const glowLineRef = useRef<SVGGElement | null>(null);
 
   useEffect(() => {
-    const segments = dottedLineRef.current?.querySelectorAll('.glow-segment');
+    const segments = glowLineRef.current?.querySelectorAll('.glow-segment');
     if (!segments || segments.length === 0) {
-      console.log('No segments found!');
+      console.log('No glow segments found!');
       return;
     }
 
-    console.log('Found segments:', segments.length);
+    console.log('Found glow segments:', segments.length);
 
     // Calculate total length and set up each segment
     const segmentLengths: number[] = [];
@@ -35,12 +36,13 @@ const JourneyMobile = () => {
         segment.style.strokeDasharray = `${length}`;
         segment.style.strokeDashoffset = `${length}`; // This hides the line initially
         segment.style.opacity = '1';
-        segment.style.stroke = 'url(#glowGradientMobile)'; // Ensure stroke is applied
+        segment.style.stroke = '#7FB3D3';
         console.log(`Segment ${index} initialized with dasharray: ${length}, offset: ${length}`);
       }
     });
 
     let ticking = false;
+    let hasAnimated = false;
 
     const handleScroll = () => {
       if (!ticking) {
@@ -58,44 +60,55 @@ const JourneyMobile = () => {
           const containerTop = rect.top;
           const containerHeight = rect.height;
           
-          // Start animation when container enters viewport
-          const startPoint = windowHeight * 0.8; // Start earlier
-          const endPoint = -containerHeight * 0.2; // End later
+          // Trigger animation when container enters viewport
+          const startPoint = windowHeight * 0.8;
+          const endPoint = -containerHeight * 0.2;
           
           let progress = 0;
           if (containerTop <= startPoint && containerTop >= endPoint) {
             const scrolled = startPoint - containerTop;
             const totalScrollDistance = startPoint - endPoint;
             progress = Math.max(0, Math.min(1, scrolled / totalScrollDistance));
+            hasAnimated = true;
+          } else if (containerTop > startPoint && !hasAnimated) {
+            // Reset animation if not yet started
+            segments.forEach((segment, index) => {
+              const length = segmentLengths[index];
+              const segmentElement = segments[index] as SVGElement;
+              segmentElement.style.strokeDashoffset = `${length}`;
+            });
           }
           
           console.log('Container top:', containerTop, 'Progress:', progress);
           
-          // Animate segments sequentially based on progress
-          const totalSegments = segmentLengths.length;
-          segmentLengths.forEach((length, index) => {
-            // Each segment gets an equal portion of the total progress
-            const segmentStart = index / totalSegments;
-            const segmentEnd = (index + 1) / totalSegments;
-            
-            let segmentProgress = 0;
-            if (progress >= segmentStart) {
-              segmentProgress = Math.min(1, (progress - segmentStart) / (segmentEnd - segmentStart));
-            }
-            
-            // Calculate the dash offset to reveal the line
-            const offset = Math.max(0, length * (1 - segmentProgress));
-            const segmentElement = segments[index] as SVGElement;
-            
-            // Apply the animation
-            segmentElement.style.strokeDashoffset = `${offset}`;
-            
-            // Add some visual feedback when animating
-            if (segmentProgress > 0) {
-              segmentElement.style.opacity = '1';
-              console.log(`Animating segment ${index}: progress=${segmentProgress.toFixed(2)}, offset=${offset.toFixed(2)}`);
-            }
-          });
+          if (progress > 0) {
+            // Animate segments sequentially based on progress
+            const totalSegments = segmentLengths.length;
+            segmentLengths.forEach((length, index) => {
+              // Each segment gets an equal portion of the total progress
+              const segmentStart = index / totalSegments;
+              const segmentEnd = (index + 1) / totalSegments;
+              
+              let segmentProgress = 0;
+              if (progress >= segmentStart) {
+                segmentProgress = Math.min(1, (progress - segmentStart) / (segmentEnd - segmentStart));
+              }
+              
+              // Calculate the dash offset to reveal the line
+              const offset = Math.max(0, length * (1 - segmentProgress));
+              const segmentElement = segments[index] as SVGElement;
+              
+              // Apply the animation with transition for smoother effect
+              segmentElement.style.transition = 'stroke-dashoffset 0.3s ease-out';
+              segmentElement.style.strokeDashoffset = `${offset}`;
+              
+              // Add some visual feedback when animating
+              if (segmentProgress > 0) {
+                segmentElement.style.opacity = '1';
+                console.log(`Animating segment ${index}: progress=${segmentProgress.toFixed(2)}, offset=${offset.toFixed(2)}`);
+              }
+            });
+          }
           
           ticking = false;
         });
@@ -109,8 +122,8 @@ const JourneyMobile = () => {
     window.addEventListener('touchmove', handleScroll, scrollOptions);
     window.addEventListener('resize', () => setTimeout(handleScroll, 100));
     
-    // Initial call with longer delay for mobile
-    setTimeout(handleScroll, 300);
+    // Initial call to set initial state
+    handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -124,7 +137,6 @@ const JourneyMobile = () => {
       ref={containerRef}
       id="journeyMobile-section"
       className="relative min-h-screen w-full overflow-hidden py-8 sm:py-12 md:py-16"
-      // Add dark background for testing
     >
       <h1 className="text-[24px] text-[#FFFDFA] font-semibold text-center mb-8 sm:mb-12 md:mb-16 px-4">
         Our Journey
@@ -133,29 +145,29 @@ const JourneyMobile = () => {
       {/* SVG Straight Line - Perfectly Centered */}
       <div className="absolute left-1/2 transform -translate-x-1/2 top-20 sm:top-24 md:top-32 h-full z-0">
         <svg 
+          ref={dottedLineRef}
           width="20" 
           height="2200" 
           className="overflow-visible"
           style={{ 
             willChange: 'transform',
-            // Force hardware acceleration on mobile
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden'
           }}
-          // Add viewport attribute for better mobile rendering
           viewBox="0 0 20 2200"
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
+            {/* Simplified gradient for better mobile support */}
             <linearGradient id="glowGradientMobile" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#56549B" stopOpacity="1" />
-              <stop offset="50%" stopColor="#7FB3D3" stopOpacity="1" />
-              <stop offset="100%" stopColor="#56549B" stopOpacity="1" />
+              <stop offset="0%" stopColor="#7FB3D3" stopOpacity="1" />
+              <stop offset="50%" stopColor="#56549B" stopOpacity="1" />
+              <stop offset="100%" stopColor="#7FB3D3" stopOpacity="1" />
             </linearGradient>
             
-            {/* Enhanced glow effect with mobile optimization */}
-            <filter id="glowMobile" x="-100%" y="-100%" width="300%" height="300%">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            {/* Simplified glow effect for mobile */}
+            <filter id="glowMobile" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
               <feMerge>
                 <feMergeNode in="coloredBlur" />
                 <feMergeNode in="SourceGraphic" />
@@ -163,14 +175,13 @@ const JourneyMobile = () => {
             </filter>
           </defs>
 
-          {/* Background dotted line segments with gaps */}
+          {/* Background dotted line segments with gaps - always visible */}
           <g
             stroke="#BDD1FE"
             strokeWidth="2"
             strokeDasharray="8,8"
             strokeLinecap="round"
             opacity="0.4"
-            // Ensure visibility on mobile
             style={{ pointerEvents: 'none' }}
           >
             <line x1="10" y1="50" x2="10" y2="180" />
@@ -181,16 +192,13 @@ const JourneyMobile = () => {
             <line x1="10" y1="1700" x2="10" y2="1930" />
           </g>
 
-          {/* Animated glowing line segments with gaps */}
+          {/* Animated glowing line segments with gaps - initially hidden */}
           <g
-            ref={dottedLineRef}
-            stroke="url(#glowGradientMobile)"
-            strokeWidth="6"
+            ref={glowLineRef}
+            strokeWidth="4"
             strokeLinecap="round"
-            filter="url(#glowMobile)"
             style={{ 
               willChange: 'stroke-dashoffset',
-              // Mobile optimization
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden',
               pointerEvents: 'none'
@@ -199,41 +207,44 @@ const JourneyMobile = () => {
             <line 
               className="glow-segment" 
               x1="10" y1="50" x2="10" y2="180"
-              style={{ 
-                // Fallback stroke in case gradient fails on mobile
-                stroke: '#7FB3D3'
-              }}
+              stroke="#7FB3D3"
+              filter="url(#glowMobile)"
             />
             <line 
               className="glow-segment" 
               x1="10" y1="410" x2="10" y2="525"
-              style={{ stroke: '#7FB3D3' }}
+              stroke="#7FB3D3"
+              filter="url(#glowMobile)"
             />
             <line 
               className="glow-segment" 
               x1="10" y1="755" x2="10" y2="880"
-              style={{ stroke: '#7FB3D3' }}
+              stroke="#7FB3D3"
+              filter="url(#glowMobile)"
             />
             <line 
               className="glow-segment" 
               x1="10" y1="1110" x2="10" y2="1240"
-              style={{ stroke: '#7FB3D3' }}
+              stroke="#7FB3D3"
+              filter="url(#glowMobile)"
             />
             <line 
               className="glow-segment" 
               x1="10" y1="1400" x2="10" y2="1540"
-              style={{ stroke: '#7FB3D3' }}
+              stroke="#7FB3D3"
+              filter="url(#glowMobile)"
             />
             <line 
               className="glow-segment" 
               x1="10" y1="1700" x2="10" y2="1930"
-              style={{ stroke: '#7FB3D3' }}
+              stroke="#7FB3D3"
+              filter="url(#glowMobile)"
             />
           </g>
         </svg>
       </div>
 
-      {/* Content positioned to align with line segments */}
+      {/* Rest of your content remains the same */}
       <div className="relative z-10 max-w-sm mx-auto px-4 sm:px-6">
         <div className="flex flex-col items-center">
           <div style={{ height: "110px" }}></div>
@@ -345,4 +356,4 @@ const JourneyMobile = () => {
   );
 }
 
-export default JourneyMobile
+export default JourneyMobile;
