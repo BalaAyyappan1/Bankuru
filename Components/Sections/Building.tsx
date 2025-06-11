@@ -52,7 +52,7 @@ const Building = () => {
             className="w-full md:h-full h-[300px]"
           />
           <div className='absolute inset-0  flex md:flex-row flex-col md:mt-10 justify-between items-center text-center md:px-24 md:py-6 md:-mt-10 md:space-y-2'>
-            <Image src={QuickCook} alt="QuickCook" className='md:w-80 md:h-full  w-34 h-[600px] ' />
+            <Image src={QuickCook} alt="QuickCook" className='md:w-90 md:h-auto  w-34 h-[600px] ' />
 
             <div className=" flex flex-col justify-center md:items-end  items-center text-center px-4 md:py-6 md:py-3  pb-10  md:space-y-2">
               <h2 className="text-xl sm:text-2xl md:text-3xl text-end font-semibold text-white ">

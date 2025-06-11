@@ -32,8 +32,6 @@ const Journey = () => {
       });
     };
 
-  
-
     const initializeAnimations = () => {
       if (!dottedLineRef.current || !containerRef.current) return;
 
@@ -61,7 +59,7 @@ const Journey = () => {
         const length = pathLengths[index];
 
         // Calculate sequential trigger points
-        const segmentHeight = 15; // Each segment takes 20% of container height
+        const segmentHeight = 15; // Each segment takes 15% of container height
         const startPoint = index * segmentHeight;
         const endPoint = startPoint + segmentHeight;
 
@@ -106,7 +104,6 @@ const Journey = () => {
 
         animationsRef.current.push(animation);
       });
-
     };
 
     // Multiple initialization attempts to ensure it works
@@ -160,20 +157,22 @@ const Journey = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       cleanup();
     };
-  }, []); // Empty dependency array - run once on mount
+  }, []); 
 
   return (
     <div
       ref={containerRef}
       id="journey-section"
-      className="relative bg-transparent h-[160vh] w-full overflow-hidden"
+      className="relative bg-transparent min-h-screen w-full overflow-hidden py-8 px-4"
+      style={{ height: '160vh' }}
     >
-      <h1 className="text-[42px] text-[#FFFDFA] font-semibold text-center">
+      {/* Title */}
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-semibold text-center mb-8">
         Journey
       </h1>
 
       {/* SVG Glowing Line */}
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-full mt-5">
+      <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-full h-full">
         <svg
           ref={dottedLineRef}
           width="100%"
@@ -293,92 +292,102 @@ const Journey = () => {
         </svg>
       </div>
 
-      {/* The beginning */}
-      <div className="absolute 3xl:top-94 3xl:left-55 xl:top-81 xl:left-45 lg:top-70 lg:left-45 md:top-83 md:left-35 w-full flex flex-row justify-center items-center gap-8 px-4">
-        <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-right">
-          The Beginning
-        </span>
-        <div className="relative">
-          <Image
-            src={Begining}
-            alt="beginning"
-            width={200}
-            height={200}
-            className="w-[100px] h-[100px]"
-          />
+      {/* The Beginning */}
+      <div className="absolute top-[26.5%] left-[2%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-6xl w-full">
+          <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-right md:flex-1">
+            The Begining
+          </span>
+          <div className="flex-shrink-0">
+            <Image
+              src={Begining}
+              alt="beginning"
+              width={100}
+              height={100}
+
+            />
+          </div>
+          <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left md:flex-1">
+            Founded in 2024, Bankuru Services Private Limited began with a simple
+            mission — to build impactful products that serve people, not just
+            markets.
+          </span>
         </div>
-        <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left">
-          Founded in 2024, Bankuru Services Private Limited began with a simple
-          mission — to build impactful products that serve people, not just
-          markets.
-        </span>
       </div>
 
       {/* What's Ahead */}
-      <div className="absolute 3xl:top-173 3xl:right-55 xl:top-152 xl:right-40 lg:top-131 lg:right-40 md:top-155 md:right-30 w-full flex flex-row justify-center items-center gap-8 px-4">
-        <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left">
-          From an idea to a growing ecosystem, our goal is to launch ventures
-          that are bold, practical, and globally scalable — starting right here
-          in India.
-        </span>
-        <div className="relative">
-          <Image
-            src={Way}
-            alt="way ahead"
-            width={200}
-            height={200}
-            className="w-[100px] h-[100px]"
-          />
+      <div className="absolute top-[46%] -left-[3%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
+        <div className="flex flex-col md:flex-row-reverse items-center gap-4 md:gap-8 max-w-6xl w-full">
+          <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-left md:flex-1">
+            What's Ahead?
+          </span>
+          <div className="flex-shrink-0">
+            <Image
+              src={Way}
+              alt="way ahead"
+              width={100}
+              height={100}
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
+            />
+          </div>
+          <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left md:flex-1">
+            From an idea to a growing ecosystem, our goal is to launch ventures
+            that are bold, practical, and globally scalable — starting right here
+            in India.
+          </span>
         </div>
-        <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-right">
-          What's Ahead?
-        </span>
       </div>
 
       {/* Milestone One */}
-      <div className="absolute 3xl:top-268 3xl:right-60 xl:top-235 lg:top-26 xl:left-35 lg:left-25 md:top-241 md:left-35 w-full flex flex-row justify-center items-center gap-8 px-4">
-        <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] w-1/4 text-right">
-          Milestone One
-        </span>
-        <div className="relative">
-          <Image
-            src={One}
-            alt="milestone one"
-            width={200}
-            height={200}
-            className="w-[90px] h-[90px]"
-          />
+      <div className="absolute top-[70.5%] left-[10%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-6xl w-full">
+          <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold  md:text-right md:flex-1">
+            Milestone One
+          </span>
+          <div className="flex-shrink-0">
+            <Image
+              src={One}
+              alt="milestone one"
+              width={90}
+              height={90}
+              className="w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24"
+            />
+          </div>
+          <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left md:flex-1">
+            Meet Bio Alpha International—our ESG & sustainability consultancy
+            that's already helping organizations build responsible, growth-driving
+            strategies.
+          </span>
         </div>
-        <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left">
-          Meet Bio Alpha International—our ESG & sustainability consultancy
-          that's already helping organizations build responsible, growth-driving
-          strategies.
-        </span>
       </div>
 
       {/* Q3 2025 */}
-      <div className="absolute 3xl:bottom-47 3xl:left-38 xl:bottom-36 xl:left-30 lg:bottom-28 lg:left-28 md:bottom-37 md:left-25 w-full flex flex-row justify-center items-center gap-8 px-4">
-        <span className="text-white xl:text-[24px] lg:text-[20px] w-1/4 text-right">
-          Q3 2025
-        </span>
-        <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left">
-          After months of research, development, and testing, we are about to
-          launch our first product AI-powered mobile App in 2025. This milestone
-          marks the start of our journey to build impactful solutions.
-        </span>
+      <div className="absolute top-[84.3%] left-[16.5%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-3xl w-full">
+          <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-center md:text-right md:w-1/4 flex-shrink-0">
+            Q3 2025
+          </span>
+          <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left md:flex-1">
+            After months of research, development, and testing, we are about to
+            launch our first product AI-powered mobile App in 2025. This milestone
+            marks the start of our journey to build impactful solutions.
+          </span>
+        </div>
       </div>
 
       {/* 2026 */}
-      <div className="absolute xl:bottom-10 xl:left-7 lg:bottom-6 lg:left-8 md:bottom-12 w-full flex flex-row justify-center items-center gap-8 px-4">
-        <span className="text-white xl:text-[24px] lg:text-[20px] w-1/4 text-right">
-          2026
-        </span>
-        <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left">
-          Scaling globally ("New verticals & partnerships")
-        </span>
+      <div className="absolute bottom-0 2xl:left-[13%] left-[16%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-6xl w-full">
+          <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-center md:text-right md:w-1/4 flex-shrink-0">
+            2026
+          </span>
+          <span className="text-[#BEBCBA] xl:text-[20px] lg:text-[18px] w-1/3 text-left flex-1">
+            Scaling globally ("New verticals & partnerships")
+          </span>
+        </div>
       </div>
     </div>
   );
 }
 
-export default Journey
+export default Journey;

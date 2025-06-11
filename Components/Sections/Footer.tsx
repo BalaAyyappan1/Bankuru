@@ -462,15 +462,11 @@ const Footer = () => {
 
             {/* Email Field */}
             <div className="flex flex-col space-y-2">
-              <label
-                htmlFor="email"
-                className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
-              >
-                Email
-              </label>
+              
               <input
                 id="email"
                 type="email"
+                placeholder='Email'
                 required
                 value={formData.email}
                 onChange={handleInputChangeEvent('email')}

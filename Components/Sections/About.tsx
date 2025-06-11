@@ -8,7 +8,7 @@ const About = () => {
   <div className='flex lg:flex-row flex-col justify-between items-center mx-auto w-full max-w-7xl px-8'>
     {/* contents */}
     <div className='flex flex-col space-y-5 lg:max-w-[50%] lg:justify-start justify-center lg:items-start items-center'>
-      <h1 className='text-[#FFFDFA] xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px]'>
+      <h1 className='text-[#FFFDFA] font-semibold xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px]'>
         About us
       </h1>
       <p className='text-[#BEBCBA] xl:text-[20px] lg:text-[18px] md:text-[16px] text-[12px] xl:leading-6 lg:leading-5 md:leading-4 leading-3 lg:text-start text-center'>

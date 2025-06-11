@@ -289,7 +289,7 @@ const Mission: React.FC = () => {
               backfaceVisibility: 'hidden'
             }}
           >
-            <source src="/for-chrome.webm" type="video/webm" />
+            <source src="/final.webm" type="video/webm" />
             Your browser does not support the video tag.
           </video>
         </div>
