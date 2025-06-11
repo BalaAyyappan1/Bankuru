@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Building = () => {
   return (
-    <div className="relative bg-transparent w-full px-4 py-10">
+    <div id='building-section' className="relative bg-transparent w-full px-4 py-10">
       {/* Header Section */}
       <div className="flex flex-col justify-center items-center space-y-2 text-center px-2">
         <h1 className="text-3xl sm:text-4xl md:text-[42px] font-semibold text-[#FFFDFA]">

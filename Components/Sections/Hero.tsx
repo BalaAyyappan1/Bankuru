@@ -4,6 +4,7 @@ import { ScrollDownIcon } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
 import { motion } from "framer-motion";
 import RotatingModel from '../Ball';
+import Link from 'next/link';
 
 const Hero = () => {
 
@@ -28,10 +29,12 @@ const Hero = () => {
           Driven by innovation, powered by purpose — we create products that
           make life better
         </p>
-
-        <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[150px] h-[42px] rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33]">
+<Link href={"/"}>
+<button className="bg-transparent border-1 border-[#FFFFFF2E] w-[150px] h-[42px] rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white">
           See our works
         </button>
+</Link>
+        
       </div>
 
       {/* Bottom Contents */}

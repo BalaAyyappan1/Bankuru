@@ -246,8 +246,8 @@ const Mission: React.FC = () => {
       <h1 className={`
         font-semibold text-center
         ${isMobile 
-          ? 'text-2xl sm:text-3xl leading-tight' 
-          : 'text-[42px]'
+          ? 'text-2xl sm:text-3xl leading-tight text-[#FFFDFA]' 
+          : 'text-[42px] text-[#FFFDFA]'
         }
       `}>
         Join the Mission

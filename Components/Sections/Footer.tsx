@@ -211,7 +211,7 @@ const Footer = () => {
                   alt="Company Logo"
                   className="w-[72px] h-[72px] object-contain"
                 />
-                <h1 className='font-bold text-[30px] leading-8'>
+                <h1 className='font-bold text-[30px] leading-8 text-[#FFFDFA]'>
                   Bankuru Services <br />
                   Pvt. Ltd.
                 </h1>
@@ -224,7 +224,7 @@ const Footer = () => {
               </div>
 
 
-              <div className='pb-5 md:pb-5'>
+              <div className='pb-5 md:pb-5 text-white'>
                 © designed &  developed by  <Link href={'https://www.theinternetcompany.one/'} target="_blank" rel="noopener noreferrer" className='hover:underline'>TIC GLOBAL</Link>.
               </div>
             </div>
@@ -599,9 +599,9 @@ const Footer = () => {
 
 
 
-            <div className='pb-5 md:pb-5 text-[12px]'>
+            <p className='pb-5 md:pb-5 text-[12px] text-white'>
               © designed &  developed by  <Link href={'https://www.theinternetcompany.one/'} target="_blank" rel="noopener noreferrer" className='hover:underline'>TIC GLOBAL</Link>.
-            </div>
+            </p>
           </div>
 
 
