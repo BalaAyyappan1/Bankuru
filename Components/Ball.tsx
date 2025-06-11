@@ -54,14 +54,19 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
         camera={{ position: [0, 0, 5], fov: 50 }}
       >
         {/* Lighting */}
-        <ambientLight intensity={5.5} />
+        <ambientLight intensity={7} />
         <directionalLight 
           position={[90, 10, 5]}
           intensity={1}
           castShadow
         />
-        <pointLight position={[0, -10, 0]} intensity={1.5} />
-
+        <pointLight
+  position={[0, 3, 0]}
+  intensity={0.8}
+  distance={20}
+  decay={2}
+  color="#fff4e6"
+/>
         <OrbitControls
           enableZoom={false}
           enablePan={false}
