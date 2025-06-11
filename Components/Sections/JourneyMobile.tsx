@@ -1,136 +1,35 @@
 "use client";
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Begining, One, Way } from '../ReuseableComponents/Icons';
 
 const JourneyMobile = () => {
-  const dottedLineRef = useRef<SVGSVGElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const glowLineRef = useRef<SVGGElement | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const segments = glowLineRef.current?.querySelectorAll('.glow-segment');
-    if (!segments || segments.length === 0) {
-      console.log('No glow segments found!');
-      return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
 
-    console.log('Found glow segments:', segments.length);
-
-    // Calculate total length and set up each segment
-    const segmentLengths: number[] = [];
-    
-    segments.forEach((segment, index) => {
-      // Calculate length manually for line elements
-      const x1 = parseFloat(segment.getAttribute('x1') || '0');
-      const y1 = parseFloat(segment.getAttribute('y1') || '0');
-      const x2 = parseFloat(segment.getAttribute('x2') || '0');
-      const y2 = parseFloat(segment.getAttribute('y2') || '0');
-      const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-      
-      segmentLengths.push(length);
-      console.log(`Segment ${index} length:`, length);
-      
-      // Set initial state for each segment - lines are hidden initially
-      if (segment instanceof SVGElement) {
-        segment.style.strokeDasharray = `${length}`;
-        segment.style.strokeDashoffset = `${length}`; // This hides the line initially
-        segment.style.opacity = '1';
-        segment.style.stroke = '#7FB3D3';
-        console.log(`Segment ${index} initialized with dasharray: ${length}, offset: ${length}`);
-      }
-    });
-
-    let ticking = false;
-    let hasAnimated = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const container = containerRef.current;
-          if (!container) {
-            ticking = false;
-            return;
-          }
-
-          const rect = container.getBoundingClientRect();
-          const windowHeight = window.innerHeight;
-          
-          // Calculate scroll progress
-          const containerTop = rect.top;
-          const containerHeight = rect.height;
-          
-          // Trigger animation when container enters viewport
-          const startPoint = windowHeight * 0.8;
-          const endPoint = -containerHeight * 0.2;
-          
-          let progress = 0;
-          if (containerTop <= startPoint && containerTop >= endPoint) {
-            const scrolled = startPoint - containerTop;
-            const totalScrollDistance = startPoint - endPoint;
-            progress = Math.max(0, Math.min(1, scrolled / totalScrollDistance));
-            hasAnimated = true;
-          } else if (containerTop > startPoint && !hasAnimated) {
-            // Reset animation if not yet started
-            segments.forEach((segment, index) => {
-              const length = segmentLengths[index];
-              const segmentElement = segments[index] as SVGElement;
-              segmentElement.style.strokeDashoffset = `${length}`;
-            });
-          }
-          
-          console.log('Container top:', containerTop, 'Progress:', progress);
-          
-          if (progress > 0) {
-            // Animate segments sequentially based on progress
-            const totalSegments = segmentLengths.length;
-            segmentLengths.forEach((length, index) => {
-              // Each segment gets an equal portion of the total progress
-              const segmentStart = index / totalSegments;
-              const segmentEnd = (index + 1) / totalSegments;
-              
-              let segmentProgress = 0;
-              if (progress >= segmentStart) {
-                segmentProgress = Math.min(1, (progress - segmentStart) / (segmentEnd - segmentStart));
-              }
-              
-              // Calculate the dash offset to reveal the line
-              const offset = Math.max(0, length * (1 - segmentProgress));
-              const segmentElement = segments[index] as SVGElement;
-              
-              // Apply the animation with transition for smoother effect
-              segmentElement.style.transition = 'stroke-dashoffset 0.3s ease-out';
-              segmentElement.style.strokeDashoffset = `${offset}`;
-              
-              // Add some visual feedback when animating
-              if (segmentProgress > 0) {
-                segmentElement.style.opacity = '1';
-                console.log(`Animating segment ${index}: progress=${segmentProgress.toFixed(2)}, offset=${offset.toFixed(2)}`);
-              }
-            });
-          }
-          
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    // Add scroll listeners with proper mobile support
-    const scrollOptions = { passive: true };
-    window.addEventListener('scroll', handleScroll, scrollOptions);
-    window.addEventListener('touchmove', handleScroll, scrollOptions);
-    window.addEventListener('resize', () => setTimeout(handleScroll, 100));
-    
-    // Initial call to set initial state
-    handleScroll();
-
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('touchmove', handleScroll);
-      window.removeEventListener('resize', handleScroll);
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
     };
-  }, [])
+  }, []);
 
   return (
     <div
@@ -142,30 +41,22 @@ const JourneyMobile = () => {
         Our Journey
       </h1>
 
-      {/* SVG Straight Line - Perfectly Centered */}
+      {/* SVG Line Container */}
       <div className="absolute left-1/2 transform -translate-x-1/2 top-20 sm:top-24 md:top-32 h-full z-0">
         <svg 
-          ref={dottedLineRef}
           width="20" 
           height="2200" 
           className="overflow-visible"
-          style={{ 
-            willChange: 'transform',
-            transform: 'translateZ(0)',
-            backfaceVisibility: 'hidden'
-          }}
           viewBox="0 0 20 2200"
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
-            {/* Simplified gradient for better mobile support */}
             <linearGradient id="glowGradientMobile" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#7FB3D3" stopOpacity="1" />
               <stop offset="50%" stopColor="#56549B" stopOpacity="1" />
               <stop offset="100%" stopColor="#7FB3D3" stopOpacity="1" />
             </linearGradient>
             
-            {/* Simplified glow effect for mobile */}
             <filter id="glowMobile" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="2" result="coloredBlur" />
               <feMerge>
@@ -175,14 +66,13 @@ const JourneyMobile = () => {
             </filter>
           </defs>
 
-          {/* Background dotted line segments with gaps - always visible */}
+          {/* Static dotted line - always visible */}
           <g
             stroke="#BDD1FE"
             strokeWidth="2"
             strokeDasharray="8,8"
             strokeLinecap="round"
             opacity="0.4"
-            style={{ pointerEvents: 'none' }}
           >
             <line x1="10" y1="50" x2="10" y2="180" />
             <line x1="10" y1="410" x2="10" y2="525" />
@@ -192,53 +82,18 @@ const JourneyMobile = () => {
             <line x1="10" y1="1700" x2="10" y2="1930" />
           </g>
 
-          {/* Animated glowing line segments with gaps - initially hidden */}
+          {/* Animated glowing line */}
           <g
-            ref={glowLineRef}
+            stroke="#7FB3D3"
             strokeWidth="4"
             strokeLinecap="round"
-            style={{ 
-              willChange: 'stroke-dashoffset',
-              transform: 'translateZ(0)',
-              backfaceVisibility: 'hidden',
-              pointerEvents: 'none'
-            }}
+            filter="url(#glowMobile)"
           >
-            <line 
-              className="glow-segment" 
-              x1="10" y1="50" x2="10" y2="180"
-              stroke="#7FB3D3"
-              filter="url(#glowMobile)"
-            />
-            <line 
-              className="glow-segment" 
-              x1="10" y1="410" x2="10" y2="525"
-              stroke="#7FB3D3"
-              filter="url(#glowMobile)"
-            />
-            <line 
-              className="glow-segment" 
-              x1="10" y1="755" x2="10" y2="880"
-              stroke="#7FB3D3"
-              filter="url(#glowMobile)"
-            />
-            <line 
-              className="glow-segment" 
-              x1="10" y1="1110" x2="10" y2="1240"
-              stroke="#7FB3D3"
-              filter="url(#glowMobile)"
-            />
-            <line 
-              className="glow-segment" 
-              x1="10" y1="1400" x2="10" y2="1540"
-              stroke="#7FB3D3"
-              filter="url(#glowMobile)"
-            />
-            <line 
-              className="glow-segment" 
-              x1="10" y1="1700" x2="10" y2="1930"
-              stroke="#7FB3D3"
-              filter="url(#glowMobile)"
+            <path
+              className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+              strokeDasharray="1000"
+              strokeDashoffset={isVisible ? "0" : "1000"}
+              d="M10 50 L10 180 M10 410 L10 525 M10 755 L10 880 M10 1110 L10 1240 M10 1400 L10 1540 M10 1700 L10 1930"
             />
           </g>
         </svg>
