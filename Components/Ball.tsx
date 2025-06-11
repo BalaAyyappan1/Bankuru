@@ -47,26 +47,21 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
   }, []);
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
+    <div style={{ height: "100vh", width: "100%" }}>
       <Canvas
         shadows
         gl={{ antialias: true }}
         camera={{ position: [0, 0, 5], fov: 50 }}
       >
         {/* Lighting */}
-        <ambientLight intensity={7} />
-        <directionalLight 
-          position={[90, 10, 5]}
-          intensity={1}
-          castShadow
-        />
-        <pointLight
-  position={[0, 3, 0]}
-  intensity={0.8}
-  distance={20}
-  decay={2}
-  color="#fff4e6"
-/>
+        <ambientLight intensity={4.5} />
+        <directionalLight position={[20, 10, 5]} intensity={1} castShadow />
+        <directionalLight  position={[-21, 10.6, 21.82]} intensity={1} castShadow />
+        <directionalLight  position={[10, 20.6, 56.82]} intensity={1} castShadow />
+        <directionalLight  position={[90, 20.6, 56.82]} intensity={1} castShadow />
+
+
+
         <OrbitControls
           enableZoom={false}
           enablePan={false}
