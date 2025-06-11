@@ -103,13 +103,14 @@ const JourneyMobile = () => {
       }
     };
 
-    // Add scroll listeners
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('touchmove', handleScroll, { passive: true });
+    // Add scroll listeners with proper mobile support
+    const scrollOptions = { passive: true };
+    window.addEventListener('scroll', handleScroll, scrollOptions);
+    window.addEventListener('touchmove', handleScroll, scrollOptions);
     window.addEventListener('resize', () => setTimeout(handleScroll, 100));
     
-    // Initial call
-    setTimeout(handleScroll, 100);
+    // Initial call with longer delay for mobile
+    setTimeout(handleScroll, 300);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -135,7 +136,15 @@ const JourneyMobile = () => {
           width="20" 
           height="2200" 
           className="overflow-visible"
-          style={{ willChange: 'transform' }}
+          style={{ 
+            willChange: 'transform',
+            // Force hardware acceleration on mobile
+            transform: 'translateZ(0)',
+            backfaceVisibility: 'hidden'
+          }}
+          // Add viewport attribute for better mobile rendering
+          viewBox="0 0 20 2200"
+          preserveAspectRatio="xMidYMid meet"
         >
           <defs>
             <linearGradient id="glowGradientMobile" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -144,7 +153,7 @@ const JourneyMobile = () => {
               <stop offset="100%" stopColor="#56549B" stopOpacity="1" />
             </linearGradient>
             
-            {/* Enhanced glow effect */}
+            {/* Enhanced glow effect with mobile optimization */}
             <filter id="glowMobile" x="-100%" y="-100%" width="300%" height="300%">
               <feGaussianBlur stdDeviation="3" result="coloredBlur" />
               <feMerge>
@@ -161,6 +170,8 @@ const JourneyMobile = () => {
             strokeDasharray="8,8"
             strokeLinecap="round"
             opacity="0.4"
+            // Ensure visibility on mobile
+            style={{ pointerEvents: 'none' }}
           >
             <line x1="10" y1="50" x2="10" y2="180" />
             <line x1="10" y1="410" x2="10" y2="525" />
@@ -177,14 +188,47 @@ const JourneyMobile = () => {
             strokeWidth="6"
             strokeLinecap="round"
             filter="url(#glowMobile)"
-            style={{ willChange: 'stroke-dashoffset' }}
+            style={{ 
+              willChange: 'stroke-dashoffset',
+              // Mobile optimization
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden',
+              pointerEvents: 'none'
+            }}
           >
-            <line className="glow-segment" x1="10" y1="50" x2="10" y2="180" />
-            <line className="glow-segment" x1="10" y1="410" x2="10" y2="525" />
-            <line className="glow-segment" x1="10" y1="755" x2="10" y2="880" />
-            <line className="glow-segment" x1="10" y1="1110" x2="10" y2="1240" />
-            <line className="glow-segment" x1="10" y1="1400" x2="10" y2="1540" />
-            <line className="glow-segment" x1="10" y1="1700" x2="10" y2="1930" />
+            <line 
+              className="glow-segment" 
+              x1="10" y1="50" x2="10" y2="180"
+              style={{ 
+                // Fallback stroke in case gradient fails on mobile
+                stroke: '#7FB3D3'
+              }}
+            />
+            <line 
+              className="glow-segment" 
+              x1="10" y1="410" x2="10" y2="525"
+              style={{ stroke: '#7FB3D3' }}
+            />
+            <line 
+              className="glow-segment" 
+              x1="10" y1="755" x2="10" y2="880"
+              style={{ stroke: '#7FB3D3' }}
+            />
+            <line 
+              className="glow-segment" 
+              x1="10" y1="1110" x2="10" y2="1240"
+              style={{ stroke: '#7FB3D3' }}
+            />
+            <line 
+              className="glow-segment" 
+              x1="10" y1="1400" x2="10" y2="1540"
+              style={{ stroke: '#7FB3D3' }}
+            />
+            <line 
+              className="glow-segment" 
+              x1="10" y1="1700" x2="10" y2="1930"
+              style={{ stroke: '#7FB3D3' }}
+            />
           </g>
         </svg>
       </div>
