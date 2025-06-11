@@ -54,10 +54,9 @@ const Vision = () => {
 
   return (
     <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent  w-full">
-      <h1 className="text-[42px] text-white font-semibold text-center">
+      <h1 className="xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px] text-white font-semibold text-center">
         Our Vision
       </h1>
-
 
       <div className='grid md:grid-cols-2 grid-cols-1 gap-4 md:px-15 px-5'>
         {contents.map((content, index) => (

@@ -41,7 +41,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
   );
 }
 
-export default function StaticModel({ modelPath = '/ball.glb' }) {
+export default function StaticModel({ modelPath = '/ballasset.glb' }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
         <ambientLight intensity={4.5} />
         <directionalLight position={[20, 10, 5]} intensity={1} castShadow />
         <directionalLight position={[-21, 10.6, 21.82]} intensity={1} castShadow />
-        <directionalLight position={[10, 20.6, 56.82]} intensity={1} castShadow />
+        <directionalLight position={[10, 1.6, 2.82]} intensity={1} castShadow />
         <directionalLight position={[90, 20.6, 56.82]} intensity={1} castShadow />
 
         {/* Orbit Controls - completely disabling touch interactions */}

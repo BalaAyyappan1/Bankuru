@@ -431,7 +431,7 @@ const Journey = () => {
       {/* Q3 2025 */}
       <div 
         ref={q3Ref}
-        className="absolute top-[84%] left-[16.5%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4"
+        className="absolute top-[84.2%] left-[16.5%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4"
       >
         <div className="flex flex-col md:flex-row items-center gap-4 xl:gap-8 xl:max-w-3xl lg:max-w-xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-center md:text-right md:w-1/4 flex-shrink-0">

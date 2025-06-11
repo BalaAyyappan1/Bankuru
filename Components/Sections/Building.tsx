@@ -7,7 +7,7 @@ const Building = () => {
     <div id='building-section' className="relative bg-transparent w-full px-4 py-10">
       {/* Header Section */}
       <div className="flex flex-col justify-center items-center space-y-2 text-center px-2">
-        <h1 className="text-3xl sm:text-4xl md:text-[42px] font-semibold text-[#FFFDFA]">
+        <h1 className="xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px] font-semibold text-[#FFFDFA]">
           What We're Building
         </h1>
         <p className="text-base sm:text-lg md:text-[20px] text-[#BEBCBA]">
@@ -62,7 +62,7 @@ const Building = () => {
                 Launching August 2025, this mobile app helps busy students and professionals simplify
                 meal prep with smart recipes, pantry tracking, and easy cooking guides—all in one tap
               </p>
-              <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[154px] h-[41px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33] text-white">
+              <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[161px] h-[41px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33] text-white">
                 Keep me update
               </button>
             </div>

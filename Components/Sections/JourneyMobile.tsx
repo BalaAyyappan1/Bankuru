@@ -122,7 +122,7 @@ const JourneyMobile = () => {
       id="journeyMobile-section"
       className="relative min-h-screen w-full overflow-hidden py-8 sm:py-12 md:py-16"
     >
-      <h1 className="text-2xl xs:text-3xl sm:text-[24px] md:text-[24px] text-[#FFFDFA] font-semibold text-center mb-8 sm:mb-12 md:mb-16 px-4">
+      <h1 className="text-[24px] text-[#FFFDFA] font-semibold text-center mb-8 sm:mb-12 md:mb-16 px-4">
         Our Journey
       </h1>
 
