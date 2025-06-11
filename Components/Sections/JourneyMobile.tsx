@@ -264,8 +264,8 @@ const JourneyMobile = () => {
           <div style={{ height: "105px" }}></div>
 
           {/* Q3 2025 - positioned at fourth segment */}
-          <div className="flex flex-col items-center text-center space-y-4 py-6 sm:py-8">
-            <div className="w-24 h-12 xs:w-28 xs:h-14 sm:w-32 sm:h-16 rounded-lg flex items-center justify-center mb-4">
+          <div className="flex flex-col items-center text-center space-y-2 py-4 sm:py-8">
+            <div className="w-24 h-12 xs:w-28 xs:h-14 sm:w-32 sm:h-16 rounded-lg flex items-center justify-center mb-2">
               <h1 className="text-[24px] text-[#FFFDFA]">Q3 2025</h1>
             </div>
 
@@ -281,8 +281,8 @@ const JourneyMobile = () => {
           <div style={{ height: "100px" }}></div>
 
           {/* Future - positioned at fifth segment */}
-          <div className="flex flex-col items-center text-center space-y-4 py-6 sm:py-8">
-            <div className="w-24 h-12 xs:w-28 xs:h-14 sm:w-32 sm:h-16 rounded-lg flex items-center justify-center mb-4">
+          <div className="flex flex-col items-center text-center space-y-2 mt-3 py-6 sm:py-8 mt-5">
+            <div className="w-24 h-12 xs:w-28 xs:h-14 sm:w-32 sm:h-16 rounded-lg flex items-center justify-center mb-2">
               <h1 className="text-[24px] text-[#FFFDFA]">2026</h1>
             </div>
 

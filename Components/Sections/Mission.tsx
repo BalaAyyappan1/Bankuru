@@ -99,7 +99,7 @@ const Mission: React.FC = () => {
     if (isVideoLoaded) {
       videoScrollTriggerRef.current = ScrollTrigger.create({
         trigger: containerRef.current,
-        start: "top bottom",
+        start: "top 10%",
         end: "bottom top",
         scrub: 0.5,
         onUpdate: (self) => {
@@ -125,13 +125,17 @@ const Mission: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current || typeof window === 'undefined') return;
 
-    // Mobile-optimized ScrollTrigger settings for cards animation
+    // Updated ScrollTrigger settings - shorter range so animation completes faster
     const scrollTriggerConfig = {
       trigger: containerRef.current,
       start: isMobile ? "top 90%" : "center 80%",
-      end: isMobile ? "bottom 10%" : "bottom 20%",
-      scrub: isMobile ? 1 : 0.5,
+      // Reduced end point so animation completes in less scroll distance
+      end: isMobile ? "center 30%" : "center 40%", 
+      scrub: isMobile ? 0.8 : 0.3, // Faster scrub for quicker completion
       refreshPriority: isMobile ? -2 : -1,
+      // Add pin settings to hold the section while animating
+      pin: false,
+      anticipatePin: 1,
     };
 
     tlRef.current = gsap.timeline({
@@ -151,20 +155,27 @@ const Mission: React.FC = () => {
       force3D: true
     });
 
-    // Mobile-optimized animation parameters
+    // Updated animation - cards stack more quickly with tighter timing
     cardElements.forEach((card, index) => {
       if (!card) return;
 
-      const startTime = index * (isMobile ? 0.15 : 0.1);
+      // Tighter timing so all cards animate within the scroll range
+      const startTime = index * (isMobile ? 0.1 : 0.08);
       const yTarget = index === 0 ? 0 : -(index * (isMobile ? 80 : 120));
 
       tlRef.current!.to(card, {
         y: yTarget,
         zIndex: cards.length + index,
-        duration: isMobile ? 0.8 : 0.6,
+        duration: isMobile ? 0.6 : 0.4, // Shorter duration for quicker completion
         ease: "power2.out",
         force3D: true
       }, startTime);
+    });
+
+    // Add a callback when animation completes
+    tlRef.current.eventCallback("onComplete", () => {
+      console.log("Cards stacking animation completed");
+      // Optional: You can trigger any additional logic here when stacking is done
     });
 
     return () => {
@@ -300,7 +311,7 @@ const Mission: React.FC = () => {
             flex flex-col gap-4
             ${isMobile 
               ? 'w-full h-auto min-h-[200px]' 
-              : 'ml-6 h-[150px] max-w-[550px]'
+              : 'ml-6 -mt-25 h-[150px] max-w-[550px]'
             }
           `}
           style={{

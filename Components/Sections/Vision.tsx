@@ -61,12 +61,14 @@ const Vision = () => {
 
       <div className='grid md:grid-cols-2 grid-cols-1 gap-4 md:px-15 px-5'>
         {contents.map((content, index) => (
+          
           <motion.div
             key={index}
             className="relative flex flex-col items-center justify-center bg-[linear-gradient(220.79deg,_rgba(255,255,255,0.1)_0%,_rgba(45,52,103,0.2)_100%)] rounded-[20px] xl:h-[252px] lg:h-[200px] md:h-[150px] sm:h-[150px] h-[130px]  overflow-hidden group cursor-pointer"
             initial="rest"
             whileHover="hover"
             animate="rest"
+            
             variants={{
               rest: {
                 scale: 1,
@@ -83,16 +85,19 @@ const Vision = () => {
             }}
           >
             <div className={`absolute ${getTextPosition(index)} z-10`}>
-              <h2 className="xl:text-[24px] lg:text-[20px] md:text-[15px] sm:text-[12px] text-[12px] text-white font-bold xl::leading-8 lg:leading-6 ">{content.title}</h2>
+              <h2 className="xl:text-[24px] lg:text-[20px] md:text-[15px] sm:text-[12px] text-[12px] text-white font-bold xl:leading-8 lg:leading-6 ">{content.title}</h2>
               <p className="xl:text-[16px] lg:text-[14px] md:text-[12px] sm:text-[10px] text-[12px] text-[#BEBCBA] xl:leading-5 lg:leading-4 md:leading-3.5 sm:leading-3.5 leading-3 mt-1">{content.description}</p>
             </div>
 
             <motion.div
               className={`absolute ${getImagePosition(index)}`}
+              style={{
+                animation: index === 1 || index === 2 ? 'rotate 15s linear infinite' : 'none',
+              }}
               variants={{
                 rest: {
                   scale: 1,
-                  rotate: 0,
+                  rotate: 1,
                   y: 0
                 },
                 hover: {
@@ -109,7 +114,24 @@ const Vision = () => {
                 damping: 20
               }}
             >
-              <Image src={content.image} alt={content.title} />
+        <div>
+  <Image src={content.image} alt={content.title} style={{ 
+    width: '100%',
+    height: 'auto',
+    transformOrigin: 'center center'
+  }} />
+</div>
+
+<style jsx>{`
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`}</style>
             </motion.div>
           </motion.div>
         ))}
