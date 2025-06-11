@@ -80,6 +80,10 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
           enableRotate={false}
           autoRotate={true}
           autoRotateSpeed={1.5}
+          touches={{
+            ONE: undefined,  // Disable one-finger touch
+            TWO: undefined,  // Disable two-finger touch (pinch/rotate)
+          }}
         />
 
         {/* model */}
