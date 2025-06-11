@@ -88,3 +88,8 @@ html {
 }
 
 
+canvas {
+  touch-action: auto !important;
+  pointer-events: none !important;
+}
+

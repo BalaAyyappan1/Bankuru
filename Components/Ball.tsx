@@ -60,11 +60,16 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
       style={{
         height: '100vh',
         width: '100%',
+        
         pointerEvents: 'none', // ensures canvas doesn't block scrolling
-        touchAction: 'none'     // ensures touch gestures pass through
+        touchAction: 'auto'    // ensures touch gestures pass through
       }}
     >
       <Canvas
+      style={{
+        pointerEvents: 'none',
+        touchAction: 'auto'
+      }}
         shadows
         gl={{ antialias: true }}
         camera={{ position: [0, 0, 5], fov: 50 }}
@@ -83,10 +88,7 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
           enableRotate={false}
           autoRotate={true}
           autoRotateSpeed={1.5}
-          touches={{
-            ONE: undefined,
-            TWO: undefined
-          }}
+         
         />
 
         <Model modelPath={modelPath} isMobile={isMobile} />
