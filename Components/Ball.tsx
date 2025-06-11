@@ -13,8 +13,17 @@ interface ModelProps {
 function Model({ modelPath, isMobile }: ModelProps) {
   const { scene } = useGLTF(modelPath);
   const modelRef = useRef<THREE.Group>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
-  // Center the model by computing its bounding box
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvasElement = canvasRef.current.querySelector('canvas');
+      if (canvasElement) {
+        canvasElement.style.touchAction = 'none';
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (modelRef.current) {
       const box = new THREE.Box3().setFromObject(modelRef.current);
@@ -39,54 +48,47 @@ export default function StaticModel({ modelPath = '/ball.glb' }) {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   return (
-    <div style={{ height: "100vh", width: "100%", pointerEvents: "none" }}>
+    <div
+      style={{
+        height: '100vh',
+        width: '100%',
+        pointerEvents: 'none', // ensures canvas doesn't block scrolling
+        touchAction: 'none'     // ensures touch gestures pass through
+      }}
+    >
       <Canvas
         shadows
         gl={{ antialias: true }}
         camera={{ position: [0, 0, 5], fov: 50 }}
       >
-        {/* Lighting */}
+        {/* Lights */}
         <ambientLight intensity={4.5} />
         <directionalLight position={[20, 10, 5]} intensity={1} castShadow />
-        <directionalLight
-          position={[-21, 10.6, 21.82]}
-          intensity={1}
-          castShadow
-        />
-        <directionalLight
-          position={[10, 20.6, 56.82]}
-          intensity={1}
-          castShadow
-        />
-        <directionalLight
-          position={[90, 20.6, 56.82]}
-          intensity={1}
-          castShadow
-        />
+        <directionalLight position={[-21, 10.6, 21.82]} intensity={1} castShadow />
+        <directionalLight position={[10, 20.6, 56.82]} intensity={1} castShadow />
+        <directionalLight position={[90, 20.6, 56.82]} intensity={1} castShadow />
 
+        {/* Orbit Controls - completely disabling touch interactions */}
         <OrbitControls
           enableZoom={false}
           enablePan={false}
-          minDistance={3}
-          maxDistance={10}
           enableRotate={false}
           autoRotate={true}
           autoRotateSpeed={1.5}
           touches={{
-            ONE: undefined,  // Disable one-finger touch
-            TWO: undefined,  // Disable two-finger touch (pinch/rotate)
+            ONE: undefined,
+            TWO: undefined
           }}
         />
 
-        {/* model */}
         <Model modelPath={modelPath} isMobile={isMobile} />
       </Canvas>
     </div>
