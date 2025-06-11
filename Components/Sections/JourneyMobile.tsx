@@ -5,19 +5,19 @@ import { Begining, One, Way } from '../ReuseableComponents/Icons';
 
 const JourneyMobile = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        });
       },
-      {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-      }
+      { threshold: 0.1 }
     );
 
     if (containerRef.current) {
@@ -30,6 +30,24 @@ const JourneyMobile = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (isVisible && pathRef.current) {
+      // Calculate the total length of the path
+      const path = pathRef.current;
+      const length = path.getTotalLength();
+      
+      // Set up the initial state
+      path.style.strokeDasharray = `${length}`;
+      path.style.strokeDashoffset = `${length}`;
+      
+      // Trigger the animation
+      setTimeout(() => {
+        path.style.transition = 'stroke-dashoffset 2s ease-in-out';
+        path.style.strokeDashoffset = '0';
+      }, 100);
+    }
+  }, [isVisible]);
 
   return (
     <div
@@ -51,13 +69,13 @@ const JourneyMobile = () => {
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
-            <linearGradient id="glowGradientMobile" x1="0%" y1="0%" x2="0%" y2="100%">
+            <linearGradient id="glowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#7FB3D3" stopOpacity="1" />
               <stop offset="50%" stopColor="#56549B" stopOpacity="1" />
               <stop offset="100%" stopColor="#7FB3D3" stopOpacity="1" />
             </linearGradient>
             
-            <filter id="glowMobile" x="-50%" y="-50%" width="200%" height="200%">
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="2" result="coloredBlur" />
               <feMerge>
                 <feMergeNode in="coloredBlur" />
@@ -83,19 +101,19 @@ const JourneyMobile = () => {
           </g>
 
           {/* Animated glowing line */}
-          <g
-            stroke="#7FB3D3"
+          <path
+            ref={pathRef}
+            d="M10 50 L10 180 M10 410 L10 525 M10 755 L10 880 M10 1110 L10 1240 M10 1400 L10 1540 M10 1700 L10 1930"
+            stroke="url(#glowGradient)"
             strokeWidth="4"
             strokeLinecap="round"
-            filter="url(#glowMobile)"
-          >
-            <path
-              className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-              strokeDasharray="1000"
-              strokeDashoffset={isVisible ? "0" : "1000"}
-              d="M10 50 L10 180 M10 410 L10 525 M10 755 L10 880 M10 1110 L10 1240 M10 1400 L10 1540 M10 1700 L10 1930"
-            />
-          </g>
+            fill="none"
+            filter="url(#glow)"
+            style={{
+              opacity: isVisible ? 1 : 0,
+              willChange: 'stroke-dashoffset'
+            }}
+          />
         </svg>
       </div>
 
