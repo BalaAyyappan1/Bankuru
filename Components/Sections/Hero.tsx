@@ -12,7 +12,7 @@ const Hero = () => {
 
 
   return (
-    <div id='home-section' className="relative bg-transparent md:h-100dvh h-dvh  w-full">
+    <div id='home-section' className="relative bg-transparent md:h-100dvh h-dvh  w-full pointer-events-none">
       {/* Middle Contents */}
       <RotatingModel modelPath="/ballasset.glb" />
 
