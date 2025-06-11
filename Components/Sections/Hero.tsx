@@ -12,13 +12,13 @@ const Hero = () => {
 
 
   return (
-    <div id='home-section' className="relative bg-transparent md:h-100dvh h-dvh  w-full pointer-events-none">
+    <div id='home-section' className="relative bg-transparent md:h-100dvh h-dvh  w-full  pointer-events-none">
       {/* Middle Contents */}
       <RotatingModel modelPath="/ballasset.glb" />
 
       <div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                    w-full flex flex-col justify-center items-center text-center px-4 h-full "
+                    w-full flex flex-col justify-center items-center text-center px-4 h-full  pointer-events-none"
       >
         <h1 className="gradient-text xl:text-[70px] lg:text-[60px] md:text-[50px] sm:text-[30px] text-[20px] font-semibold xl:leading-[80px] lg:leading-[70px] md:leading-[70px]  xl:max-w-5xl lg:max-w-4xl md:max-w-3xl sm:max-w-md">
           We build products that solve real-world problems
