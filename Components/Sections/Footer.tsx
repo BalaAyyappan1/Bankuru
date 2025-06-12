@@ -412,10 +412,12 @@ const Footer = () => {
 
         </div>
       </div>
+
+
       {/* mobile */}
-      <div id='contact-section' className="relative w-full block md:hidden px-5 -mt-50">
-        <div className="bg-[#2D34674A] h-full flex flex-col space-y-10 justify-center items-start rounded-[28px] px-5">
-          <div className="flex flex-row gap-2 items-start justify-center  mt-8">
+      <div id='contact-section' className="relative w-full block md:hidden px-5 -mt-50 ">
+        <div className=" h-full flex flex-col space-y-10 justify-center items-start rounded-[28px] px-5 bg-[#2D34674A]">
+          <div className="flex flex-row gap-2 items-start justify-center  mt-8 ">
 
             <h1 className='font-bold text-[30px] leading-8 text-white'>
               Be Part of the Journey
@@ -429,9 +431,9 @@ const Footer = () => {
           </div>
 
 
-          <div className="w-full flex flex-col space-y-6 ">
+          <div className="w-full flex flex-col space-y-6 bg-transparent">
             {/* Name Field */}
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2 ">
               <label
                 htmlFor="name"
                 className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
@@ -586,13 +588,13 @@ const Footer = () => {
           </div>
 
 
-          <div className='flex flex-col items-center justify-center w-[237px] mx-auto space-y-5'>
+          <div className='flex flex-col items-center justify-center w-[237px] mx-auto space-y-5 bg-transparent'>
             <div className='flex flex-wrap items-center justify-center gap-4 text-center'>
               {mobileContents.map((item, index) => (
                 <Link
                   key={index}
                   href={item.link}
-                  className="text-sm text-[#807F7D] text-[10px]  hover:underline whitespace-nowrap"
+                  className="text-sm text-[#807F7D] text-[10px] cursor-pointer  hover:underline whitespace-nowrap"
                 >
                   {item.name}
                 </Link>

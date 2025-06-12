@@ -50,9 +50,15 @@ export default function Home() {
           <div className="md:mt-[120px] lg:mt-[120px] mb-[150px]">
             <Mission />
           </div>
+          <div className="block md:hidden">
+            <Footer />
+          </div>
         </BGCircleLayout>
       </BGLinesLayout>
+      <div className="hidden md:block">
       <Footer />
+
+        </div>
 
 
     </div>

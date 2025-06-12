@@ -1,53 +1,186 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Begining, One, Way } from '../ReuseableComponents/Icons';
+
+// Register GSAP plugin
+gsap.registerPlugin(ScrollTrigger);
 
 const JourneyMobile = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const pathRef = useRef<SVGSVGElement>(null);
+  const animationsRef = useRef<any[]>([]);
+  
+  // Refs for each milestone point
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const beginningRef = useRef<HTMLDivElement>(null);
+  const whatsAheadRef = useRef<HTMLDivElement>(null);
+  const milestoneOneRef = useRef<HTMLDivElement>(null);
+  const q3Ref = useRef<HTMLDivElement>(null);
+  const year2026Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
+    // Cleanup function
+    const cleanup = () => {
+      // Kill all animations created by this component
+      animationsRef.current.forEach(animation => {
+        if (animation && animation.kill) {
+          animation.kill();
+        }
+      });
+      animationsRef.current = [];
+
+      // Kill ScrollTrigger instances for this container
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.trigger === containerRef.current || 
+            trigger.trigger === titleRef.current ||
+            trigger.trigger === beginningRef.current ||
+            trigger.trigger === whatsAheadRef.current ||
+            trigger.trigger === milestoneOneRef.current ||
+            trigger.trigger === q3Ref.current ||
+            trigger.trigger === year2026Ref.current) {
+          trigger.kill();
+        }
+      });
+    };
+
+    const initializeAnimations = () => {
+      if (!pathRef.current || !containerRef.current) return;
+
+      // Initialize SVG path animations
+      const paths = pathRef.current.querySelectorAll('.animated-segment');
+      if (paths && paths.length > 0) {
+        // Reset all paths and store their lengths
+        paths.forEach((path, index) => {
+          const pathElement = path as SVGPathElement;
+          const length = pathElement.getTotalLength();
+          
+          // Set initial state - completely hidden
+          gsap.set(pathElement, {
+            strokeDasharray: length,
+            strokeDashoffset: length,
+            opacity: 1
+          });
+        });
+
+        // Create one master timeline for all path animations
+        const masterTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top center",
+            end: "bottom center",
+            scrub: 1,
+            invalidateOnRefresh: true,
           }
         });
-      },
-      { threshold: 0.1 }
-    );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+        // Add each path animation to the timeline sequentially
+        paths.forEach((path, index) => {
+          const pathElement = path as SVGPathElement;
+          const length = pathElement.getTotalLength();
 
-    return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+          // Add animation to timeline with smooth sequential flow
+          masterTimeline.to(pathElement, {
+            strokeDashoffset: 0,
+            duration: 1,
+            ease: "none",
+          }, index * 0.8); // Slight overlap for smooth flow
+        });
+
+        animationsRef.current.push(masterTimeline);
+      }
+
+      // Initialize text animations for milestone points
+      const milestoneElements = [
+        { ref: titleRef, delay: 0 },
+        { ref: beginningRef, delay: 0.1 },
+        { ref: whatsAheadRef, delay: 0.2 },
+        { ref: milestoneOneRef, delay: 0.3 },
+        { ref: q3Ref, delay: 0.4 },
+        { ref: year2026Ref, delay: 0.5 }
+      ];
+
+      milestoneElements.forEach(({ ref, delay }) => {
+        if (ref.current) {
+          // Set initial state - invisible and slightly moved down
+          gsap.set(ref.current, {
+            opacity: 0,
+            y: 50,
+            scale: 0.95
+          });
+
+          // Create scroll-triggered animation
+          const animation = gsap.to(ref.current, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: delay,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ref.current,
+              start: "top 85%",
+              end: "top 65%",
+              toggleActions: "play none none reverse",
+              once: false,
+              invalidateOnRefresh: true
+            }
+          });
+
+          animationsRef.current.push(animation);
+        }
+      });
+    };
+
+    // Initialize with proper timing
+    const timeouts: NodeJS.Timeout[] = [];
+    
+    // Wait for DOM to be ready
+    timeouts.push(setTimeout(initializeAnimations, 100));
+    
+    // Backup initialization
+    timeouts.push(setTimeout(() => {
+      initializeAnimations();
+      ScrollTrigger.refresh();
+    }, 300));
+
+    // Handle window load
+    const handleLoad = () => {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    };
+
+    // Handle resize
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+
+    // Handle visibility change
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 100);
       }
     };
-  }, []);
 
-  useEffect(() => {
-    if (isVisible && pathRef.current) {
-      // Calculate the total length of the path
-      const path = pathRef.current;
-      const length = path.getTotalLength();
-      
-      // Set up the initial state
-      path.style.strokeDasharray = `${length}`;
-      path.style.strokeDashoffset = `${length}`;
-      
-      // Trigger the animation
-      setTimeout(() => {
-        path.style.transition = 'stroke-dashoffset 2s ease-in-out';
-        path.style.strokeDashoffset = '0';
-      }, 100);
-    }
-  }, [isVisible]);
+    // Add event listeners
+    window.addEventListener('load', handleLoad);
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup function
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout));
+      window.removeEventListener('load', handleLoad);
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      cleanup();
+    };
+  }, []);
 
   return (
     <div
@@ -55,13 +188,17 @@ const JourneyMobile = () => {
       id="journeyMobile-section"
       className="relative min-h-screen w-full overflow-hidden py-8 sm:py-12 md:py-16"
     >
-      <h1 className="text-[24px] text-[#FFFDFA] font-semibold text-center mb-8 sm:mb-12 md:mb-16 px-4">
+      <h1 
+        ref={titleRef}
+        className="text-[24px] text-[#FFFDFA] font-semibold text-center mb-8 sm:mb-12 md:mb-16 px-4"
+      >
         Our Journey
       </h1>
 
       {/* SVG Line Container */}
       <div className="absolute left-1/2 transform -translate-x-1/2 top-20 sm:top-24 md:top-32 h-full z-0">
         <svg 
+          ref={pathRef}
           width="20" 
           height="2200" 
           className="overflow-visible"
@@ -76,7 +213,7 @@ const JourneyMobile = () => {
             </linearGradient>
             
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
               <feMerge>
                 <feMergeNode in="coloredBlur" />
                 <feMergeNode in="SourceGraphic" />
@@ -100,30 +237,74 @@ const JourneyMobile = () => {
             <line x1="10" y1="1700" x2="10" y2="1930" />
           </g>
 
-          {/* Animated glowing line */}
-          <path
-            ref={pathRef}
-            d="M10 50 L10 180 M10 410 L10 525 M10 755 L10 880 M10 1110 L10 1240 M10 1400 L10 1540 M10 1700 L10 1930"
-            stroke="url(#glowGradient)"
-            strokeWidth="4"
-            strokeLinecap="round"
-            fill="none"
-            filter="url(#glow)"
-            style={{
-              opacity: isVisible ? 1 : 0,
-              willChange: 'stroke-dashoffset'
-            }}
-          />
+          {/* Animated glowing line segments */}
+          <g>
+            <path
+              className="animated-segment"
+              d="M10,50 L10,180"
+              stroke="url(#glowGradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+              filter="url(#glow)"
+            />
+            <path
+              className="animated-segment"
+              d="M10,410 L10,525"
+              stroke="url(#glowGradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+              filter="url(#glow)"
+            />
+            <path
+              className="animated-segment"
+              d="M10,755 L10,880"
+              stroke="url(#glowGradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+              filter="url(#glow)"
+            />
+            <path
+              className="animated-segment"
+              d="M10,1110 L10,1240"
+              stroke="url(#glowGradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+              filter="url(#glow)"
+            />
+            <path
+              className="animated-segment"
+              d="M10,1400 L10,1540"
+              stroke="url(#glowGradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+              filter="url(#glow)"
+            />
+            <path
+              className="animated-segment"
+              d="M10,1700 L10,1930"
+              stroke="url(#glowGradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+              filter="url(#glow)"
+            />
+          </g>
         </svg>
       </div>
 
-      {/* Rest of your content remains the same */}
+      {/* Content with milestone points */}
       <div className="relative z-10 max-w-sm mx-auto px-4 sm:px-6">
         <div className="flex flex-col items-center">
           <div style={{ height: "110px" }}></div>
 
-          {/* The beginning - positioned at first segment */}
+          {/* The beginning */}
           <div
+            ref={beginningRef}
             className="flex flex-col items-center text-center space-y-4 py-6 sm:py-8 mt-8"
             style={{ marginTop: "45px" }}
           >
@@ -146,11 +327,13 @@ const JourneyMobile = () => {
             </p>
           </div>
 
-          {/* Spacer to align with second segment */}
           <div style={{ height: "90px" }}></div>
 
-          {/* Way In - positioned at second segment */}
-          <div className="flex flex-col items-center text-center space-y-4 py-6 sm:py-8">
+          {/* What's Ahead */}
+          <div 
+            ref={whatsAheadRef}
+            className="flex flex-col items-center text-center space-y-4 py-6 sm:py-8"
+          >
             <h1 className="text-[24px] text-[#FFFDFA]">What's Ahead?</h1>
             <div className="relative mb-4">
               <Image
@@ -169,11 +352,13 @@ const JourneyMobile = () => {
             </p>
           </div>
 
-          {/* Spacer to align with third segment */}
           <div style={{ height: "95px" }}></div>
 
-          {/* Milestone 01 - positioned at third segment */}
-          <div className="flex flex-col items-center text-center space-y-4 py-6 sm:py-8">
+          {/* Milestone One */}
+          <div 
+            ref={milestoneOneRef}
+            className="flex flex-col items-center text-center space-y-4 py-6 sm:py-8"
+          >
             <h1 className="text-[24px] text-[#FFFDFA]">Milestone One</h1>
 
             <div className="relative mb-4">
@@ -193,11 +378,13 @@ const JourneyMobile = () => {
             </p>
           </div>
 
-          {/* Spacer to align with fourth segment */}
           <div style={{ height: "105px" }}></div>
 
-          {/* Q3 2025 - positioned at fourth segment */}
-          <div className="flex flex-col items-center text-center space-y-2 py-4 sm:py-8">
+          {/* Q3 2025 */}
+          <div 
+            ref={q3Ref}
+            className="flex flex-col items-center text-center space-y-2 py-4 sm:py-8"
+          >
             <div className="w-24 h-12 xs:w-28 xs:h-14 sm:w-32 sm:h-16 rounded-lg flex items-center justify-center mb-2">
               <h1 className="text-[24px] text-[#FFFDFA]">Q3 2025</h1>
             </div>
@@ -210,11 +397,13 @@ const JourneyMobile = () => {
             </p>
           </div>
 
-          {/* Spacer to align with fifth segment */}
           <div style={{ height: "100px" }}></div>
 
-          {/* Future - positioned at fifth segment */}
-          <div className="flex flex-col items-center text-center space-y-2 mt-3 py-6 sm:py-8 mt-5">
+          {/* 2026 */}
+          <div 
+            ref={year2026Ref}
+            className="flex flex-col items-center text-center space-y-2 mt-3 py-6 sm:py-8 mt-5"
+          >
             <div className="w-24 h-12 xs:w-28 xs:h-14 sm:w-32 sm:h-16 rounded-lg flex items-center justify-center mb-2">
               <h1 className="text-[24px] text-[#FFFDFA]">2026</h1>
             </div>
