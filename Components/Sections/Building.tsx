@@ -16,9 +16,10 @@ const Building = () => {
         </p>
       </div>
 
+
+
       {/* Images with Content Overlay */}
       <div className="flex flex-col items-center justify-center space-y-10 max-w-6xl mx-auto mt-10 w-full">
-
         {/* Image Block 1 */}
         <div className="relative w-full xl:max-w-6xl lg:max-w-5xl md:max-w-4xl rounded-[20px] overflow-hidden">
           <Image

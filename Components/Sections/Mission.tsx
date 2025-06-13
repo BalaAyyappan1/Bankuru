@@ -67,7 +67,7 @@ const Mission: React.FC = () => {
       start: isMobile ? "top 90%" : "center 80%",
       // Reduced end point so animation completes in less scroll distance
       end: isMobile ? "center 30%" : "center 40%", 
-      scrub: isMobile ? 0.8 : 0.3, // Faster scrub for quicker completion
+      scrub: isMobile ? 1.5 : 1, // Faster scrub for quicker completion
       refreshPriority: isMobile ? -2 : -1,
       // Add pin settings to hold the section while animating
       pin: false,
