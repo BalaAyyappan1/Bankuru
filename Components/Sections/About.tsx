@@ -32,7 +32,7 @@ const About = () => {
               alt="new"
               width={1000}
               height={1000}
-              className='object-cover w-full h-[500px]'
+              className='object-cover w-full md:h-[500px] h-[230px]'
             />
         </div>
       </div>
