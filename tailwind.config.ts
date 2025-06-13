@@ -9,8 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
-        'mid': { min: '1200px', max: '1399px' },
-        '3xl': '1800px'
+        'ipad': {
+  raw: '(min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait)',
+}
       },
       height: {
         '100lvh': '100lvh',
@@ -24,6 +25,8 @@ const config: Config = {
         '100svh': '100svh',
         '100dvh': '100dvh',
       },
+     
+
     },
   },
   plugins: [],

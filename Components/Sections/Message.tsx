@@ -8,7 +8,7 @@ const Message = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   return (
-    <div className="relative bg-transparent w-full h-[467px] px-6 md:px-0">
+    <div className="relative bg-transparent w-full h-[34vh] px-6 md:px-16">
       <div className="flex flex-col md:-space-y-5 -space-y-2">
       <motion.h1
       ref={ref}

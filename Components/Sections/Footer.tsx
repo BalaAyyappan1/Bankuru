@@ -383,7 +383,7 @@ const Footer = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className='bg-transparent border-1 border-[#FFFFFF2E] w-full px-4 py-3 rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33]'
+                  className='bg-transparent border-1 border-[#FFFFFF2E] w-full px-4 py-3 rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white'
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>

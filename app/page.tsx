@@ -23,7 +23,7 @@ export default function Home() {
           <div className="md:mt-[120px] mt-[100px] xl:mb-[150px]">
             <About />
           </div>
-          <div className=" md:mb-[150px] mb-[100px]">
+          <div className=" md:mt-[150px] mb-[100px]">
             <Vision />
 
           </div>

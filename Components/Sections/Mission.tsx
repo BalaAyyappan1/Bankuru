@@ -138,7 +138,7 @@ const Mission: React.FC = () => {
         relative bg-transparent flex flex-col items-center justify-center mx-auto px-4
         ${isMobile 
           ? 'h-[70vh] mt-50 py-8 md:space-y-6 max-w-full' 
-          : 'h-screen space-y-15 max-w-6xl'
+          : 'h-[100vh] space-y-15 max-w-6xl'
         }
       `}
       style={{ 
