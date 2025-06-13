@@ -225,7 +225,7 @@ const Footer = () => {
 
 
               <div className='pb-5 md:pb-5 text-white'>
-                © designed &  developed by  <Link href={'https://www.theinternetcompany.one/'} target="_blank" rel="noopener noreferrer" className='hover:underline'>TIC GLOBAL</Link>.
+                © Designed &  Developed by  <Link href={'https://www.theinternetcompany.one/'} target="_blank" rel="noopener noreferrer" className='hover:underline'>TIC GLOBAL</Link>.
               </div>
             </div>
 
@@ -605,7 +605,7 @@ const Footer = () => {
 
 
             <p className='pb-5 md:pb-5 text-[12px] text-white'>
-              © designed &  developed by  <Link href={'https://www.theinternetcompany.one/'} target="_blank" rel="noopener noreferrer" className='hover:underline'>TIC GLOBAL</Link>.
+              © Designed &  Developed by  <Link href={'https://www.theinternetcompany.one/'} target="_blank" rel="noopener noreferrer" className='hover:underline'>TIC GLOBAL</Link>.
             </p>
           </div>
 
