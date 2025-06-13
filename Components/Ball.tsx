@@ -41,7 +41,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
   );
 }
 
-export default function StaticModel({ modelPath = '/ballasset.glb' }) {
+export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function StaticModel({ modelPath = '/ballasset.glb' }) {
       }}
         shadows
         gl={{ antialias: true }}
-        camera={{ position: [0, 0, 5], fov: 50 }}
+        camera={{ position: [0, 1, 5], fov: 50 }}
       >
         {/* Lights */}
         <ambientLight intensity={4.5} />
@@ -86,9 +86,9 @@ export default function StaticModel({ modelPath = '/ballasset.glb' }) {
           enableZoom={false}
           enablePan={false}
           enableRotate={false}
+          autoRotateSpeed={5}
           autoRotate={true}
-          autoRotateSpeed={1.5}
-         
+      
         />
 
         <Model modelPath={modelPath} isMobile={isMobile} />

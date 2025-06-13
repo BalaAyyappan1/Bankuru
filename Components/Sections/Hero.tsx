@@ -14,7 +14,7 @@ const Hero = () => {
   return (
     <div id='home-section' className="relative bg-transparent md:h-100dvh h-dvh  w-full  pointer-events-none">
       {/* Middle Contents */}
-      <RotatingModel modelPath="/ballasset.glb" />
+      <RotatingModel modelPath="/bakballfinal2025e.glb" />
 
       <div
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 

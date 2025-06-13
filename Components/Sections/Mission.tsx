@@ -17,12 +17,8 @@ interface Card {
 const Mission: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
-  const videoScrollTriggerRef = useRef<ScrollTrigger | null>(null);
-  const lastProgressRef = useRef<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [isVideoLoaded, setIsVideoLoaded] = useState<boolean>(false);
 
   const cards: Card[] = [
     {
@@ -62,66 +58,6 @@ const Mission: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Fixed video update function - now properly scrubs through video
-  const updateVideo = useCallback((progress: number) => {
-    if (!videoRef.current || !isVideoLoaded) return;
-    
-    const videoDuration = videoRef.current.duration;
-    if (!videoDuration || isNaN(videoDuration)) return;
-    
-    // Calculate target time based on scroll progress
-    const targetTime = Math.max(0, Math.min(progress * videoDuration, videoDuration - 0.1));
-    
-    // Only update if there's a meaningful difference
-    const currentTime = videoRef.current.currentTime;
-    const timeDiff = Math.abs(targetTime - currentTime);
-    const threshold = isMobile ? 0.1 : 0.05; // Minimum time difference to update
-    
-    if (timeDiff >= threshold) {
-      try {
-        videoRef.current.currentTime = targetTime;
-        lastProgressRef.current = progress;
-      } catch (error) {
-        console.warn('Error updating video time:', error);
-      }
-    }
-  }, [isMobile, isVideoLoaded]);
-
-  useEffect(() => {
-    if (!containerRef.current || typeof window === 'undefined') return;
-    
-    // Clean up existing video ScrollTrigger
-    if (videoScrollTriggerRef.current) {
-      videoScrollTriggerRef.current.kill();
-    }
-    
-    // Create a separate ScrollTrigger just for video scrubbing only when video is loaded
-    if (isVideoLoaded) {
-      videoScrollTriggerRef.current = ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: "top 10%",
-        end: "bottom top",
-        scrub: 0.5,
-        onUpdate: (self) => {
-          updateVideo(self.progress);
-        },
-        onEnter: () => {
-          console.log('Video scroll trigger entered');
-        },
-        onLeave: () => {
-          console.log('Video scroll trigger left');
-        }
-      });
-    }
-
-    return () => {
-      if (videoScrollTriggerRef.current) {
-        videoScrollTriggerRef.current.kill();
-        videoScrollTriggerRef.current = null;
-      }
-    };
-  }, [updateVideo, isVideoLoaded]);
-
   useEffect(() => {
     if (!containerRef.current || typeof window === 'undefined') return;
 
@@ -160,13 +96,13 @@ const Mission: React.FC = () => {
       if (!card) return;
 
       // Tighter timing so all cards animate within the scroll range
-      const startTime = index * (isMobile ? 0.1 : 0.08);
+      const startTime = index * (isMobile ? 0.25 : 0.2);
       const yTarget = index === 0 ? 0 : -(index * (isMobile ? 80 : 120));
 
       tlRef.current!.to(card, {
         y: yTarget,
         zIndex: cards.length + index,
-        duration: isMobile ? 0.6 : 0.4, // Shorter duration for quicker completion
+        duration: isMobile ? 1.2 : 1.0, // Shorter duration for quicker completion
         ease: "power2.out",
         force3D: true
       }, startTime);
@@ -183,60 +119,16 @@ const Mission: React.FC = () => {
         tlRef.current.kill();
         tlRef.current = null;
       }
-      // Note: videoScrollTriggerRef cleanup is handled in the separate useEffect
     };
   }, [cards.length, isMobile]);
 
-  // Cleanup all ScrollTriggers on unmount
+  // Cleanup ScrollTriggers on unmount
   useEffect(() => {
     return () => {
-      if (videoScrollTriggerRef.current) {
-        videoScrollTriggerRef.current.kill();
-      }
       if (tlRef.current) {
         tlRef.current.kill();
       }
     };
-  }, []);
-
-  // Enhanced video load handler
-  const handleVideoLoad = useCallback(() => {
-    if (videoRef.current) {
-      const video = videoRef.current;
-      
-      // Ensure video is ready for scrubbing
-      video.currentTime = 0;
-      video.muted = true;
-      video.preload = 'auto';
-      
-      // Test if video duration is available
-      if (video.duration && !isNaN(video.duration)) {
-        console.log('Video loaded successfully, duration:', video.duration);
-        setIsVideoLoaded(true);
-      } else {
-        // If duration not available, try again after a short delay
-        setTimeout(() => {
-          if (video.duration && !isNaN(video.duration)) {
-            console.log('Video duration loaded after delay:', video.duration);
-            setIsVideoLoaded(true);
-          }
-        }, 100);
-      }
-    }
-  }, []);
-
-  // Handle when video can play through
-  const handleVideoCanPlayThrough = useCallback(() => {
-    if (videoRef.current && !isVideoLoaded) {
-      console.log('Video can play through');
-      setIsVideoLoaded(true);
-    }
-  }, [isVideoLoaded]);
-
-  // Handle video error on mobile
-  const handleVideoError = useCallback(() => {
-    console.warn('Video failed to load');
-    setIsVideoLoaded(false);
   }, []);
 
   return (
@@ -271,7 +163,7 @@ const Mission: React.FC = () => {
           : 'flex-row justify-between'
         }
       `}>
-        {/* Video Container */}
+        {/* GIF Container */}
         <div className={`
           flex-shrink-0
           ${isMobile 
@@ -279,30 +171,25 @@ const Mission: React.FC = () => {
             : 'w-auto'
           }
         `}>
-          <video 
-            ref={videoRef}
+          <Image
+            src="/Mision/f.gif"
+            alt="Mission animation"
+            width={500}
+            height={500}
             className={`
               rounded-lg
               ${isMobile 
                 ? 'hidden' 
-                : 'h-[500px] w-[500px]'
+                : 'h-[500px] w-[500px] object-cover'
               }
             `}
-            muted
-            playsInline
-            preload="auto"
-            onLoadedData={handleVideoLoad}
-            onLoadedMetadata={handleVideoLoad}
-            onCanPlayThrough={handleVideoCanPlayThrough}
-            onError={handleVideoError}
             style={{
               willChange: 'auto',
               backfaceVisibility: 'hidden'
             }}
-          >
-            <source src="/final.webm" type="video/webm" />
-            Your browser does not support the video tag.
-          </video>
+            priority
+             // Add this to prevent Next.js from optimizing the GIF
+          />
         </div>
 
         {/* Cards Container */}
