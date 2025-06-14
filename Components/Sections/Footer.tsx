@@ -208,17 +208,17 @@ const Footer = () => {
         <div id='contact-section'  className='flex flex-col space-y-5 justify-center bg-[#0C0C0C] items-center w-full '>
           <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-[25px] md:h-[545px] h-auto mt-5 px-[23px]">
             {/* Left side */}
-            <div className="bg-[#2D34674A] h-full flex flex-col space-y-10 justify-center items-center rounded-[28px]">
+            <div className="bg-[#2D34674A] h-full flex flex-col space-y-5 justify-center items-center rounded-[28px]">
               <div className="flex flex-row gap-5 items-center justify-center p-4">
                 <Image
                   src={CompanyLogo}
                   alt="Company Logo"
-                  className="w-[72px] h-[72px] object-contain"
+                  className="w-[672px] h-[92px] object-contain"
                 />
-                <h1 className='font-bold text-[30px] leading-8 text-[#FFFDFA]'>
+                {/* <h1 className='font-bold text-[30px] leading-8 text-[#FFFDFA]'>
                   Bankuru Services <br />
                   Pvt. Ltd.
-                </h1>
+                </h1> */}
               </div>
 
               <div className='flex flex-col text-center text-[#807F7D]'>

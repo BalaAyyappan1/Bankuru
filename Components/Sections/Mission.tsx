@@ -64,22 +64,24 @@ const Mission: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, [checkMobile]);
 
-  // Desktop: Flawless card rotation animation
+  // Desktop: Perfect card rotation animation
   useEffect(() => {
     if (isMobile || !containerRef.current || typeof window === 'undefined' || !isInView) return;
 
     const cardElements = cardsRef.current.filter(Boolean);
     if (cardElements.length === 0) return;
 
-    // Desktop animation configuration
+    // Enhanced animation configuration
     const config = {
-      stackOffset: 12,
+      stackOffset: 15, // Increased for better depth
       baseY: 0,
-      scaleStep: 0.025,
-      opacityStep: 0.15,
-      animationDuration: 1.2,
-      pauseDuration: 1.0,
-      rotationRange: 2
+      scaleStep: 0.03, // More pronounced scaling
+      opacityStep: 0.2, // More pronounced opacity change
+      animationDuration: 1.5, // Slower for smoother transition
+      pauseDuration: 1.5, // Longer pause to read
+      rotationRange: 3, // Slightly more rotation
+      perspective: 1000, // Stronger perspective
+      transformOrigin: "50% 50%"
     };
 
     // Kill existing animation
@@ -87,26 +89,28 @@ const Mission: React.FC = () => {
       animationRef.current.kill();
     }
 
-    // Perfect initial stack setup with centering
+    // Perfect initial stack setup with perspective
     const setupInitialStack = () => {
       gsap.set(cardElements, {
         y: (index) => index * config.stackOffset,
         x: 0,
-        rotation: (index) => (index - 2) * 0.5,
+        rotation: (index) => (index - Math.floor(cards.length / 2)) * 0.75,
         zIndex: (index) => cards.length - index,
-        opacity: (index) => Math.max(0.4, 1 - (index * config.opacityStep)),
-        scale: (index) => Math.max(0.88, 1 - (index * config.scaleStep)),
-        transformOrigin: "50% 50%",
+        opacity: (index) => Math.max(0.3, 1 - (index * config.opacityStep)),
+        scale: (index) => Math.max(0.85, 1 - (index * config.scaleStep)),
+        transformOrigin: config.transformOrigin,
         willChange: 'transform, opacity',
         force3D: true,
-        backfaceVisibility: 'hidden'
+        backfaceVisibility: 'hidden',
+        perspective: config.perspective,
+        transformStyle: 'preserve-3d'
       });
     };
 
     setupInitialStack();
 
-    // Enhanced smooth rotation with perfect positioning
-    const createFlawlessRotation = () => {
+    // Enhanced smooth rotation with perfect timing
+    const createPerfectRotation = () => {
       const masterTimeline = gsap.timeline({ 
         repeat: -1,
         ease: "power2.inOut",
@@ -133,15 +137,15 @@ const Mission: React.FC = () => {
           },
           opacity: (cardIndex) => {
             const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return Math.max(0.4, 1 - (newPosition * config.opacityStep));
+            return Math.max(0.3, 1 - (newPosition * config.opacityStep));
           },
           scale: (cardIndex) => {
             const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return Math.max(0.88, 1 - (newPosition * config.scaleStep));
+            return Math.max(0.85, 1 - (newPosition * config.scaleStep));
           },
           rotation: (cardIndex) => {
             const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return (newPosition - 2) * 0.5;
+            return (newPosition - Math.floor(cards.length / 2)) * 0.75;
           },
           force3D: true,
           onStart: () => setIsAnimating(true),
@@ -158,7 +162,7 @@ const Mission: React.FC = () => {
 
     // Initialize with perfect timing
     const timer = setTimeout(() => {
-      animationRef.current = createFlawlessRotation();
+      animationRef.current = createPerfectRotation();
     }, 1500);
 
     // Cleanup
@@ -208,7 +212,7 @@ const Mission: React.FC = () => {
       if (!card) return;
 
       const startTime = index * 0.25;
-      const yTarget = index === 0 ? 0 : -(index * 80);
+      const yTarget = index === 0 ? 0 : -(index * 120);
 
       scrollTlRef.current!.to(card, {
         y: yTarget,
@@ -304,8 +308,6 @@ const Mission: React.FC = () => {
                 priority
                 unoptimized
               />
-
-              
             </div>
           )}
         </div>
@@ -361,12 +363,12 @@ const Mission: React.FC = () => {
                   style={{ 
                     willChange: 'transform, opacity',
                     backfaceVisibility: 'hidden',
-                    transform: 'translateZ(0)',
                     transformStyle: 'preserve-3d',
                     top: '50%',
                     left: '50%',
                     marginTop: '-90px',
-                    marginLeft: '-250px'
+                    marginLeft: '-250px',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
                   }}
                 >
                   <span className="relative z-10 text-[#FFFDFA] leading-relaxed">
