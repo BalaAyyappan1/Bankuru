@@ -1,15 +1,30 @@
-import React from 'react';
+"use client";
+import React, { useRef } from 'react';
 import { BioAlphaLogo, BuildingImage1, BuildingImage2, QuickCook } from '../ReuseableComponents/Icons';
 import Image from "next/image";
+import { motion, useInView } from 'framer-motion';
 
 const Building = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });  
   return (
     <div id='building-section' className="relative bg-transparent w-full px-4 py-10">
       {/* Header Section */}
       <div className="flex flex-col justify-center items-center space-y-2 text-center px-2">
-        <h1 className="xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px] font-semibold text-[#FFFDFA]">
+        {/* <h1 className="xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px] font-semibold  ">
           What We're Building
-        </h1>
+        </h1> */}
+
+        <motion.h1
+      ref={ref}
+      initial={{ opacity: 0, y: -50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center text-white inline-block"
+    >
+     What We're Building
+    </motion.h1>
+        
         <p className="text-base sm:text-lg md:text-[20px] text-[#BEBCBA]">
           We’re currently developing innovative digital products that combine <br className="hidden sm:inline" />
           real user needs with the power of modern AI

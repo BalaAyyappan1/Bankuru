@@ -1,9 +1,10 @@
 "use client";
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Group } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, useInView } from 'framer-motion';
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -17,8 +18,13 @@ interface Card {
 const Mission: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const animationRef = useRef<gsap.core.Timeline | null>(null);
+  const scrollTlRef = useRef<gsap.core.Timeline | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });  
 
   const cards: Card[] = [
     {
@@ -38,51 +44,157 @@ const Mission: React.FC = () => {
     }
   ];
 
-  // Detect mobile devices
-  useEffect(() => {
-    const checkMobile = () => {
-      const screenWidth = window.innerWidth;
-      const isSmallScreen = screenWidth < 768;
-      const isMediumScreen = screenWidth >= 768 && screenWidth < 1024;
-      
-      // Only treat as mobile if it's a small screen OR medium screen with touch
-      const isMobileDevice = isSmallScreen || 
-        (isMediumScreen && 'ontouchstart' in window && 
-         /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent));
-      
-      setIsMobile(isMobileDevice);
-    };
+  // Enhanced mobile detection
+  const checkMobile = useCallback(() => {
+    const screenWidth = window.innerWidth;
+    const isSmallScreen = screenWidth < 768;
+    const isMediumScreen = screenWidth >= 768 && screenWidth < 1024;
     
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Only treat as mobile if it's a small screen OR medium screen with touch
+    const isMobileDevice = isSmallScreen || 
+      (isMediumScreen && 'ontouchstart' in window && 
+       /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent));
+    
+    setIsMobile(isMobileDevice);
   }, []);
 
   useEffect(() => {
-    if (!containerRef.current || typeof window === 'undefined') return;
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [checkMobile]);
 
-    // Updated ScrollTrigger settings - shorter range so animation completes faster
+  // Desktop: Flawless card rotation animation
+  useEffect(() => {
+    if (isMobile || !containerRef.current || typeof window === 'undefined' || !isInView) return;
+
+    const cardElements = cardsRef.current.filter(Boolean);
+    if (cardElements.length === 0) return;
+
+    // Desktop animation configuration
+    const config = {
+      stackOffset: 12,
+      baseY: 0,
+      scaleStep: 0.025,
+      opacityStep: 0.15,
+      animationDuration: 1.2,
+      pauseDuration: 1.0,
+      rotationRange: 2
+    };
+
+    // Kill existing animation
+    if (animationRef.current) {
+      animationRef.current.kill();
+    }
+
+    // Perfect initial stack setup with centering
+    const setupInitialStack = () => {
+      gsap.set(cardElements, {
+        y: (index) => index * config.stackOffset,
+        x: 0,
+        rotation: (index) => (index - 2) * 0.5,
+        zIndex: (index) => cards.length - index,
+        opacity: (index) => Math.max(0.4, 1 - (index * config.opacityStep)),
+        scale: (index) => Math.max(0.88, 1 - (index * config.scaleStep)),
+        transformOrigin: "50% 50%",
+        willChange: 'transform, opacity',
+        force3D: true,
+        backfaceVisibility: 'hidden'
+      });
+    };
+
+    setupInitialStack();
+
+    // Enhanced smooth rotation with perfect positioning
+    const createFlawlessRotation = () => {
+      const masterTimeline = gsap.timeline({ 
+        repeat: -1,
+        ease: "power2.inOut",
+        onRepeat: () => {
+          setCurrentIndex((prev) => (prev + 1) % cards.length);
+        }
+      });
+
+      // Create smooth rotation cycles
+      for (let cycle = 0; cycle < cards.length; cycle++) {
+        const cycleTimeline = gsap.timeline();
+
+        // Animate each card to its new position with perfect timing
+        cycleTimeline.to(cardElements, {
+          duration: config.animationDuration,
+          ease: "power2.inOut",
+          y: (cardIndex) => {
+            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
+            return newPosition * config.stackOffset;
+          },
+          zIndex: (cardIndex) => {
+            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
+            return cards.length - newPosition;
+          },
+          opacity: (cardIndex) => {
+            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
+            return Math.max(0.4, 1 - (newPosition * config.opacityStep));
+          },
+          scale: (cardIndex) => {
+            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
+            return Math.max(0.88, 1 - (newPosition * config.scaleStep));
+          },
+          rotation: (cardIndex) => {
+            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
+            return (newPosition - 2) * 0.5;
+          },
+          force3D: true,
+          onStart: () => setIsAnimating(true),
+          onComplete: () => setIsAnimating(false)
+        });
+
+        // Perfect pause timing
+        cycleTimeline.to({}, { duration: config.pauseDuration });
+        masterTimeline.add(cycleTimeline);
+      }
+
+      return masterTimeline;
+    };
+
+    // Initialize with perfect timing
+    const timer = setTimeout(() => {
+      animationRef.current = createFlawlessRotation();
+    }, 1500);
+
+    // Cleanup
+    return () => {
+      clearTimeout(timer);
+      if (animationRef.current) {
+        animationRef.current.kill();
+        animationRef.current = null;
+      }
+    };
+  }, [cards.length, isMobile, isInView]);
+
+  // Mobile: Scroll-triggered stack animation
+  useEffect(() => {
+    if (!isMobile || !containerRef.current || typeof window === 'undefined') return;
+
+    // Updated ScrollTrigger settings
     const scrollTriggerConfig = {
       trigger: containerRef.current,
-      start: isMobile ? "top 90%" : "center 80%",
-      // Reduced end point so animation completes in less scroll distance
-      end: isMobile ? "center 30%" : "center 40%", 
-      scrub: isMobile ? 1.5 : 1, // Faster scrub for quicker completion
-      refreshPriority: isMobile ? -2 : -1,
-      // Add pin settings to hold the section while animating
+      start: "top 90%",
+      end: "center 30%", 
+      scrub: 1.5,
+      refreshPriority: -2,
       pin: false,
       anticipatePin: 1,
     };
 
-    tlRef.current = gsap.timeline({
+    scrollTlRef.current = gsap.timeline({
       scrollTrigger: scrollTriggerConfig
     });
 
     const cardElements = cardsRef.current.filter(Boolean);
     
     // Mobile-optimized initial positioning
-    const initialOffset = isMobile ? 100 : 200;
-    const staggerDistance = isMobile ? 15 : 30;
+    const initialOffset = 100;
+    const staggerDistance = 15;
     
     gsap.set(cardElements, {
       y: (index) => initialOffset + (index * staggerDistance),
@@ -95,38 +207,36 @@ const Mission: React.FC = () => {
     cardElements.forEach((card, index) => {
       if (!card) return;
 
-      // Tighter timing so all cards animate within the scroll range
-      const startTime = index * (isMobile ? 0.25 : 0.2);
-      const yTarget = index === 0 ? 0 : -(index * (isMobile ? 80 : 120));
+      const startTime = index * 0.25;
+      const yTarget = index === 0 ? 0 : -(index * 80);
 
-      tlRef.current!.to(card, {
+      scrollTlRef.current!.to(card, {
         y: yTarget,
         zIndex: cards.length + index,
-        duration: isMobile ? 1.2 : 1.0, // Shorter duration for quicker completion
+        duration: 1.2,
         ease: "power2.out",
         force3D: true
       }, startTime);
     });
 
-    // Add a callback when animation completes
-    tlRef.current.eventCallback("onComplete", () => {
-      console.log("Cards stacking animation completed");
-      // Optional: You can trigger any additional logic here when stacking is done
-    });
-
     return () => {
-      if (tlRef.current) {
-        tlRef.current.kill();
-        tlRef.current = null;
+      if (scrollTlRef.current) {
+        scrollTlRef.current.kill();
+        scrollTlRef.current = null;
       }
     };
   }, [cards.length, isMobile]);
 
-  // Cleanup ScrollTriggers on unmount
+  // Enhanced cleanup
   useEffect(() => {
     return () => {
-      if (tlRef.current) {
-        tlRef.current.kill();
+      if (animationRef.current) {
+        animationRef.current.kill();
+        animationRef.current = null;
+      }
+      if (scrollTlRef.current) {
+        scrollTlRef.current.kill();
+        scrollTlRef.current = null;
       }
     };
   }, []);
@@ -137,101 +247,135 @@ const Mission: React.FC = () => {
       className={`
         relative bg-transparent flex flex-col items-center justify-center mx-auto px-4
         ${isMobile 
-          ? 'h-[70vh] mt-50 py-8 md:space-y-6 max-w-full' 
-          : 'h-[100vh] space-y-15 max-w-6xl'
+          ? 'h-[70vh] md:mt-50 mt-80 py-8 md:space-y-6 max-w-full' 
+          : 'min-h-screen w-full space-y-15 max-w-7xl'
         }
       `}
       style={{ 
-        willChange: 'transform',
+        willChange: isMobile ? 'transform' : 'auto',
         backfaceVisibility: 'hidden'
       }}
     >
-      <h1 className={`
-        font-semibold text-center
-        ${isMobile 
-          ? 'text-2xl sm:text-3xl leading-tight text-[#FFFDFA]' 
-          : 'text-[42px] text-[#FFFDFA]'
-        }
-      `}>
+      {/* Title */}
+      <motion.h1
+        ref={ref}
+        initial={{ opacity: 0, y: isMobile ? -50 : -30 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className={`
+          font-semibold text-center text-[#FFFDFA]
+          ${isMobile 
+            ? 'text-2xl sm:text-3xl leading-tight' 
+            : 'text-4xl lg:text-5xl mb-12'
+          }
+        `}
+      >
         Join the Mission
-      </h1>
+      </motion.h1>
       
+      {/* Main content */}
       <div className={`
         flex w-full items-center
         ${isMobile 
           ? 'flex-col space-y-6' 
-          : 'flex-row justify-between'
+          : 'flex-row justify-center space-x-16 lg:space-x-20'
         }
       `}>
         {/* GIF Container */}
         <div className={`
-          flex-shrink-0
+          flex-shrink-0 flex justify-center items-center
           ${isMobile 
-            ? 'w-full max-w-sm' 
-            : 'w-auto'
+            ? 'w-full max-w-sm order-2' 
+            : 'w-1/2 max-w-lg'
           }
         `}>
-          <Image
-            src="/Mision/f.gif"
-            alt="Mission animation"
-            width={500}
-            height={500}
-            className={`
-              rounded-lg
-              ${isMobile 
-                ? 'hidden' 
-                : 'h-[500px] w-[500px] object-cover'
-              }
-            `}
-            style={{
-              willChange: 'auto',
-              backfaceVisibility: 'hidden'
-            }}
-            priority
-             // Add this to prevent Next.js from optimizing the GIF
-          />
+          {!isMobile && (
+            <div className="relative">
+              <Image
+                src="/Mision/f.gif"
+                alt="Mission animation"
+                width={500}
+                height={500}
+                className="w-[450px] h-[450px] lg:w-[500px] lg:h-[500px] rounded-2xl shadow-2xl object-cover"
+                style={{
+                  willChange: 'auto',
+                  backfaceVisibility: 'hidden'
+                }}
+                priority
+                unoptimized
+              />
+
+              
+            </div>
+          )}
         </div>
 
         {/* Cards Container */}
-        <div 
-          className={`
-            flex flex-col gap-4
-            ${isMobile 
-              ? 'w-full h-auto min-h-[200px]' 
-              : 'ml-6 -mt-25 h-[150px] max-w-[550px]'
-            }
-          `}
-          style={{
-            willChange: 'transform',
-            backfaceVisibility: 'hidden'
-          }}
-        >
-          {cards.map((card, index) => (
-            <div
-              key={index}
-              ref={(el) => { cardsRef.current[index] = el; }}
-              className={`
-                MissionCard${(index % 2) + 1} 
-                flex justify-center items-center text-center 
-                font-medium rounded-[20px] backdrop-blur-[20px] p-4
-                ${isMobile 
-                  ? 'text-sm sm:text-base leading-tight w-full min-h-[120px] max-w-md mx-auto' 
-                  : 'text-[20px] leading-[100%] w-[550px] min-h-[150px]'
-                }
-              `}
-              style={{ 
-                position: 'relative',
-                willChange: 'transform',
+        <div className={`
+          ${isMobile 
+            ? 'flex flex-col gap-4 w-full h-auto min-h-[200px] order-1' 
+            : 'flex flex-col items-center justify-center relative w-1/2 max-w-[600px] h-[450px]'
+          }
+        `}>
+          {isMobile ? (
+            // Mobile: Individual cards in flex layout
+            <>
+              {cards.map((card, index) => (
+                <div
+                  key={index}
+                  ref={(el) => { cardsRef.current[index] = el; }}
+                  className="MissionCard${(index % 2) + 1} flex justify-center items-center text-center font-medium rounded-[20px] backdrop-blur-[20px] p-4 text-sm sm:text-base leading-tight w-full min-h-[120px] max-w-md mx-auto"
+                  style={{ 
+                    position: 'relative',
+                    willChange: 'transform',
+                    backfaceVisibility: 'hidden',
+                    transform: 'translateZ(0)',
+                    wordBreak: 'break-word',
+                    hyphens: 'auto'
+                  }}
+                >
+                  <span className="text-[#FFFDFA]">{card.title}</span>
+                </div>
+              ))}
+            </>
+          ) : (
+            // Desktop: Absolutely positioned cards for rotation
+            <div 
+              className="relative flex items-center justify-center w-full h-full"
+              style={{
+                willChange: 'auto',
                 backfaceVisibility: 'hidden',
-                transform: 'translateZ(0)',
-                // Ensure text remains readable on mobile
-                wordBreak: 'break-word',
-                hyphens: 'auto'
+                perspective: '1000px'
               }}
             >
-              {card.title}
+              {cards.map((card, index) => (
+                <div
+                  key={index}
+                  ref={(el) => { cardsRef.current[index] = el; }}
+                  className={`
+                    MissionCard${(index % 2) + 1} 
+                    absolute flex justify-center items-center text-center 
+                    font-medium rounded-2xl backdrop-blur-sm border border-white/10
+                    p-6 text-lg lg:text-xl leading-relaxed w-[500px] h-[180px]
+                  `}
+                  style={{ 
+                    willChange: 'transform, opacity',
+                    backfaceVisibility: 'hidden',
+                    transform: 'translateZ(0)',
+                    transformStyle: 'preserve-3d',
+                    top: '50%',
+                    left: '50%',
+                    marginTop: '-90px',
+                    marginLeft: '-250px'
+                  }}
+                >
+                  <span className="relative z-10 text-[#FFFDFA] leading-relaxed">
+                    {card.title}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

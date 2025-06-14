@@ -178,7 +178,7 @@ const Footer = () => {
 
   return (
     <>
-      <div id='contact-section' className="relative w-full hidden md:block">
+      <div className="relative w-full hidden md:block">
 
         {/* video */}
         <div className="relative w-full h-[200px] overflow-hidden">
@@ -190,18 +190,22 @@ const Footer = () => {
             playsInline
             preload="auto"
           >
-
             <source src="https://res.cloudinary.com/dek8wxl7o/video/upload/v1749279396/elements_tlntt0.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
 
-          <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold">
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
+
+          {/* Centered text */}
+          <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold z-20">
             Be part of the journey
           </div>
         </div>
 
+
         {/* Footer */}
-        <div className='flex flex-col space-y-5 justify-center bg-[#0C0C0C] items-center w-full '>
+        <div id='contact-section'  className='flex flex-col space-y-5 justify-center bg-[#0C0C0C] items-center w-full '>
           <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-[25px] md:h-[545px] h-auto mt-5 px-[23px]">
             {/* Left side */}
             <div className="bg-[#2D34674A] h-full flex flex-col space-y-10 justify-center items-center rounded-[28px]">
@@ -234,7 +238,7 @@ const Footer = () => {
 
             {/* Right side */}
             <div className="bg-[#121212] w-full flex flex-col items-center justify-center rounded-[28px] px-6 py-8">
-              <div className="w-full flex flex-col space-y-6">
+              <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-6" suppressHydrationWarning>
                 {/* Name Field */}
                 <div className="flex flex-col space-y-2">
                   <label
@@ -255,6 +259,7 @@ const Footer = () => {
                     disabled={isSubmitting}
                     aria-invalid={errors.name ? 'true' : 'false'}
                     aria-describedby={errors.name ? 'name-error' : undefined}
+                    suppressHydrationWarning
                   />
                   {errors.name && (
                     <span id="name-error" className="text-red-400 text-xs mt-1">
@@ -280,10 +285,10 @@ const Footer = () => {
                     onFocus={handleFocus('email')}
                     onBlur={handleBlur}
                     className={`w-full ${getInputClassName('email')}`}
-
                     disabled={isSubmitting}
                     aria-invalid={errors.email ? 'true' : 'false'}
                     aria-describedby={errors.email ? 'email-error' : undefined}
+                    suppressHydrationWarning
                   />
                   {errors.email && (
                     <span id="email-error" className="text-red-400 text-xs mt-1">
@@ -310,10 +315,10 @@ const Footer = () => {
                       onFocus={handleFocus('contact')}
                       onBlur={handleBlur}
                       className={getInputClassName('contact')}
-
                       disabled={isSubmitting}
                       aria-invalid={errors.contact ? 'true' : 'false'}
                       aria-describedby={errors.contact ? 'contact-error' : undefined}
+                      suppressHydrationWarning
                     />
                     {errors.contact && (
                       <span id="contact-error" className="text-red-400 text-xs mt-1">
@@ -337,10 +342,10 @@ const Footer = () => {
                       onFocus={handleFocus('website')}
                       onBlur={handleBlur}
                       className={getInputClassName('website')}
-
                       disabled={isSubmitting}
                       aria-invalid={errors.website ? 'true' : 'false'}
                       aria-describedby={errors.website ? 'website-error' : undefined}
+                      suppressHydrationWarning
                     />
                     {errors.website && (
                       <span id="website-error" className="text-red-400 text-xs mt-1">
@@ -367,10 +372,10 @@ const Footer = () => {
                     onBlur={handleBlur}
                     className={getInputClassName('message')}
                     rows={3}
-
                     disabled={isSubmitting}
                     aria-invalid={errors.message ? 'true' : 'false'}
                     aria-describedby={errors.message ? 'message-error' : undefined}
+                    suppressHydrationWarning
                   />
                   {errors.message && (
                     <span id="message-error" className="text-red-400 text-xs mt-1">
@@ -384,10 +389,11 @@ const Footer = () => {
                   type="submit"
                   disabled={isSubmitting}
                   className='bg-transparent border-1 border-[#FFFFFF2E] w-full px-4 py-3 rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white'
+                  suppressHydrationWarning
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>
-              </div>
+              </form>
             </div>
 
           </div>
@@ -431,17 +437,17 @@ const Footer = () => {
           </div>
 
 
-          <div className="w-full flex flex-col space-y-6 bg-transparent">
+          <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-6 bg-transparent" suppressHydrationWarning>
             {/* Name Field */}
             <div className="flex flex-col space-y-2 ">
               <label
-                htmlFor="name"
+                htmlFor="name-mobile"
                 className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
               >
                 Name
               </label>
               <input
-                id="name"
+                id="name-mobile"
                 type="text"
                 required
                 value={formData.name}
@@ -451,10 +457,11 @@ const Footer = () => {
                 className={`w-full ${getInputClassName('name')}`}
                 disabled={isSubmitting}
                 aria-invalid={errors.name ? 'true' : 'false'}
-                aria-describedby={errors.name ? 'name-error' : undefined}
+                aria-describedby={errors.name ? 'name-error-mobile' : undefined}
+                suppressHydrationWarning
               />
               {errors.name && (
-                <span id="name-error" className="text-red-400 text-xs mt-1">
+                <span id="name-error-mobile" className="text-red-400 text-xs mt-1">
                   {errors.name}
                 </span>
               )}
@@ -462,29 +469,28 @@ const Footer = () => {
 
             {/* Email Field */}
             <div className="flex flex-col space-y-2">
-            <label
-                htmlFor="email"
+              <label
+                htmlFor="email-mobile"
                 className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
               >
                 Email
               </label>
               <input
-                id="email"
+                id="email-mobile"
                 type="email"
-                
                 required
                 value={formData.email}
                 onChange={handleInputChangeEvent('email')}
                 onFocus={handleFocus('email')}
                 onBlur={handleBlur}
                 className={`w-full ${getInputClassName('email')}`}
-
                 disabled={isSubmitting}
                 aria-invalid={errors.email ? 'true' : 'false'}
-                aria-describedby={errors.email ? 'email-error' : undefined}
+                aria-describedby={errors.email ? 'email-error-mobile' : undefined}
+                suppressHydrationWarning
               />
               {errors.email && (
-                <span id="email-error" className="text-red-400 text-xs mt-1">
+                <span id="email-error-mobile" className="text-red-400 text-xs mt-1">
                   {errors.email}
                 </span>
               )}
@@ -494,13 +500,13 @@ const Footer = () => {
             <div className="flex flex-col sm:flex-row items-start justify-between gap-6 sm:gap-6 md:gap-8">
               <div className="flex flex-col space-y-3 sm:space-y-4 w-full">
                 <label
-                  htmlFor="contact"
+                  htmlFor="contact-mobile"
                   className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
                 >
                   Contact Number
                 </label>
                 <input
-                  id="contact"
+                  id="contact-mobile"
                   type="tel"
                   required
                   value={formData.contact}
@@ -508,13 +514,13 @@ const Footer = () => {
                   onFocus={handleFocus('contact')}
                   onBlur={handleBlur}
                   className={getInputClassName('contact')}
-
                   disabled={isSubmitting}
                   aria-invalid={errors.contact ? 'true' : 'false'}
-                  aria-describedby={errors.contact ? 'contact-error' : undefined}
+                  aria-describedby={errors.contact ? 'contact-error-mobile' : undefined}
+                  suppressHydrationWarning
                 />
                 {errors.contact && (
-                  <span id="contact-error" className="text-red-400 text-xs mt-1">
+                  <span id="contact-error-mobile" className="text-red-400 text-xs mt-1">
                     {errors.contact}
                   </span>
                 )}
@@ -522,26 +528,26 @@ const Footer = () => {
 
               <div className="flex flex-col space-y-3 sm:space-y-4 w-full">
                 <label
-                  htmlFor="website"
+                  htmlFor="website-mobile"
                   className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
                 >
                   Website (Optional)
                 </label>
                 <input
-                  id="website"
+                  id="website-mobile"
                   type="url"
                   value={formData.website}
                   onChange={handleInputChangeEvent('website')}
                   onFocus={handleFocus('website')}
                   onBlur={handleBlur}
                   className={getInputClassName('website')}
-
                   disabled={isSubmitting}
                   aria-invalid={errors.website ? 'true' : 'false'}
-                  aria-describedby={errors.website ? 'website-error' : undefined}
+                  aria-describedby={errors.website ? 'website-error-mobile' : undefined}
+                  suppressHydrationWarning
                 />
                 {errors.website && (
-                  <span id="website-error" className="text-red-400 text-xs mt-1">
+                  <span id="website-error-mobile" className="text-red-400 text-xs mt-1">
                     {errors.website}
                   </span>
                 )}
@@ -551,13 +557,13 @@ const Footer = () => {
             {/* Message Field */}
             <div className="flex flex-col space-y-3 sm:space-y-4">
               <label
-                htmlFor="message"
+                htmlFor="message-mobile"
                 className="text-[12px] font-medium text-[#BDBDBD] tracking-[2px] uppercase"
               >
                 Message
               </label>
               <textarea
-                id="message"
+                id="message-mobile"
                 required
                 value={formData.message}
                 onChange={handleInputChangeEvent('message')}
@@ -565,13 +571,13 @@ const Footer = () => {
                 onBlur={handleBlur}
                 className={getInputClassName('message')}
                 rows={3}
-
                 disabled={isSubmitting}
                 aria-invalid={errors.message ? 'true' : 'false'}
-                aria-describedby={errors.message ? 'message-error' : undefined}
+                aria-describedby={errors.message ? 'message-error-mobile' : undefined}
+                suppressHydrationWarning
               />
               {errors.message && (
-                <span id="message-error" className="text-red-400 text-xs mt-1">
+                <span id="message-error-mobile" className="text-red-400 text-xs mt-1">
                   {errors.message}
                 </span>
               )}
@@ -582,10 +588,11 @@ const Footer = () => {
               type="submit"
               disabled={isSubmitting}
               className='bg-transparent border-1 border-[#FFFFFF2E] max-w-md mx-auto px-8 py-3 rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white'
+              suppressHydrationWarning
             >
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
-          </div>
+          </form>
 
 
           <div className='flex flex-col items-center justify-center w-[237px] mx-auto space-y-5 bg-transparent'>
@@ -599,7 +606,7 @@ const Footer = () => {
                   {item.name}
                 </Link>
               ))}
-            </div> 
+            </div>
 
 
 

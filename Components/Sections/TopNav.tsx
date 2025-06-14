@@ -82,6 +82,12 @@ const TopNav = () => {
   };
 
   useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       const sections = navContents.map(item => document.getElementById(item.sectionId));
       const scrollPosition = window.scrollY + 100; // Adding offset for navbar height
@@ -111,37 +117,49 @@ const TopNav = () => {
     setActiveSection(sectionId);
     
     const element = document.getElementById(sectionId);
+    
     if (element) {
       const navbarHeight = 80;
       const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = sectionId === 'home-section' 
-        ? 0 
-        : elementPosition - navbarHeight;
-
+      
+      let offsetPosition;
+      
+      if (sectionId === 'home-section') {
+        offsetPosition = 0;
+      } else {
+        // Treat all sections (including contact) the same way
+        offsetPosition = elementPosition - navbarHeight;
+      }
+  
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth'
       });
+    } else {
+      console.warn(`Section with ID "${sectionId}" not found`);
     }
   };
 
   return (
     <>
-      <header className="absolute w-full z-50 bg-[#yourBackgroundColor] xl:mt-[54px] lg:mt-[44px] md:mt-[33px] mt-[30px] px-4 py-2 lg:px-[82px]">
+      <header className="absolute w-full z-50  xl:mt-[54px] lg:mt-[44px] md:mt-[33px] mt-[30px] px-4 py-2 lg:px-[82px]">
         <div className="flex justify-between items-center max-w-screen-xl mx-auto">
           {/* Logo */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-start gap-1">
+            <Link href="/">
             <Image
               src={CompanyLogo}
               alt="Company Logo"
-              width={45}
-              height={45}
-              className="w-[45px] h-[45px]"
+              width={1000}
+              height={1000}
+              className="w-[188px] h-[61px]"
               priority
             />
-            <span className='font-bold text-[18px] text-[#FFFDFA] leading-5'>
-              Bankuru Services <br /> Pvt.Ltd.
-            </span>
+            </Link>
+           
+            {/* <span className='font-semibold text-[20px] text-[#FFFDFA] leading-5'>
+              Bankuru <br /> Services <br /> Pvt.Ltd.
+            </span> */}
           </div>
 
           {/* Desktop Navigation */}
@@ -223,46 +241,14 @@ const TopNav = () => {
             variants={menuVariants}
           >
             <div className="flex flex-col h-full p-6">
-              {/* Header with logo and close button */}
+              {/* Header with logo and close button - Commented out as per original */}
               <motion.div
                 className="flex justify-between items-center pb-6"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                {/* <div className="flex items-center gap-1">
-                  <Image
-                    src={CompanyLogo}
-                    alt="Company Logo"
-                    width={45}
-                    height={45}
-                    className="w-[45px] h-[45px]"
-                  />
-                  <span className='font-bold text-[18px] text-black leading-5'>
-                    Bankuru Services <br /> Pvt.Ltd.
-                  </span>
-                </div>
-                <button
-                  onClick={toggleMenu}
-                  className="p-2 text-gray-500"
-                  aria-label="Close menu"
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6 18L18 6M6 6L18 18"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button> */}
+                {/* Logo and close button commented out as in original */}
               </motion.div>
 
               {/* Navigation items */}
@@ -279,10 +265,10 @@ const TopNav = () => {
                     >
                       <Link
                         href={item.link}
-                        className={`block py-3 text-center text-2xl font-medium ${
+                        className={`block py-3 text-center text-2xl font-medium transition-colors duration-200 ${
                           activeSection === item.sectionId 
                             ? 'text-white font-bold' 
-                            : 'text-gray-600'
+                            : 'text-gray-600 hover:text-gray-400'
                         }`}
                         onClick={(e) => {
                           handleScrollToSection(e, item.sectionId);
@@ -292,6 +278,7 @@ const TopNav = () => {
                         <motion.span
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
+                          className="inline-block"
                         >
                           {item.name}
                         </motion.span>

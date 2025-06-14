@@ -1,11 +1,14 @@
 "use client";
-import React from 'react'
+import React, { useRef } from 'react'
 import Image from 'next/image'
 import { VisionImage1, VisionImage2 } from '../ReuseableComponents/Icons';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 
 const Vision = () => {
 
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  
   const contents = [
     {
       title: '	Innovation First – We think ahead',
@@ -34,7 +37,7 @@ const Vision = () => {
   const getImagePosition = (index: number) => {
     const positions = [
       "2xl:-bottom-25 2xl:-right-20 xl:-bottom-25 xl:-right-20 lg:-bottom-25 lg:-right-20 md:-bottom-25 md:-right-20 bottom-6 -right-15   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "2xl:-top-28 2xl:-right-23 xl:-top-28 xl:-right-23 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 -left-15 xl:left-auto lg:left-auto md:left-auto   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-top-28 2xl:-right-23 xl:-top-26 xl:-right-29 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 -left-21 xl:left-auto lg:left-auto md:left-auto   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
       "2xl:-bottom-24 2xl:-left-24 xl:-bottom-24 xl:-left-24 lg:-bottom-24 lg:-left-24 md:-bottom-24 md:-left-24 bottom-10 -right-15  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
       "2xl:-top-24 2xl:-left-24 xl:-top-24 xl:-left-24 lg:-top-24 lg:-left-24 md:-top-24 md:-left-24 -top-24 -left-24 text-end xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
     ];
@@ -54,20 +57,29 @@ const Vision = () => {
 
   return (
     <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent  w-full">
-      <h1 className="xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px] text-white font-semibold text-center">
+      {/* <h1 className="xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px] text-white font-semibold text-center">
         Our Vision
-      </h1>
+      </h1> */}
+      <motion.h1
+      ref={ref}
+      initial={{ opacity: 0, y: -50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center  inline-block text-white"
+    >
+     Our vision
+    </motion.h1>
 
       <div className='grid md:grid-cols-2 grid-cols-1 gap-4 md:px-15 px-5'>
         {contents.map((content, index) => (
-          
+
           <motion.div
             key={index}
             className="relative flex flex-col items-center justify-center bg-[linear-gradient(220.79deg,_rgba(255,255,255,0.1)_0%,_rgba(45,52,103,0.2)_100%)] rounded-[20px] xl:h-[252px] lg:h-[200px] md:h-[150px] sm:h-[150px] h-[130px]  overflow-hidden group cursor-pointer"
             initial="rest"
             whileHover="hover"
             animate="rest"
-            
+
             variants={{
               rest: {
                 scale: 1,
@@ -113,15 +125,15 @@ const Vision = () => {
                 damping: 20
               }}
             >
-        <div>
-  <Image src={content.image} alt={content.title} style={{ 
-    width: '100%',
-    height: 'auto',
-    transformOrigin: 'center center'
-  }} />
-</div>
+            
+                <Image src={content.image} alt={content.title} style={{
+                  width: '100%',
+                  height: 'auto',
+                  transformOrigin: 'center center'
+                }} />
+             
 
-<style jsx>{`
+              <style jsx>{`
   @keyframes rotate {
     from {
       transform: rotate(0deg);

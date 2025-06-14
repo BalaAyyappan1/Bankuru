@@ -20,7 +20,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
       const canvasElement = canvasRef.current.querySelector('canvas');
       if (canvasElement) {
         canvasElement.style.touchAction = 'none';
-      }
+      }   
     }
   }, []);
 
@@ -29,6 +29,8 @@ function Model({ modelPath, isMobile }: ModelProps) {
       const box = new THREE.Box3().setFromObject(modelRef.current);
       const center = box.getCenter(new THREE.Vector3());
       modelRef.current.position.sub(center);
+
+      modelRef.current.rotation.x = 0.350;
     }
   }, []);
 

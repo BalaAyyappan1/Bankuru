@@ -23,7 +23,7 @@ export default function Home() {
           <div className="md:mt-[120px] mt-[100px] xl:mb-[150px]">
             <About />
           </div>
-          <div className=" md:mt-[150px] mb-[100px]">
+          <div className=" md:mt-[150px] mt-15 mb-[100px]">
             <Vision />
 
           </div>
@@ -40,14 +40,14 @@ export default function Home() {
 
           </>
 
-          <div className="mt-[120px] md:mb-[150px]">
+          <div className="md:mt-[120px] md:mb-[150px]">
             <Building />
 
           </div>
-          <div className=" xl:mt-[120px] xl::mb-[150px]  mt-10">
+          <div className=" xl:mt-[120px] md:mb-[250px] mb-15  mt-10">
             <Message />
           </div>
-          <div className="md:mt-[120px] lg:mt-[120px] mb-[150px]">
+          <div className="md:mt-[120px]   lg:mt-[120px] mb-[150px]">
             <Mission />
           </div>
           <div className="block md:hidden">

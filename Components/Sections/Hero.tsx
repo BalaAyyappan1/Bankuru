@@ -50,9 +50,9 @@ const Hero = () => {
             }
           }}
         >
-          <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[150px] h-[42px] rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white">
+          {/* <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[150px] h-[42px] rounded-[30px] mt-7 cursor-pointer hover:bg-[#FFFFFF33] text-white">
             See our works
-          </button>
+          </button> */}
         </Link>
       </div>
 

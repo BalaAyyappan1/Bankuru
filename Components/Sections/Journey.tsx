@@ -291,7 +291,7 @@ const Journey = () => {
               strokeLinecap="round"
             />
             <path
-              d="M50 166 L50 170 L40 175 L40 185"
+              d="M50 173 L40 177 L40 185"
               fill="none"
               stroke="#BDD1FE"
               strokeWidth="0.2"
@@ -340,7 +340,7 @@ const Journey = () => {
             />
             <path
               className="animated-segment"
-              d="M50 170 L40 175 L40 185"
+              d="M50 173 L40 177 L40 185"
               fill="none"
               stroke="url(#glowGradient)"
               strokeWidth="0.6"
@@ -431,7 +431,7 @@ const Journey = () => {
       {/* Q3 2025 */}
       <div 
         ref={q3Ref}
-        className="absolute top-[84.2%] left-[16.5%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4"
+        className="absolute top-[85%] left-[16.5%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4"
       >
         <div className="flex flex-col md:flex-row items-center gap-4 xl:gap-8 xl:max-w-3xl lg:max-w-xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-center md:text-right md:w-1/4 flex-shrink-0">
