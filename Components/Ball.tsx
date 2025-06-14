@@ -30,7 +30,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
       const center = box.getCenter(new THREE.Vector3());
       modelRef.current.position.sub(center);
 
-      // modelRef.current.rotation.x = 0.350;
+      modelRef.current.rotation.x = 0.350;
     }
   }, []);
 
