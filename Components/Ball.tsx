@@ -36,7 +36,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
   const modelScale = isMobile ? 0.8 : 1.5;
 
   return (
-    <group ref={modelRef} scale={modelScale}>
+    <group ref={modelRef} scale={modelScale}  rotation={[0.3, 0, 0]} >
       <primitive object={scene} />
     </group>
   );
@@ -76,7 +76,7 @@ export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
         camera={{ position: [0, 1, 5], fov: 50 }}
       >
         {/* Lights */}
-        <ambientLight intensity={4.5} />
+        <ambientLight intensity={7.5} />
         <directionalLight position={[20, 10, 5]} intensity={1} castShadow />
         <directionalLight position={[-21, 10.6, 21.82]} intensity={1} castShadow />
         <directionalLight position={[10, 1.6, 2.82]} intensity={1} castShadow />
