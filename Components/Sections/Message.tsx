@@ -30,7 +30,7 @@ const Message = () => {
           
           <motion.h1
       ref={ref}
-      initial={{ opacity: 0, y: -50 }}
+      initial={{ opacity: 0, x: -50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="font-bold xl:text-[42px] lg:text-[35px] md:text-[30px] text-[20px] md:text-start text-center w-full text-white"

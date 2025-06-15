@@ -44,21 +44,21 @@ export default function Home() {
             <Building />
 
           </div>
-          <div className=" xl:mt-[120px] md:mb-[250px] mb-15  mt-10">
+          <div className=" md:mt-[120px] md::mb-[200px] mb-15  mt-10">
             <Message />
           </div>
-          <div className="md:mt-[120px]   lg:mt-[120px] mb-[150px]">
+          <div className="md:mt-[150px]   md:mb-[10px]">
             <Mission />
           </div>
-          <div className="block md:hidden">
+          <div>
             <Footer />
           </div>
         </BGCircleLayout>
       </BGLinesLayout>
-      <div className="hidden md:block">
+      {/* <div className="hidden md:block">
       <Footer />
 
-        </div>
+        </div> */}
 
 
     </div>

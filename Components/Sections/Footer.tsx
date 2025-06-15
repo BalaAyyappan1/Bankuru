@@ -1,5 +1,4 @@
 "use client";
-
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { CompanyLogo, InstaLogo, LinkLogo, xLogo, YouLogo } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
@@ -177,8 +176,8 @@ const Footer = () => {
   };
 
   return (
-    <>
-      <div className="relative w-full hidden md:block">
+    <div id='contact-section' className="w-full md:bg-[#0C0C0C] bg-transparent">
+      <div  className="relative w-full hidden md:block">
 
         {/* video */}
         <div className="relative w-full h-[200px] overflow-hidden">
@@ -205,7 +204,7 @@ const Footer = () => {
 
 
         {/* Footer */}
-        <div id='contact-section'  className='flex flex-col space-y-5 justify-center bg-[#0C0C0C] items-center w-full '>
+        <div className='flex flex-col space-y-5 justify-center bg-[#0C0C0C] items-center w-full '>
           <div className="w-full grid md:grid-cols-2 grid-cols-1 gap-[25px] md:h-[545px] h-auto mt-5 px-[23px]">
             {/* Left side */}
             <div className="bg-[#2D34674A] h-full flex flex-col space-y-5 justify-center items-center rounded-[28px]">
@@ -421,7 +420,7 @@ const Footer = () => {
 
 
       {/* mobile */}
-      <div id='contact-section' className="relative w-full block md:hidden px-5 -mt-50 ">
+      <div  className="relative w-full block md:hidden px-5 -mt-50 ">
         <div className=" h-full flex flex-col space-y-10 justify-center items-start rounded-[28px] px-5 bg-[#2D34674A]">
           <div className="flex flex-row gap-2 items-start justify-center  mt-8 ">
 
@@ -620,7 +619,7 @@ const Footer = () => {
         </div>
 
       </div>
-    </>
+    </div>
 
   );
 };

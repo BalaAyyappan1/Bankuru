@@ -6,7 +6,7 @@ import { motion, useInView } from 'framer-motion';
 
 const Building = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });  
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
   return (
     <div id='building-section' className="relative bg-transparent w-full px-4 py-10">
       {/* Header Section */}
@@ -16,15 +16,15 @@ const Building = () => {
         </h1> */}
 
         <motion.h1
-      ref={ref}
-      initial={{ opacity: 0, y: -50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center text-white inline-block"
-    >
-     What We're Building
-    </motion.h1>
-        
+          ref={ref}
+          initial={{ opacity: 0, y: -50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center text-white inline-block"
+        >
+          What We're Building
+        </motion.h1>
+
         <p className="text-base sm:text-lg md:text-[20px] text-[#BEBCBA]">
           We’re currently developing innovative digital products that combine <br className="hidden sm:inline" />
           real user needs with the power of modern AI
@@ -43,7 +43,12 @@ const Building = () => {
             className="w-full md:h-full h-[300px]"
           />
           <div className='absolute inset-0  flex md:flex-row flex-col-reverse mt-10 justify-between items-center text-center md:px-24 py-6 space-y-2'>
-            <div className=" flex flex-col justify-center md:items-start items-center text-center px-4 md:py-6 py-3  md:space-y-2">
+            <motion.div
+              ref={ref}
+              initial={{ opacity: 0, x: -50 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className=" flex flex-col justify-center md:items-start items-center text-center px-4 md:py-6 py-3  md:space-y-2">
               <h2 className="text-xl sm:text-2xl md:text-3xl text-start font-semibold text-white">
                 Bio Alpha International
               </h2>
@@ -53,7 +58,7 @@ const Building = () => {
               <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[120px] h-[40px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33] text-white">
                 View
               </button>
-            </div>
+            </motion.div>
 
             <Image src={BioAlphaLogo} alt="BioAlphaLogo" className='w-80 ' />
           </div>
@@ -70,7 +75,11 @@ const Building = () => {
           <div className='absolute inset-0  flex md:flex-row flex-col md:mt-10 justify-between items-center text-center md:px-24 md:py-6 md:-mt-10 md:space-y-2'>
             <Image src={QuickCook} alt="QuickCook" className='md:w-90 md:h-auto  w-34 h-[600px] ' />
 
-            <div className=" flex flex-col justify-center md:items-end  items-center text-center px-4 md:py-6 md:py-3  pb-10  md:space-y-2">
+            <motion.div 
+            ref={ref}
+            initial={{ opacity: 0, x: 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, ease: "easeOut" }} className=" flex flex-col justify-center md:items-end  items-center text-center px-4 md:py-6 md:py-3  pb-10  md:space-y-2">
               <h2 className="text-xl sm:text-2xl md:text-3xl text-end font-semibold text-white ">
                 Quick 2 Cook
               </h2>
@@ -81,7 +90,7 @@ const Building = () => {
               <button className="bg-transparent border-1 border-[#FFFFFF2E] w-[161px] h-[41px] rounded-[30px] md:mt-7 mt-3 cursor-pointer hover:bg-[#FFFFFF33] text-white">
                 Keep me update
               </button>
-            </div>
+            </motion.div>
 
           </div>
 

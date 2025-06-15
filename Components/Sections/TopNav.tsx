@@ -118,28 +118,55 @@ const TopNav = () => {
     
     const element = document.getElementById(sectionId);
     
+    // Add debugging for contact section
+    if (sectionId === 'contact-section') {
+      console.log('Contact section clicked');
+      console.log('Element found:', element);
+      if (element) {
+        console.log('Element position:', element.getBoundingClientRect());
+        console.log('Page Y Offset:', window.pageYOffset);
+        console.log('Element offsetTop:', element.offsetTop);
+        console.log('Element offsetHeight:', element.offsetHeight);
+      }
+    }
+    
     if (element) {
       const navbarHeight = 80;
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      
+      // Use offsetTop instead of getBoundingClientRect for more reliable positioning
+      const elementPosition = element.offsetTop;
       
       let offsetPosition;
       
       if (sectionId === 'home-section') {
         offsetPosition = 0;
       } else {
-        // Treat all sections (including contact) the same way
         offsetPosition = elementPosition - navbarHeight;
       }
   
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
+      console.log(`Scrolling to ${sectionId}:`, {
+        elementPosition,
+        offsetPosition,
+        navbarHeight,
+        offsetTop: element.offsetTop
       });
+  
+      // Add a small delay to ensure element is fully rendered
+      setTimeout(() => {
+        window.scrollTo({
+          top: Math.max(0, offsetPosition), // Ensure we don't scroll to negative position
+          behavior: 'smooth'
+        });
+      }, 100);
     } else {
       console.warn(`Section with ID "${sectionId}" not found`);
     }
   };
 
+
+
+
+  
   return (
     <>
       <header className="absolute w-full z-50  xl:mt-[54px] lg:mt-[44px] md:mt-[33px] mt-[30px] px-4 py-2 lg:px-[82px]">

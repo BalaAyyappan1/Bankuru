@@ -80,7 +80,7 @@ const Mission: React.FC = () => {
       animationDuration: 1.5, // Slower for smoother transition
       pauseDuration: 1.5, // Longer pause to read
       rotationRange: 3, // Slightly more rotation
-      perspective: 1000, // Stronger perspective
+      perspective: 1000,
       transformOrigin: "50% 50%"
     };
 
@@ -137,7 +137,7 @@ const Mission: React.FC = () => {
           },
           opacity: (cardIndex) => {
             const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return Math.max(0.3, 1 - (newPosition * config.opacityStep));
+            return Math.max(0.5, 1 - (newPosition * config.opacityStep));
           },
           scale: (cardIndex) => {
             const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
@@ -300,7 +300,7 @@ const Mission: React.FC = () => {
                 alt="Mission animation"
                 width={500}
                 height={500}
-                className="w-[450px] h-[450px] lg:w-[500px] lg:h-[500px] rounded-2xl shadow-2xl object-cover"
+                className="w-[450px] h-[450px] lg:w-[500px] lg:h-[500px] rounded-2xl  object-cover"
                 style={{
                   willChange: 'auto',
                   backfaceVisibility: 'hidden'
@@ -320,13 +320,12 @@ const Mission: React.FC = () => {
           }
         `}>
           {isMobile ? (
-            // Mobile: Individual cards in flex layout
             <>
               {cards.map((card, index) => (
                 <div
                   key={index}
                   ref={(el) => { cardsRef.current[index] = el; }}
-                  className="MissionCard${(index % 2) + 1} flex justify-center items-center text-center font-medium rounded-[20px] backdrop-blur-[20px] p-4 text-sm sm:text-base leading-tight w-full min-h-[120px] max-w-md mx-auto"
+                  className="MissionCard${(index % 2) + 1} mt-2 flex justify-center items-center text-center font-medium rounded-[20px] p-4 text-sm sm:text-base leading-tight w-full md:min-h-[120px] max-w-md mx-auto"
                   style={{ 
                     position: 'relative',
                     willChange: 'transform',

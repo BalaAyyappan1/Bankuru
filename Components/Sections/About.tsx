@@ -41,7 +41,7 @@ const About = () => {
         <div className="max-w-[50%] ">
           {/* <BuildingModel modelPath="/About/building 02.glb" /> */}
             <Image
-              src="/bo.gif"
+              src="/building.gif"
               alt="new"
               width={1000}
               height={1000}
