@@ -219,8 +219,8 @@ const Journey = () => {
     <div
       ref={containerRef}
       id="journey-section"
-      className="relative bg-transparent min-h-screen w-full overflow-hidden py-8 px-4"
-      style={{ height: '160vh' }}
+      className="relative bg-transparent min-h-screen w-full  py-8 px-4"
+      style={{ height: '165vh' }}
     >
       {/* Title */}
       <h1 
@@ -291,7 +291,7 @@ const Journey = () => {
               strokeLinecap="round"
             />
             <path
-              d="M50 173 L40 177 L40 185"
+              d="M50 173 L40 177 L40 192"
               fill="none"
               stroke="#BDD1FE"
               strokeWidth="0.2"
@@ -340,7 +340,7 @@ const Journey = () => {
             />
             <path
               className="animated-segment"
-              d="M50 173 L40 177 L40 185"
+              d="M50 173 L40 177 L40 192"
               fill="none"
               stroke="url(#glowGradient)"
               strokeWidth="0.6"
@@ -448,7 +448,7 @@ const Journey = () => {
       {/* 2026 */}
       <div 
         ref={year2026Ref}
-        className="absolute -bottom-1 xl:left-[16%] left-[16%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4"
+        className="absolute -bottom-13 xl:left-[16%] left-[16%] w-full flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 px-4"
       >
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 max-w-6xl w-full">
           <span className="text-[#FFFDFA] xl:text-[24px] lg:text-[20px] font-semibold text-center md:text-right md:w-1/4 flex-shrink-0">

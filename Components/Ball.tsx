@@ -87,7 +87,7 @@ export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
           enableZoom={false}
           enablePan={false}
           enableRotate={false}
-          autoRotateSpeed={5}
+          autoRotateSpeed={3}
           autoRotate={true}
       
         />

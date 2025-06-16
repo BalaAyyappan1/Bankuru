@@ -169,7 +169,7 @@ const TopNav = () => {
   
   return (
     <>
-      <header className="absolute w-full z-50  xl:mt-[54px] lg:mt-[44px] md:mt-[33px] mt-[30px] px-4 py-2 lg:px-[82px]">
+      <header className="absolute w-full z-50  xl:mt-[45px] lg:mt-[44px] md:mt-[33px] mt-[30px] px-4 py-2 lg:px-[82px]">
         <div className="flex justify-between items-center max-w-screen-xl mx-auto">
           {/* Logo */}
           <div className="flex items-start gap-1">
