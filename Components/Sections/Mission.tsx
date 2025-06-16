@@ -324,12 +324,13 @@ const Mission: React.FC = () => {
                 width={500}
                 height={500}
                 className="w-[450px] h-[450px] lg:w-[500px] lg:h-[500px] rounded-2xl  object-cover"
-                style={{
-                  willChange: 'auto',
-                  backfaceVisibility: 'hidden'
-                }}
-             
-               
+                onLoad={() => console.log('GIF loaded successfully')}
+    onError={(e) => console.error('GIF failed to load:', e)}
+    style={{
+      willChange: 'auto',
+      backfaceVisibility: 'hidden'
+    }}
+    
               />
             </div>
           )}
