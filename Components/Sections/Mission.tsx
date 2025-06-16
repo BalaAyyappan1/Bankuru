@@ -317,7 +317,8 @@ const Mission: React.FC = () => {
         `}>
           {!isMobile && (
             <div className="relative">
-              <Image
+              <img
+                
                 src="/Mision/f.gif"
                 alt="Mission animation"
                 width={500}
@@ -327,8 +328,8 @@ const Mission: React.FC = () => {
                   willChange: 'auto',
                   backfaceVisibility: 'hidden'
                 }}
-                priority
-                unoptimized={true}
+             
+               
               />
             </div>
           )}
