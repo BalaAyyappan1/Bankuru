@@ -24,7 +24,7 @@ const Mission: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });  
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   const cards: Card[] = [
     {
@@ -49,12 +49,12 @@ const Mission: React.FC = () => {
     const screenWidth = window.innerWidth;
     const isSmallScreen = screenWidth < 768;
     const isMediumScreen = screenWidth >= 768 && screenWidth < 1024;
-    
+
     // Only treat as mobile if it's a small screen OR medium screen with touch
-    const isMobileDevice = isSmallScreen || 
-      (isMediumScreen && 'ontouchstart' in window && 
-       /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent));
-    
+    const isMobileDevice = isSmallScreen ||
+      (isMediumScreen && 'ontouchstart' in window &&
+        /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent));
+
     setIsMobile(isMobileDevice);
   }, []);
 
@@ -64,7 +64,7 @@ const Mission: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, [checkMobile]);
 
-  // Desktop: Perfect card rotation animation (UNCHANGED)
+  // Desktop: Perfect card rotation animation
   useEffect(() => {
     if (isMobile || !containerRef.current || typeof window === 'undefined' || !isInView) return;
 
@@ -73,13 +73,13 @@ const Mission: React.FC = () => {
 
     // Enhanced animation configuration
     const config = {
-      stackOffset: 15, // Increased for better depth
+      stackOffset: 15,
       baseY: 0,
-      scaleStep: 0.03, // More pronounced scaling
-      opacityStep: 0.2, // More pronounced opacity change
-      animationDuration: 1.5, // Slower for smoother transition
-      pauseDuration: 1.5, // Longer pause to read
-      rotationRange: 3, // Slightly more rotation
+      scaleStep: 0.03,
+      opacityStep: 0.2,
+      animationDuration: 1.5,
+      pauseDuration: 1.5,
+      rotationRange: 3,
       perspective: 1000,
       transformOrigin: "50% 50%"
     };
@@ -111,7 +111,7 @@ const Mission: React.FC = () => {
 
     // Enhanced smooth rotation with perfect timing
     const createPerfectRotation = () => {
-      const masterTimeline = gsap.timeline({ 
+      const masterTimeline = gsap.timeline({
         repeat: -1,
         ease: "power2.inOut",
         onRepeat: () => {
@@ -175,74 +175,101 @@ const Mission: React.FC = () => {
     };
   }, [cards.length, isMobile, isInView]);
 
-  // Mobile: Enhanced scroll-triggered stacking animation with perfect timing
+  // Mobile: Simple static cards - no complex animations
   useEffect(() => {
     if (!isMobile || !containerRef.current || typeof window === 'undefined') return;
 
     const cardElements = cardsRef.current.filter(Boolean);
     if (cardElements.length === 0) return;
 
-    // Kill existing timeline
+    // Kill existing timeline and ScrollTriggers
     if (scrollTlRef.current) {
       scrollTlRef.current.kill();
+      ScrollTrigger.getAll().forEach(st => st.kill());
     }
 
-    // Enhanced mobile animation configuration
-    const mobileConfig = {
-      initialOffset: 120,
-      stackSpacing: 20,
-      overlapOffset: 80,
-      animationDuration: 0.8,
-      staggerDelay: 0.15
-    };
-
-    // Set initial positions - cards start stacked and spread out
+    // Set initial positions with stacking offset
     gsap.set(cardElements, {
-      y: (index) => mobileConfig.initialOffset + (index * mobileConfig.stackSpacing),
-      opacity: 1,
-      scale: 1,
-      rotation: 0,
-      zIndex: (index) => cards.length - index,
-      willChange: 'transform',
-      force3D: true,
-      transformOrigin: "center center"
+      y: (i) => i * 20, // Slightly increased initial offset
+      opacity: 0,
+      scale: 0.97, // Closer to 1 for smoother transition
+      zIndex: (i, target, targets) => targets.length - i,
+      transformOrigin: "center center",
+      willChange: "transform, opacity",
+      filter: "blur(1px)", // Subtle blur for depth
     });
 
-    // Create scroll-triggered timeline
+    // Create master timeline
     scrollTlRef.current = gsap.timeline({
+      defaults: { ease: "none" }, // No easing = fastest response
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "top 85%",
-        end: "center 25%",
-        scrub: 1.2,
-        refreshPriority: -1,
+        start: "top 90%",
+        end: "center 10%",   // Very short scroll distance
+        scrub: 0.1,       // Almost immediate follow
         invalidateOnRefresh: true,
-        anticipatePin: 1,
       }
     });
 
-    // Animate cards to stack with perfect overlapping
+    // Animation for each card
     cardElements.forEach((card, index) => {
       if (!card) return;
 
-      const isLastCard = index === cardElements.length - 1;
-      const startTime = index * mobileConfig.staggerDelay;
-      
-      // Final positions create a neat stack with slight overlap
-      const finalY = index === 0 ? 0 : -(index * mobileConfig.overlapOffset);
-      const finalScale = index === 0 ? 1 : 0.95 - (index * 0.02);
-      const finalOpacity = index === 0 ? 1 : 0.85 - (index * 0.05);
+      // Initial reveal animation with smoother easing and timing
+      gsap.to(card, {
+        opacity: 1,
+        y: index * 8, // Reduced offset for tighter stack
+        scale: 1,
+        filter: "blur(0px)",
+        duration: 1,
+        delay: index * 0.1, // Shorter delay for quicker cascade
+        ease: "expo.out", // Smoother easing
+        scrollTrigger: {
+          trigger: card,
+          start: "top 90%", // Slightly higher trigger point
+          end: "top 70%",
+          once: true,
+          markers: false
+        }
+      });
 
-      scrollTlRef.current!.to(card, {
-        y: finalY,
-        scale: finalScale,
-        opacity: Math.max(0.7, finalOpacity),
-        rotation: (index - 2) * 0.5, // Slight rotation for natural look
-        zIndex: cards.length + index,
-        duration: mobileConfig.animationDuration,
-        ease: "power2.out",
-        force3D: true,
-      }, startTime);
+      // Scroll-based animation with improved physics
+      const cardTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%", // Adjusted trigger points
+          end: "top 15%",
+          scrub: 1.5, // Smoother scrubbing
+          markers: false
+        }
+      });
+
+      // Enhanced animation sequence
+      cardTl
+        .to(card, {
+          y: -index * 40, // Increased rise for more dramatic effect
+          ease: "sine.inOut" // Softer easing
+        }, 0)
+        .to(card, {
+          scale: 1.05,
+          zIndex: cardElements.length + index,
+          ease: "power1.in"
+        }, 0)
+        .to(card, {
+          boxShadow: "0 10px 30px rgba(0,0,0,0.2)", // Added shadow for depth
+          ease: "power1.out"
+        }, 0);
+    });
+
+    // Add a slight parallax effect to the container for smoother overall feel
+    gsap.to(containerRef.current, {
+      y: -15,
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.5
+      }
     });
 
     return () => {
@@ -250,6 +277,7 @@ const Mission: React.FC = () => {
         scrollTlRef.current.kill();
         scrollTlRef.current = null;
       }
+      ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, [cards.length, isMobile]);
 
@@ -267,18 +295,75 @@ const Mission: React.FC = () => {
     };
   }, []);
 
+  // Navigation dot click handler for desktop
+  const goToCard = (index: number) => {
+    if (isMobile || isAnimating) return;
+    
+    setCurrentIndex(index);
+    
+    // Pause current animation
+    if (animationRef.current) {
+      animationRef.current.pause();
+    }
+    
+    // Animate to specific card
+    const cardElements = cardsRef.current.filter(Boolean);
+    const config = {
+      stackOffset: 15,
+      scaleStep: 0.03,
+      opacityStep: 0.2,
+    };
+    
+    setIsAnimating(true);
+    
+    gsap.to(cardElements, {
+      duration: 0.8,
+      ease: "power2.inOut",
+      y: (cardIndex) => {
+        const newPosition = (cardIndex - index + cards.length) % cards.length;
+        return newPosition * config.stackOffset;
+      },
+      zIndex: (cardIndex) => {
+        const newPosition = (cardIndex - index + cards.length) % cards.length;
+        return cards.length - newPosition;
+      },
+      opacity: (cardIndex) => {
+        const newPosition = (cardIndex - index + cards.length) % cards.length;
+        return Math.max(0.5, 1 - (newPosition * config.opacityStep));
+      },
+      scale: (cardIndex) => {
+        const newPosition = (cardIndex - index + cards.length) % cards.length;
+        return Math.max(0.85, 1 - (newPosition * config.scaleStep));
+      },
+      rotation: (cardIndex) => {
+        const newPosition = (cardIndex - index + cards.length) % cards.length;
+        return (newPosition - Math.floor(cards.length / 2)) * 0.75;
+      },
+      force3D: true,
+      onComplete: () => {
+        setIsAnimating(false);
+        // Resume animation after a delay
+        setTimeout(() => {
+          if (animationRef.current) {
+            animationRef.current.resume();
+          }
+        }, 2000);
+      }
+    });
+  };
+
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className={`
         relative bg-transparent flex flex-col items-center justify-center mx-auto px-4
-        ${isMobile 
-          ? 'h-[70vh] md:mt-50 mt-80 py-8 md:space-y-6 max-w-full' 
+        ${isMobile
+          ? 'h-[170vh] py-8 space-y-8 max-w-full'
           : 'min-h-screen w-full space-y-15 max-w-7xl'
         }
       `}
-      style={{ 
-        willChange: isMobile ? 'transform' : 'auto',
+      style={{
+        willChange: isMobile ? 'auto' : 'auto',
         backfaceVisibility: 'hidden'
       }}
     >
@@ -290,47 +375,45 @@ const Mission: React.FC = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={`
           font-semibold text-center text-[#FFFDFA]
-          ${isMobile 
-            ? 'text-2xl sm:text-3xl leading-tight' 
+          ${isMobile
+            ? 'text-2xl sm:text-3xl leading-tight'
             : 'text-4xl lg:text-5xl mb-12'
           }
         `}
       >
         Join the Mission
       </motion.h1>
-      
+
       {/* Main content */}
       <div className={`
         flex w-full items-center
-        ${isMobile 
-          ? 'flex-col space-y-6' 
+        ${isMobile
+          ? 'flex-col space-y-8'
           : 'flex-row justify-center space-x-16 lg:space-x-20'
         }
       `}>
         {/* GIF Container */}
         <div className={`
           flex-shrink-0 flex justify-center items-center
-          ${isMobile 
-            ? 'w-full max-w-sm order-2' 
+          ${isMobile
+            ? 'w-full max-w-sm order-2'
             : 'w-1/2 max-w-lg'
           }
         `}>
           {!isMobile && (
             <div className="relative">
               <img
-                
                 src="/Mision/f.gif"
                 alt="Mission animation"
                 width={500}
                 height={500}
-                className="w-[450px] h-[450px] lg:w-[500px] lg:h-[500px] rounded-2xl  object-cover"
+                className="w-[450px] h-[450px] lg:w-[500px] lg:h-[500px] rounded-2xl object-cover"
                 onLoad={() => console.log('GIF loaded successfully')}
-    onError={(e) => console.error('GIF failed to load:', e)}
-    style={{
-      willChange: 'auto',
-      backfaceVisibility: 'hidden'
-    }}
-    
+                onError={(e) => console.error('GIF failed to load:', e)}
+                style={{
+                  willChange: 'auto',
+                  backfaceVisibility: 'hidden'
+                }}
               />
             </div>
           )}
@@ -338,8 +421,8 @@ const Mission: React.FC = () => {
 
         {/* Cards Container */}
         <div className={`
-          ${isMobile 
-            ? 'flex flex-col gap-4 w-full h-auto min-h-[400px] order-1 relative' 
+          ${isMobile
+            ? 'flex flex-col gap-6 w-full max-w-md mx-auto'
             : 'flex flex-col items-center justify-center relative w-1/2 max-w-[600px] h-[450px]'
           }
         `}>
@@ -349,64 +432,85 @@ const Mission: React.FC = () => {
                 <div
                   key={index}
                   ref={(el) => { cardsRef.current[index] = el; }}
-                  className={`
-                    ${index % 2 === 0 ? 'MissionCard1' : 'MissionCard2'} 
-                    mt-2 flex justify-center items-center text-center font-medium 
-                    rounded-[20px] p-4 text-sm sm:text-base leading-tight w-full 
-                    md:min-h-[120px] min-h-[100px] max-w-md mx-auto
-                    backdrop-blur-sm border border-white/10
-                  `}
-                  style={{ 
+                  className="
+                    MissionCard1 flex justify-center items-center text-center font-medium 
+                    rounded-[20px] p-5 text-base leading-relaxed w-full 
+                    min-h-[140px] backdrop-blur-sm border border-white/10
+                  "
+                  style={{
                     position: 'relative',
-                    willChange: 'transform',
+                    willChange: 'auto',
                     backfaceVisibility: 'hidden',
-                    transform: 'translateZ(0)',
                     wordBreak: 'break-word',
                     hyphens: 'auto',
                     boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
                   }}
                 >
-                  <span className="text-[#FFFDFA] relative z-10">{card.title}</span>
-                </div>
-              ))}
-            </>
-          ) : (
-            // Desktop: Absolutely positioned cards for rotation (UNCHANGED)
-            <div 
-              className="relative flex items-center justify-center w-full h-full"
-              style={{
-                willChange: 'auto',
-                backfaceVisibility: 'hidden',
-                perspective: '1000px'
-              }}
-            >
-              {cards.map((card, index) => (
-                <div
-                  key={index}
-                  ref={(el) => { cardsRef.current[index] = el; }}
-                  className={`
-                    ${index % 2 === 0 ? 'MissionCard1' : 'MissionCard2'} 
-                    absolute flex justify-center items-center text-center 
-                    font-medium rounded-2xl backdrop-blur-sm border border-white/10
-                    p-6 text-lg lg:text-xl leading-relaxed w-[500px] h-[180px]
-                  `}
-                  style={{ 
-                    willChange: 'transform, opacity',
-                    backfaceVisibility: 'hidden',
-                    transformStyle: 'preserve-3d',
-                    top: '50%',
-                    left: '50%',
-                    marginTop: '-90px',
-                    marginLeft: '-250px',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-                  }}
-                >
-                  <span className="relative z-10 text-[#FFFDFA] leading-relaxed">
+                  <span className="text-[#FFFDFA] relative z-10 leading-relaxed">
                     {card.title}
                   </span>
                 </div>
               ))}
-            </div>
+            </>
+          ) : (
+            // Desktop: Absolutely positioned cards for rotation
+            <>
+              <div
+                className="relative flex items-center justify-center w-full h-full"
+                style={{
+                  willChange: 'auto',
+                  backfaceVisibility: 'hidden',
+                  perspective: '1000px'
+                }}
+              >
+                {cards.map((card, index) => (
+                  <div
+                    key={index}
+                    ref={(el) => { cardsRef.current[index] = el; }}
+                    className={`
+                      ${index % 2 === 0 ? 'MissionCard1' : 'MissionCard2'} 
+                      absolute flex justify-center items-center text-center 
+                      font-medium rounded-2xl backdrop-blur-sm border border-white/10
+                      p-6 text-lg lg:text-xl leading-relaxed w-[500px] h-[180px]
+                    `}
+                    style={{
+                      willChange: 'transform, opacity',
+                      backfaceVisibility: 'hidden',
+                      transformStyle: 'preserve-3d',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-90px',
+                      marginLeft: '-250px',
+                      boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+                    }}
+                  >
+                    <span className="relative z-10 text-[#FFFDFA] leading-relaxed">
+                      {card.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Navigation Dots - Desktop Only */}
+              <div className="flex justify-center space-x-3 mt-8">
+                {cards.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToCard(index)}
+                    className={`
+                      w-3 h-3 rounded-full transition-all duration-300 border-2
+                      ${currentIndex === index
+                        ? 'bg-[#FFFDFA] border-[#FFFDFA] scale-110'
+                        : 'bg-transparent border-[#FFFDFA]/50 hover:border-[#FFFDFA]/80 hover:scale-105'
+                      }
+                      ${isAnimating ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    `}
+                    disabled={isAnimating}
+                    aria-label={`Go to card ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>

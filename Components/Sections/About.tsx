@@ -39,13 +39,16 @@ const About = () => {
 
         {/* 3D model */}
         <div className="max-w-[50%] ">
-          {/* <BuildingModel modelPath="/About/building 02.glb" /> */}
             <Image
-              src="/building.gif"
-              alt="new"
+              src="/for-ios.gif"
+              alt="building"
               width={1000}
               height={1000}
               className='object-cover w-full md:h-[500px] h-[230px]'
+              style={{
+                willChange: 'auto',
+                backfaceVisibility: 'hidden'
+              }}
             />
         </div>
       </div>

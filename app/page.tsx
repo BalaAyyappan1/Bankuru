@@ -11,6 +11,7 @@ import Message from "@/Components/Sections/Message";
 import Mission from "@/Components/Sections/Mission";
 import TopNav from "@/Components/Sections/TopNav";
 import JourneyMobile from "@/Components/Sections/JourneyMobile";
+import MobileMission from './../Components/Sections/MobileMission';
 
 export default function Home() {
 
@@ -25,30 +26,28 @@ export default function Home() {
           </div>
           <div className=" md:mt-[150px] mt-15 mb-[100px]">
             <Vision />
-
           </div>
           <>
-
             <div className="hidden md:block">
               <Journey />
             </div>
 
-
             <div className="block md:hidden">
               <JourneyMobile />
             </div>
-
           </>
 
           <div className="md:mt-[120px] md:mb-[150px]">
             <Building />
-
           </div>
           <div className=" md:mt-[120px] md::mb-[200px] mb-15  mt-10">
             <Message />
           </div>
-          <div className="md:mt-[250px]   md:mb-[10px]">
+          <div className="md:mt-[250px]   md:mb-[10px] hidden sm:block md:block">
             <Mission />
+          </div>
+          <div className="block md:hidden">
+            <MobileMission />
           </div>
           <div>
             <Footer />
@@ -59,8 +58,6 @@ export default function Home() {
       <Footer />
 
         </div> */}
-
-
     </div>
   );
 }

@@ -9,8 +9,6 @@ import Link from 'next/link';
 const Hero = () => {
   const [activeSection, setActiveSection] = useState('building-section');
 
-
-
   return (
     <div
       id="home-section"

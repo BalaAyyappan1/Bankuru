@@ -8,7 +8,7 @@ const Vision = () => {
 
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
-  
+
   const contents = [
     {
       title: '	Innovation First – We think ahead',
@@ -59,16 +59,16 @@ const Vision = () => {
 
   return (
     <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent  w-full">
-    
+
       <motion.h1
-      ref={ref}
-      initial={{ opacity: 0, y: -50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center  inline-block text-white"
-    >
-     Our vision
-    </motion.h1>
+        ref={ref}
+        initial={{ opacity: 0, y: -50 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center  inline-block text-white"
+      >
+        Our vision
+      </motion.h1>
 
       <div className='grid md:grid-cols-2 grid-cols-1 gap-4 md:px-15 px-5'>
         {contents.map((content, index) => (
@@ -101,38 +101,38 @@ const Vision = () => {
             </div>
 
             <motion.div
-  className={`absolute ${getImagePosition(index)}`}
-  style={{
-    animation: index === 1 || index === 2 ? 'rotate 15s linear infinite' : 'none',
-    transformOrigin: 'center center',
-  }}
-  variants={{
-    rest: {
-      scale: 1,
-      y: 0
-    },
-    hover: {
-      scale: 1.1,
-      y: -5,
+              className={`absolute ${getImagePosition(index)}`}
+              style={{
+                animation: index === 1 || index === 2 ? 'rotate 15s linear infinite' : 'none',
+                transformOrigin: 'center center',
+              }}
+              variants={{
+                rest: {
+                  scale: 1,
+                  y: 0
+                },
+                hover: {
+                  scale: 1.1,
+                  y: -5,
 
-    }
-  }}
-  transition={{
-    duration: 0.4,
-    ease: "easeOut",
-    type: "spring",
-    stiffness: 300,
-    damping: 20
-  }}
->
+                }
+              }}
+              transition={{
+                duration: 0.4,
+                ease: "easeOut",
+                type: "spring",
+                stiffness: 300,
+                damping: 20
+              }}
+            >
 
-            
-                <Image src={content.image} alt={content.title} style={{
-                  width: '100%',
-                  height: 'auto',
-                  transformOrigin: 'center center'
-                }} />
-             
+
+              <Image src={content.image} alt={content.title} style={{
+                width: '100%',
+                height: 'auto',
+                transformOrigin: 'center center'
+              }} />
+
 
               <style jsx>{`
   @keyframes rotate {
