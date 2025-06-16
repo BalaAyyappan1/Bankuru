@@ -20,10 +20,10 @@ const Mission: React.FC = () => {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const animationRef = useRef<gsap.core.Timeline | null>(null);
   const scrollTlRef = useRef<gsap.core.Timeline | null>(null);
+  const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
-  const [lastClickTime, setLastClickTime] = useState<number>(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
@@ -65,8 +65,8 @@ const Mission: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, [checkMobile]);
 
-  // Apply card positions based on current index
-  const applyCardPositions = useCallback((targetIndex: number, duration: number = 0.8) => {
+  // Animate to specific card index
+  const animateToIndex = useCallback((targetIndex: number, duration: number = 0.8) => {
     const cardElements = cardsRef.current.filter(Boolean);
     if (cardElements.length === 0) return Promise.resolve();
 
@@ -75,6 +75,8 @@ const Mission: React.FC = () => {
       scaleStep: 0.03,
       opacityStep: 0.2,
     };
+
+    setIsAnimating(true);
 
     return new Promise<void>((resolve) => {
       gsap.to(cardElements, {
@@ -98,84 +100,60 @@ const Mission: React.FC = () => {
         },
         rotation: (cardIndex) => {
           const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return (newPosition - Math.floor(cards.length / 2)) * 0.75;
+          return (newPosition - Math.floor(cards.length / 2)) * 0.5;
         },
         force3D: true,
         onComplete: () => {
+          setIsAnimating(false);
           resolve();
         }
       });
     });
   }, [cards.length]);
 
-  // Create the perfect rotation animation
-  const createPerfectRotation = useCallback(() => {
-    const cardElements = cardsRef.current.filter(Boolean);
-    if (cardElements.length === 0 || !isAutoPlaying) return null;
-
-    const config = {
-      animationDuration: 1.5,
-      pauseDuration: 2.5, // Increased pause for better UX
-    };
-
-    const masterTimeline = gsap.timeline({
-      repeat: -1,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        // Update current index based on timeline progress
-        const progress = masterTimeline.progress();
-        const totalCycles = cards.length;
-        const currentCycle = Math.floor(progress * totalCycles);
-        const newIndex = (currentCycle + 1) % cards.length;
-        
-        // Only update if index actually changed
-        if (newIndex !== currentIndex) {
-          setCurrentIndex(newIndex);
-        }
-      }
-    });
-
-    // Create smooth rotation cycles
-    for (let cycle = 0; cycle < cards.length; cycle++) {
-      const cycleTimeline = gsap.timeline();
-      const targetIndex = (cycle + 1) % cards.length;
-
-      cycleTimeline.to(cardElements, {
-        duration: config.animationDuration,
-        ease: "power2.inOut",
-        y: (cardIndex) => {
-          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return newPosition * 15;
-        },
-        zIndex: (cardIndex) => {
-          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return cards.length - newPosition;
-        },
-        opacity: (cardIndex) => {
-          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return Math.max(0.5, 1 - (newPosition * 0.2));
-        },
-        scale: (cardIndex) => {
-          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return Math.max(0.85, 1 - (newPosition * 0.03));
-        },
-        rotation: (cardIndex) => {
-          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return (newPosition - Math.floor(cards.length / 2)) * 0.75;
-        },
-        force3D: true,
-        onStart: () => setIsAnimating(true),
-        onComplete: () => setIsAnimating(false)
-      });
-
-      cycleTimeline.to({}, { duration: config.pauseDuration });
-      masterTimeline.add(cycleTimeline);
+  // Auto-play with setInterval instead of recursive setTimeout
+  useEffect(() => {
+    // Clear any existing interval
+    if (autoPlayIntervalRef.current) {
+      clearInterval(autoPlayIntervalRef.current);
     }
 
-    return masterTimeline;
-  }, [cards.length, isAutoPlaying, currentIndex]);
+    // Only start auto-play if conditions are met
+    if (!isAutoPlaying || isMobile || !isInView) return;
 
-  // Desktop: Perfect card rotation animation
+    // Start auto-play with setInterval
+    autoPlayIntervalRef.current = setInterval(() => {
+      // Double-check conditions before proceeding
+      if (!isAutoPlaying || isMobile || !isInView) {
+        if (autoPlayIntervalRef.current) {
+          clearInterval(autoPlayIntervalRef.current);
+          autoPlayIntervalRef.current = null;
+        }
+        return;
+      }
+
+      setCurrentIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % cards.length;
+        
+        // Don't animate if currently animating
+        if (!isAnimating) {
+          animateToIndex(nextIndex, 1.2);
+        }
+        
+        return nextIndex;
+      });
+    }, 3000);
+
+    // Cleanup function
+    return () => {
+      if (autoPlayIntervalRef.current) {
+        clearInterval(autoPlayIntervalRef.current);
+        autoPlayIntervalRef.current = null;
+      }
+    };
+  }, [isAutoPlaying, isMobile, isInView, cards.length, animateToIndex]);
+
+  // Desktop: Initial setup
   useEffect(() => {
     if (isMobile || !containerRef.current || typeof window === 'undefined' || !isInView) return;
 
@@ -195,7 +173,7 @@ const Mission: React.FC = () => {
       x: 0,
       rotation: (index) => (index - Math.floor(cards.length / 2)) * 0.75,
       zIndex: (index) => cards.length - index,
-      opacity: (index) => Math.max(0.3, 1 - (index * config.opacityStep)),
+      opacity: (index) => Math.max(0.5, 1 - (index * config.opacityStep)),
       scale: (index) => Math.max(0.85, 1 - (index * config.scaleStep)),
       transformOrigin: config.transformOrigin,
       willChange: 'transform, opacity',
@@ -205,21 +183,7 @@ const Mission: React.FC = () => {
       transformStyle: 'preserve-3d'
     });
 
-    // Initialize animation with delay
-    const timer = setTimeout(() => {
-      if (isAutoPlaying) {
-        animationRef.current = createPerfectRotation();
-      }
-    }, 1500);
-
-    return () => {
-      clearTimeout(timer);
-      if (animationRef.current) {
-        animationRef.current.kill();
-        animationRef.current = null;
-      }
-    };
-  }, [cards.length, isMobile, isInView, createPerfectRotation, isAutoPlaying]);
+  }, [cards.length, isMobile, isInView]);
 
   // Mobile: Simple static cards
   useEffect(() => {
@@ -319,50 +283,27 @@ const Mission: React.FC = () => {
     };
   }, [cards.length, isMobile]);
 
-  // Navigation dot click handler - FIXED
-  const goToCard = useCallback(async (index: number) => {
-    const now = Date.now();
-    
-    // Prevent rapid clicks and ignore if already on target card
-    if (isMobile || isAnimating || index === currentIndex || now - lastClickTime < 300) {
-      return;
-    }
-    
-    setLastClickTime(now);
-    setIsAnimating(true);
-    setIsAutoPlaying(false); // Stop auto-play when user interacts
-    
-    // Kill existing animation
-    if (animationRef.current) {
-      animationRef.current.kill();
-      animationRef.current = null;
-    }
-    
-    // Update current index immediately for UI feedback
-    setCurrentIndex(index);
-    
-    // Apply the new card positions
-    await applyCardPositions(index, 0.8);
-    
-    setIsAnimating(false);
-    
-    // Resume auto-play after a delay
-    setTimeout(() => {
-      setIsAutoPlaying(true);
-    }, 3000);
-    
-  }, [isMobile, isAnimating, currentIndex, lastClickTime, applyCardPositions]);
+  // Navigation dot click handler
+  const goToCard = useCallback(async (targetIndex: number) => {
+    if (isMobile || isAnimating || targetIndex === currentIndex) return;
 
-  // Resume auto-play effect
-  useEffect(() => {
-    if (!isMobile && isAutoPlaying && !isAnimating && isInView) {
-      const timer = setTimeout(() => {
-        animationRef.current = createPerfectRotation();
-      }, 500);
-      
-      return () => clearTimeout(timer);
+    // Temporarily pause auto-play
+    if (autoPlayIntervalRef.current) {
+      clearInterval(autoPlayIntervalRef.current);
+      autoPlayIntervalRef.current = null;
     }
-  }, [isAutoPlaying, isAnimating, isMobile, isInView, createPerfectRotation]);
+
+    setCurrentIndex(targetIndex);
+    await animateToIndex(targetIndex, 0.6);
+
+    // Resume auto-play after 5 seconds
+    setTimeout(() => {
+      if (isAutoPlaying && !isMobile && isInView) {
+        setIsAutoPlaying(false);
+        setTimeout(() => setIsAutoPlaying(true), 100);
+      }
+    }, 5000);
+  }, [isMobile, isAnimating, currentIndex, animateToIndex, isAutoPlaying, isInView]);
 
   // Cleanup
   useEffect(() => {
@@ -374,6 +315,10 @@ const Mission: React.FC = () => {
       if (scrollTlRef.current) {
         scrollTlRef.current.kill();
         scrollTlRef.current = null;
+      }
+      if (autoPlayIntervalRef.current) {
+        clearInterval(autoPlayIntervalRef.current);
+        autoPlayIntervalRef.current = null;
       }
     };
   }, []);
@@ -466,6 +411,7 @@ const Mission: React.FC = () => {
                   style={{
                     position: 'relative',
                     willChange: 'auto',
+                    transformStyle: 'preserve-3d',
                     backfaceVisibility: 'hidden',
                     wordBreak: 'break-word',
                     hyphens: 'auto',
@@ -515,8 +461,8 @@ const Mission: React.FC = () => {
                   </div>
                 ))}
               </div>
-              
-              {/* Navigation Dots - ENHANCED */}
+
+              {/* Navigation Dots */}
               <div className="flex justify-center space-x-3 mt-8">
                 {cards.map((_, index) => (
                   <button
@@ -533,10 +479,6 @@ const Mission: React.FC = () => {
                     `}
                     disabled={isAnimating}
                     aria-label={`Go to card ${index + 1}`}
-                    style={{
-                      transform: currentIndex === index ? 'scale(1.1)' : 'scale(1)',
-                      transition: 'all 0.3s ease'
-                    }}
                   />
                 ))}
               </div>
@@ -544,6 +486,13 @@ const Mission: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Debug Info - Remove in production */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 right-4 bg-black/50 text-white p-2 rounded text-xs">
+          Current: {currentIndex} | Auto: {isAutoPlaying ? 'ON' : 'OFF'} | Animating: {isAnimating ? 'YES' : 'NO'}
+        </div>
+      )}
     </div>
   );
 };
