@@ -194,7 +194,7 @@ const Footer = () => {
           </video>
 
           {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
+          <div className="absolute inset-0 bg-black opacity-10 z-10"></div>
 
           {/* Centered text */}
           <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold z-20">
