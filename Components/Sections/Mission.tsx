@@ -23,6 +23,8 @@ const Mission: React.FC = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [lastClickTime, setLastClickTime] = useState<number>(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
@@ -50,7 +52,6 @@ const Mission: React.FC = () => {
     const isSmallScreen = screenWidth < 768;
     const isMediumScreen = screenWidth >= 768 && screenWidth < 1024;
 
-    // Only treat as mobile if it's a small screen OR medium screen with touch
     const isMobileDevice = isSmallScreen ||
       (isMediumScreen && 'ontouchstart' in window &&
         /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent));
@@ -64,6 +65,116 @@ const Mission: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, [checkMobile]);
 
+  // Apply card positions based on current index
+  const applyCardPositions = useCallback((targetIndex: number, duration: number = 0.8) => {
+    const cardElements = cardsRef.current.filter(Boolean);
+    if (cardElements.length === 0) return Promise.resolve();
+
+    const config = {
+      stackOffset: 15,
+      scaleStep: 0.03,
+      opacityStep: 0.2,
+    };
+
+    return new Promise<void>((resolve) => {
+      gsap.to(cardElements, {
+        duration,
+        ease: "power2.inOut",
+        y: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return newPosition * config.stackOffset;
+        },
+        zIndex: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return cards.length - newPosition;
+        },
+        opacity: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return Math.max(0.5, 1 - (newPosition * config.opacityStep));
+        },
+        scale: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return Math.max(0.85, 1 - (newPosition * config.scaleStep));
+        },
+        rotation: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return (newPosition - Math.floor(cards.length / 2)) * 0.75;
+        },
+        force3D: true,
+        onComplete: () => {
+          resolve();
+        }
+      });
+    });
+  }, [cards.length]);
+
+  // Create the perfect rotation animation
+  const createPerfectRotation = useCallback(() => {
+    const cardElements = cardsRef.current.filter(Boolean);
+    if (cardElements.length === 0 || !isAutoPlaying) return null;
+
+    const config = {
+      animationDuration: 1.5,
+      pauseDuration: 2.5, // Increased pause for better UX
+    };
+
+    const masterTimeline = gsap.timeline({
+      repeat: -1,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        // Update current index based on timeline progress
+        const progress = masterTimeline.progress();
+        const totalCycles = cards.length;
+        const currentCycle = Math.floor(progress * totalCycles);
+        const newIndex = (currentCycle + 1) % cards.length;
+        
+        // Only update if index actually changed
+        if (newIndex !== currentIndex) {
+          setCurrentIndex(newIndex);
+        }
+      }
+    });
+
+    // Create smooth rotation cycles
+    for (let cycle = 0; cycle < cards.length; cycle++) {
+      const cycleTimeline = gsap.timeline();
+      const targetIndex = (cycle + 1) % cards.length;
+
+      cycleTimeline.to(cardElements, {
+        duration: config.animationDuration,
+        ease: "power2.inOut",
+        y: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return newPosition * 15;
+        },
+        zIndex: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return cards.length - newPosition;
+        },
+        opacity: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return Math.max(0.5, 1 - (newPosition * 0.2));
+        },
+        scale: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return Math.max(0.85, 1 - (newPosition * 0.03));
+        },
+        rotation: (cardIndex) => {
+          const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
+          return (newPosition - Math.floor(cards.length / 2)) * 0.75;
+        },
+        force3D: true,
+        onStart: () => setIsAnimating(true),
+        onComplete: () => setIsAnimating(false)
+      });
+
+      cycleTimeline.to({}, { duration: config.pauseDuration });
+      masterTimeline.add(cycleTimeline);
+    }
+
+    return masterTimeline;
+  }, [cards.length, isAutoPlaying, currentIndex]);
+
   // Desktop: Perfect card rotation animation
   useEffect(() => {
     if (isMobile || !containerRef.current || typeof window === 'undefined' || !isInView) return;
@@ -71,101 +182,36 @@ const Mission: React.FC = () => {
     const cardElements = cardsRef.current.filter(Boolean);
     if (cardElements.length === 0) return;
 
-    // Enhanced animation configuration
     const config = {
       stackOffset: 15,
-      baseY: 0,
       scaleStep: 0.03,
       opacityStep: 0.2,
-      animationDuration: 1.5,
-      pauseDuration: 1.5,
-      rotationRange: 3,
-      perspective: 1000,
       transformOrigin: "50% 50%"
     };
 
-    // Kill existing animation
-    if (animationRef.current) {
-      animationRef.current.kill();
-    }
+    // Initial stack setup
+    gsap.set(cardElements, {
+      y: (index) => index * config.stackOffset,
+      x: 0,
+      rotation: (index) => (index - Math.floor(cards.length / 2)) * 0.75,
+      zIndex: (index) => cards.length - index,
+      opacity: (index) => Math.max(0.3, 1 - (index * config.opacityStep)),
+      scale: (index) => Math.max(0.85, 1 - (index * config.scaleStep)),
+      transformOrigin: config.transformOrigin,
+      willChange: 'transform, opacity',
+      force3D: true,
+      backfaceVisibility: 'hidden',
+      perspective: 1000,
+      transformStyle: 'preserve-3d'
+    });
 
-    // Perfect initial stack setup with perspective
-    const setupInitialStack = () => {
-      gsap.set(cardElements, {
-        y: (index) => index * config.stackOffset,
-        x: 0,
-        rotation: (index) => (index - Math.floor(cards.length / 2)) * 0.75,
-        zIndex: (index) => cards.length - index,
-        opacity: (index) => Math.max(0.3, 1 - (index * config.opacityStep)),
-        scale: (index) => Math.max(0.85, 1 - (index * config.scaleStep)),
-        transformOrigin: config.transformOrigin,
-        willChange: 'transform, opacity',
-        force3D: true,
-        backfaceVisibility: 'hidden',
-        perspective: config.perspective,
-        transformStyle: 'preserve-3d'
-      });
-    };
-
-    setupInitialStack();
-
-    // Enhanced smooth rotation with perfect timing
-    const createPerfectRotation = () => {
-      const masterTimeline = gsap.timeline({
-        repeat: -1,
-        ease: "power2.inOut",
-        onRepeat: () => {
-          setCurrentIndex((prev) => (prev + 1) % cards.length);
-        }
-      });
-
-      // Create smooth rotation cycles
-      for (let cycle = 0; cycle < cards.length; cycle++) {
-        const cycleTimeline = gsap.timeline();
-
-        // Animate each card to its new position with perfect timing
-        cycleTimeline.to(cardElements, {
-          duration: config.animationDuration,
-          ease: "power2.inOut",
-          y: (cardIndex) => {
-            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return newPosition * config.stackOffset;
-          },
-          zIndex: (cardIndex) => {
-            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return cards.length - newPosition;
-          },
-          opacity: (cardIndex) => {
-            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return Math.max(0.5, 1 - (newPosition * config.opacityStep));
-          },
-          scale: (cardIndex) => {
-            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return Math.max(0.85, 1 - (newPosition * config.scaleStep));
-          },
-          rotation: (cardIndex) => {
-            const newPosition = (cardIndex - cycle - 1 + cards.length) % cards.length;
-            return (newPosition - Math.floor(cards.length / 2)) * 0.75;
-          },
-          force3D: true,
-          onStart: () => setIsAnimating(true),
-          onComplete: () => setIsAnimating(false)
-        });
-
-        // Perfect pause timing
-        cycleTimeline.to({}, { duration: config.pauseDuration });
-        masterTimeline.add(cycleTimeline);
-      }
-
-      return masterTimeline;
-    };
-
-    // Initialize with perfect timing
+    // Initialize animation with delay
     const timer = setTimeout(() => {
-      animationRef.current = createPerfectRotation();
+      if (isAutoPlaying) {
+        animationRef.current = createPerfectRotation();
+      }
     }, 1500);
 
-    // Cleanup
     return () => {
       clearTimeout(timer);
       if (animationRef.current) {
@@ -173,82 +219,75 @@ const Mission: React.FC = () => {
         animationRef.current = null;
       }
     };
-  }, [cards.length, isMobile, isInView]);
+  }, [cards.length, isMobile, isInView, createPerfectRotation, isAutoPlaying]);
 
-  // Mobile: Simple static cards - no complex animations
+  // Mobile: Simple static cards
   useEffect(() => {
     if (!isMobile || !containerRef.current || typeof window === 'undefined') return;
 
     const cardElements = cardsRef.current.filter(Boolean);
     if (cardElements.length === 0) return;
 
-    // Kill existing timeline and ScrollTriggers
     if (scrollTlRef.current) {
       scrollTlRef.current.kill();
       ScrollTrigger.getAll().forEach(st => st.kill());
     }
 
-    // Set initial positions with stacking offset
     gsap.set(cardElements, {
-      y: (i) => i * 20, // Slightly increased initial offset
+      y: (i) => i * 20,
       opacity: 0,
-      scale: 0.97, // Closer to 1 for smoother transition
+      scale: 0.97,
       zIndex: (i, target, targets) => targets.length - i,
       transformOrigin: "center center",
       willChange: "transform, opacity",
-      filter: "blur(1px)", // Subtle blur for depth
+      filter: "blur(1px)",
     });
 
-    // Create master timeline
     scrollTlRef.current = gsap.timeline({
-      defaults: { ease: "none" }, // No easing = fastest response
+      defaults: { ease: "none" },
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top 90%",
-        end: "center 10%",   // Very short scroll distance
-        scrub: 0.1,       // Almost immediate follow
+        end: "center 10%",
+        scrub: 0.1,
         invalidateOnRefresh: true,
       }
     });
 
-    // Animation for each card
     cardElements.forEach((card, index) => {
       if (!card) return;
 
-      // Initial reveal animation with smoother easing and timing
       gsap.to(card, {
         opacity: 1,
-        y: index * 8, // Reduced offset for tighter stack
+        y: index * 8,
         scale: 1,
         filter: "blur(0px)",
         duration: 1,
-        delay: index * 0.1, // Shorter delay for quicker cascade
-        ease: "expo.out", // Smoother easing
+        delay: index * 0.1,
+        ease: "expo.out",
         scrollTrigger: {
           trigger: card,
-          start: "top 90%", // Slightly higher trigger point
+          start: "top 90%",
           end: "top 70%",
           once: true,
           markers: false
         }
       });
 
-      // Scroll-based animation with improved physics
       const cardTl = gsap.timeline({
         scrollTrigger: {
           trigger: card,
-          start: "top 85%", // Adjusted trigger points
+          start: "top 85%",
           end: "top 15%",
-          scrub: 1.5, // Smoother scrubbing
+          scrub: 1.5,
           markers: false
         }
       });
 
-      // Enhanced animation sequence
       cardTl
         .to(card, {
-          y: -index * 40, // Increased rise for more dramatic effect
-          ease: "sine.inOut" // Softer easing
+          y: -index * 40,
+          ease: "sine.inOut"
         }, 0)
         .to(card, {
           scale: 1.05,
@@ -256,12 +295,11 @@ const Mission: React.FC = () => {
           ease: "power1.in"
         }, 0)
         .to(card, {
-          boxShadow: "0 10px 30px rgba(0,0,0,0.2)", // Added shadow for depth
+          boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
           ease: "power1.out"
         }, 0);
     });
 
-    // Add a slight parallax effect to the container for smoother overall feel
     gsap.to(containerRef.current, {
       y: -15,
       scrollTrigger: {
@@ -281,7 +319,52 @@ const Mission: React.FC = () => {
     };
   }, [cards.length, isMobile]);
 
-  // Enhanced cleanup
+  // Navigation dot click handler - FIXED
+  const goToCard = useCallback(async (index: number) => {
+    const now = Date.now();
+    
+    // Prevent rapid clicks and ignore if already on target card
+    if (isMobile || isAnimating || index === currentIndex || now - lastClickTime < 300) {
+      return;
+    }
+    
+    setLastClickTime(now);
+    setIsAnimating(true);
+    setIsAutoPlaying(false); // Stop auto-play when user interacts
+    
+    // Kill existing animation
+    if (animationRef.current) {
+      animationRef.current.kill();
+      animationRef.current = null;
+    }
+    
+    // Update current index immediately for UI feedback
+    setCurrentIndex(index);
+    
+    // Apply the new card positions
+    await applyCardPositions(index, 0.8);
+    
+    setIsAnimating(false);
+    
+    // Resume auto-play after a delay
+    setTimeout(() => {
+      setIsAutoPlaying(true);
+    }, 3000);
+    
+  }, [isMobile, isAnimating, currentIndex, lastClickTime, applyCardPositions]);
+
+  // Resume auto-play effect
+  useEffect(() => {
+    if (!isMobile && isAutoPlaying && !isAnimating && isInView) {
+      const timer = setTimeout(() => {
+        animationRef.current = createPerfectRotation();
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isAutoPlaying, isAnimating, isMobile, isInView, createPerfectRotation]);
+
+  // Cleanup
   useEffect(() => {
     return () => {
       if (animationRef.current) {
@@ -294,63 +377,6 @@ const Mission: React.FC = () => {
       }
     };
   }, []);
-
-  // Navigation dot click handler for desktop
-  const goToCard = (index: number) => {
-    if (isMobile || isAnimating) return;
-    
-    setCurrentIndex(index);
-    
-    // Pause current animation
-    if (animationRef.current) {
-      animationRef.current.pause();
-    }
-    
-    // Animate to specific card
-    const cardElements = cardsRef.current.filter(Boolean);
-    const config = {
-      stackOffset: 15,
-      scaleStep: 0.03,
-      opacityStep: 0.2,
-    };
-    
-    setIsAnimating(true);
-    
-    gsap.to(cardElements, {
-      duration: 0.8,
-      ease: "power2.inOut",
-      y: (cardIndex) => {
-        const newPosition = (cardIndex - index + cards.length) % cards.length;
-        return newPosition * config.stackOffset;
-      },
-      zIndex: (cardIndex) => {
-        const newPosition = (cardIndex - index + cards.length) % cards.length;
-        return cards.length - newPosition;
-      },
-      opacity: (cardIndex) => {
-        const newPosition = (cardIndex - index + cards.length) % cards.length;
-        return Math.max(0.5, 1 - (newPosition * config.opacityStep));
-      },
-      scale: (cardIndex) => {
-        const newPosition = (cardIndex - index + cards.length) % cards.length;
-        return Math.max(0.85, 1 - (newPosition * config.scaleStep));
-      },
-      rotation: (cardIndex) => {
-        const newPosition = (cardIndex - index + cards.length) % cards.length;
-        return (newPosition - Math.floor(cards.length / 2)) * 0.75;
-      },
-      force3D: true,
-      onComplete: () => {
-        setIsAnimating(false);
-        // Resume animation after a delay
-        setTimeout(() => {
-          if (animationRef.current) {
-            animationRef.current.resume();
-          }
-        }, 2000);
-      }
-    });
-  };
 
   return (
     <div
@@ -453,7 +479,6 @@ const Mission: React.FC = () => {
               ))}
             </>
           ) : (
-            // Desktop: Absolutely positioned cards for rotation
             <>
               <div
                 className="relative flex items-center justify-center w-full h-full"
@@ -491,7 +516,7 @@ const Mission: React.FC = () => {
                 ))}
               </div>
               
-              {/* Navigation Dots - Desktop Only */}
+              {/* Navigation Dots - ENHANCED */}
               <div className="flex justify-center space-x-3 mt-8">
                 {cards.map((_, index) => (
                   <button
@@ -500,13 +525,18 @@ const Mission: React.FC = () => {
                     className={`
                       w-3 h-3 rounded-full transition-all duration-300 border-2
                       ${currentIndex === index
-                        ? 'bg-[#FFFDFA] border-[#FFFDFA] scale-110'
+                        ? 'bg-[#FFFDFA] border-[#FFFDFA] scale-110 shadow-lg'
                         : 'bg-transparent border-[#FFFDFA]/50 hover:border-[#FFFDFA]/80 hover:scale-105'
                       }
-                      ${isAnimating ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      ${isAnimating ? 'pointer-events-none opacity-50' : 'cursor-pointer hover:shadow-md'}
+                      focus:outline-none focus:ring-2 focus:ring-[#FFFDFA]/50 focus:ring-offset-2 focus:ring-offset-transparent
                     `}
                     disabled={isAnimating}
                     aria-label={`Go to card ${index + 1}`}
+                    style={{
+                      transform: currentIndex === index ? 'scale(1.1)' : 'scale(1)',
+                      transition: 'all 0.3s ease'
+                    }}
                   />
                 ))}
               </div>
