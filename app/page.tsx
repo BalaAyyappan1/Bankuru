@@ -47,7 +47,7 @@ export default function Home() {
           <div className=" md:mt-[120px] md::mb-[200px] mb-15  mt-10">
             <Message />
           </div>
-          <div className="md:mt-[150px]   md:mb-[10px]">
+          <div className="md:mt-[250px]   md:mb-[10px]">
             <Mission />
           </div>
           <div>

@@ -37,9 +37,11 @@ const Vision = () => {
   const getImagePosition = (index: number) => {
     const positions = [
       "2xl:-bottom-25 2xl:-right-20 xl:-bottom-25 xl:-right-20 lg:-bottom-25 lg:-right-20 md:-bottom-25 md:-right-20 bottom-6 -right-15   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "2xl:-top-28 2xl:-right-23 xl:-top-26 xl:-right-29 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 -left-21 xl:left-auto lg:left-auto md:left-auto   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      // "2xl:-top-27 2xl:-right-24 xl:-top-26 xl:-right-29 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 -left-21 xl:left-auto lg:left-auto md:left-auto   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-top-27 2xl:-right-26.5 xl:-top-26 xl:-left-29 lg:-top-28 lg:-right-23 md:-top-28 md:-left-23 bottom-6 -left-24 xl:left-auto xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
+
       "2xl:-bottom-24 2xl:-left-24 xl:-bottom-24 xl:-left-24 lg:-bottom-24 lg:-left-24 md:-bottom-24 md:-left-24 bottom-10 -right-15  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "2xl:-top-24 2xl:-left-24 xl:-top-24 xl:-left-24 lg:-top-24 lg:-left-24 md:-top-24 md:-left-24 -top-24 -left-24 text-end xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
+      "2xl:-top-24 2xl:-left-24 xl:-top-24 xl:-left-24 lg:-top-24 lg:-left-24 md:-top-24 md:-left-24 -top-24 -left-24 xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
     ];
     return positions[index % positions.length];
   };
@@ -57,9 +59,7 @@ const Vision = () => {
 
   return (
     <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent  w-full">
-      {/* <h1 className="xl:text-[42px] lg:text-[32px] md:text-[28px] text-[24px] text-white font-semibold text-center">
-        Our Vision
-      </h1> */}
+    
       <motion.h1
       ref={ref}
       initial={{ opacity: 0, y: -50 }}
@@ -101,30 +101,31 @@ const Vision = () => {
             </div>
 
             <motion.div
-              className={`absolute ${getImagePosition(index)}`}
-              style={{
-                animation: index === 1 || index === 2 ? 'rotate 15s linear infinite' : 'none',
-              }}
-              variants={{
-                rest: {
-                  scale: 1,
-                  rotate: 1,
-                  y: 0
-                },
-                hover: {
-                  scale: 1.1,
-                  rotate: 2,
-                  y: -5
-                }
-              }}
-              transition={{
-                duration: 0.4,
-                ease: "easeOut",
-                type: "spring",
-                stiffness: 300,
-                damping: 20
-              }}
-            >
+  className={`absolute ${getImagePosition(index)}`}
+  style={{
+    animation: index === 1 || index === 2 ? 'rotate 15s linear infinite' : 'none',
+    transformOrigin: 'center center',
+  }}
+  variants={{
+    rest: {
+      scale: 1,
+      y: 0
+    },
+    hover: {
+      scale: 1.1,
+      y: -5,
+
+    }
+  }}
+  transition={{
+    duration: 0.4,
+    ease: "easeOut",
+    type: "spring",
+    stiffness: 300,
+    damping: 20
+  }}
+>
+
             
                 <Image src={content.image} alt={content.title} style={{
                   width: '100%',
@@ -135,13 +136,14 @@ const Vision = () => {
 
               <style jsx>{`
   @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
   }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 `}</style>
             </motion.div>
           </motion.div>
