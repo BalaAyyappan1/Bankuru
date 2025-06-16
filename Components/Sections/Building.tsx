@@ -45,7 +45,7 @@ const Building = () => {
           <div className='absolute inset-0  flex md:flex-row flex-col-reverse mt-10 justify-between items-center text-center md:px-24 py-6 space-y-2'>
             <motion.div
               ref={ref}
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: -40 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, ease: "easeOut" }}
               className=" flex flex-col justify-center md:items-start items-center text-center px-4 md:py-6 py-3  md:space-y-2">

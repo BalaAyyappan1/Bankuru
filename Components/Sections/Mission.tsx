@@ -64,7 +64,7 @@ const Mission: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, [checkMobile]);
 
-  // Desktop: Perfect card rotation animation
+  // Desktop: Perfect card rotation animation (UNCHANGED)
   useEffect(() => {
     if (isMobile || !containerRef.current || typeof window === 'undefined' || !isInView) return;
 
@@ -175,51 +175,73 @@ const Mission: React.FC = () => {
     };
   }, [cards.length, isMobile, isInView]);
 
-  // Mobile: Scroll-triggered stack animation
+  // Mobile: Enhanced scroll-triggered stacking animation with perfect timing
   useEffect(() => {
     if (!isMobile || !containerRef.current || typeof window === 'undefined') return;
 
-    // Updated ScrollTrigger settings
-    const scrollTriggerConfig = {
-      trigger: containerRef.current,
-      start: "top 90%",
-      end: "center 30%", 
-      scrub: 1.5,
-      refreshPriority: -2,
-      pin: false,
-      anticipatePin: 1,
+    const cardElements = cardsRef.current.filter(Boolean);
+    if (cardElements.length === 0) return;
+
+    // Kill existing timeline
+    if (scrollTlRef.current) {
+      scrollTlRef.current.kill();
+    }
+
+    // Enhanced mobile animation configuration
+    const mobileConfig = {
+      initialOffset: 120,
+      stackSpacing: 20,
+      overlapOffset: 80,
+      animationDuration: 0.8,
+      staggerDelay: 0.15
     };
 
-    scrollTlRef.current = gsap.timeline({
-      scrollTrigger: scrollTriggerConfig
-    });
-
-    const cardElements = cardsRef.current.filter(Boolean);
-    
-    // Mobile-optimized initial positioning
-    const initialOffset = 100;
-    const staggerDistance = 15;
-    
+    // Set initial positions - cards start stacked and spread out
     gsap.set(cardElements, {
-      y: (index) => initialOffset + (index * staggerDistance),
+      y: (index) => mobileConfig.initialOffset + (index * mobileConfig.stackSpacing),
+      opacity: 1,
+      scale: 1,
+      rotation: 0,
       zIndex: (index) => cards.length - index,
       willChange: 'transform',
-      force3D: true
+      force3D: true,
+      transformOrigin: "center center"
     });
 
-    // Updated animation - cards stack more quickly with tighter timing
+    // Create scroll-triggered timeline
+    scrollTlRef.current = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 85%",
+        end: "center 25%",
+        scrub: 1.2,
+        refreshPriority: -1,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+      }
+    });
+
+    // Animate cards to stack with perfect overlapping
     cardElements.forEach((card, index) => {
       if (!card) return;
 
-      const startTime = index * 0.25;
-      const yTarget = index === 0 ? 0 : -(index * 120);
+      const isLastCard = index === cardElements.length - 1;
+      const startTime = index * mobileConfig.staggerDelay;
+      
+      // Final positions create a neat stack with slight overlap
+      const finalY = index === 0 ? 0 : -(index * mobileConfig.overlapOffset);
+      const finalScale = index === 0 ? 1 : 0.95 - (index * 0.02);
+      const finalOpacity = index === 0 ? 1 : 0.85 - (index * 0.05);
 
       scrollTlRef.current!.to(card, {
-        y: yTarget,
+        y: finalY,
+        scale: finalScale,
+        opacity: Math.max(0.7, finalOpacity),
+        rotation: (index - 2) * 0.5, // Slight rotation for natural look
         zIndex: cards.length + index,
-        duration: 1.2,
+        duration: mobileConfig.animationDuration,
         ease: "power2.out",
-        force3D: true
+        force3D: true,
       }, startTime);
     });
 
@@ -315,7 +337,7 @@ const Mission: React.FC = () => {
         {/* Cards Container */}
         <div className={`
           ${isMobile 
-            ? 'flex flex-col gap-4 w-full h-auto min-h-[200px] order-1' 
+            ? 'flex flex-col gap-4 w-full h-auto min-h-[400px] order-1 relative' 
             : 'flex flex-col items-center justify-center relative w-1/2 max-w-[600px] h-[450px]'
           }
         `}>
@@ -325,22 +347,29 @@ const Mission: React.FC = () => {
                 <div
                   key={index}
                   ref={(el) => { cardsRef.current[index] = el; }}
-                  className="MissionCard${(index % 2) + 1} mt-2 flex justify-center items-center text-center font-medium rounded-[20px] p-4 text-sm sm:text-base leading-tight w-full md:min-h-[120px] max-w-md mx-auto"
+                  className={`
+                    ${index % 2 === 0 ? 'MissionCard1' : 'MissionCard2'} 
+                    mt-2 flex justify-center items-center text-center font-medium 
+                    rounded-[20px] p-4 text-sm sm:text-base leading-tight w-full 
+                    md:min-h-[120px] min-h-[100px] max-w-md mx-auto
+                    backdrop-blur-sm border border-white/10
+                  `}
                   style={{ 
                     position: 'relative',
                     willChange: 'transform',
                     backfaceVisibility: 'hidden',
                     transform: 'translateZ(0)',
                     wordBreak: 'break-word',
-                    hyphens: 'auto'
+                    hyphens: 'auto',
+                    boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
                   }}
                 >
-                  <span className="text-[#FFFDFA]">{card.title}</span>
+                  <span className="text-[#FFFDFA] relative z-10">{card.title}</span>
                 </div>
               ))}
             </>
           ) : (
-            // Desktop: Absolutely positioned cards for rotation
+            // Desktop: Absolutely positioned cards for rotation (UNCHANGED)
             <div 
               className="relative flex items-center justify-center w-full h-full"
               style={{
@@ -354,7 +383,7 @@ const Mission: React.FC = () => {
                   key={index}
                   ref={(el) => { cardsRef.current[index] = el; }}
                   className={`
-                    MissionCard${(index % 2) + 1} 
+                    ${index % 2 === 0 ? 'MissionCard1' : 'MissionCard2'} 
                     absolute flex justify-center items-center text-center 
                     font-medium rounded-2xl backdrop-blur-sm border border-white/10
                     p-6 text-lg lg:text-xl leading-relaxed w-[500px] h-[180px]
