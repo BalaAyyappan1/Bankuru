@@ -328,7 +328,7 @@ const Mission: React.FC = () => {
                   backfaceVisibility: 'hidden'
                 }}
                 priority
-                unoptimized
+                unoptimized={true}
               />
             </div>
           )}
