@@ -37,7 +37,7 @@ const About = () => {
           </p>
         </div>
 
-        {/* 3D model */}
+        {/* 3D mode */}
         <div className="max-w-[50%] ">
             <Image
               src="/for-ios.gif"
