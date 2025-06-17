@@ -1,12 +1,12 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Group } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, useInView } from 'framer-motion';
 
-// Register ScrollTrigger plugin
+// Register ScrollTrigger plugin once
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -18,17 +18,21 @@ interface Card {
 const Mission: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const animationRef = useRef<gsap.core.Timeline | null>(null);
-  const scrollTlRef = useRef<gsap.core.Timeline | null>(null);
   const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const autoPlayPausedRef = useRef<boolean>(false);
+  const isInitializedRef = useRef<boolean>(false);
+  const lastAnimationTime = useRef<number>(0);
+  
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
+  
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, margin: '-100px' });
+  const isInView = useInView(ref, { once: false, margin: '-50px' });
 
-  const cards: Card[] = [
+  // Memoized cards data
+  const cards: Card[] = useMemo(() => [
     {
       title: "We're currently a lean team — and we're always open to passionate interns, collaborators, or early teammates",
     },
@@ -44,10 +48,13 @@ const Mission: React.FC = () => {
     {
       title: "We'll reply to everyone who reaches out. And if you're the right fit — yes, we'll make it work :)"
     }
-  ];
+  ], []);
 
-  // Enhanced mobile detection
+  // Optimized mobile detection with debouncing
   const checkMobile = useCallback(() => {
+    const now = Date.now();
+    if (now - lastAnimationTime.current < 100) return; // Throttle resize events
+    
     const screenWidth = window.innerWidth;
     const isSmallScreen = screenWidth < 768;
     const isMediumScreen = screenWidth >= 768 && screenWidth < 1024;
@@ -56,35 +63,61 @@ const Mission: React.FC = () => {
       (isMediumScreen && 'ontouchstart' in window &&
         /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent));
 
-    setIsMobile(isMobileDevice);
+    setIsMobile(prev => prev !== isMobileDevice ? isMobileDevice : prev);
   }, []);
 
+  // Optimized resize handler
   useEffect(() => {
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    let timeoutId: NodeJS.Timeout;
+    
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkMobile, 150); // Debounce resize
+    };
+    
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
   }, [checkMobile]);
 
-  // Animate to specific card index
-  const animateToIndex = useCallback((targetIndex: number, duration: number = 0.8) => {
-    const cardElements = cardsRef.current.filter(Boolean);
-    if (cardElements.length === 0) return Promise.resolve();
+  // Memoized animation config
+  const animationConfig = useMemo(() => ({
+    stackOffset: 15,
+    scaleStep: 0.03,
+    opacityStep: 0.2,
+    transformOrigin: "50% 50%",
+    duration: 0.8,
+    ease: "power2.inOut"
+  }), []);
 
-    const config = {
-      stackOffset: 15,
-      scaleStep: 0.03,
-      opacityStep: 0.2,
-    };
+  // Optimized animate to index function
+  const animateToIndex = useCallback((targetIndex: number, duration: number = 0.8) => {
+    const now = Date.now();
+    if (now - lastAnimationTime.current < 50) return Promise.resolve(); // Prevent spam
+    lastAnimationTime.current = now;
+
+    const cardElements = cardsRef.current.filter(Boolean);
+    if (cardElements.length === 0 || isAnimating) return Promise.resolve();
 
     setIsAnimating(true);
 
     return new Promise<void>((resolve) => {
-      gsap.to(cardElements, {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setIsAnimating(false);
+          resolve();
+        }
+      });
+
+      tl.to(cardElements, {
         duration,
-        ease: "power2.inOut",
+        ease: animationConfig.ease,
         y: (cardIndex) => {
           const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return newPosition * config.stackOffset;
+          return newPosition * animationConfig.stackOffset;
         },
         zIndex: (cardIndex) => {
           const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
@@ -92,39 +125,31 @@ const Mission: React.FC = () => {
         },
         opacity: (cardIndex) => {
           const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return Math.max(0.5, 1 - (newPosition * config.opacityStep));
+          return Math.max(0.5, 1 - (newPosition * animationConfig.opacityStep));
         },
         scale: (cardIndex) => {
           const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
-          return Math.max(0.85, 1 - (newPosition * config.scaleStep));
+          return Math.max(0.85, 1 - (newPosition * animationConfig.scaleStep));
         },
         rotation: (cardIndex) => {
           const newPosition = (cardIndex - targetIndex + cards.length) % cards.length;
           return (newPosition - Math.floor(cards.length / 2)) * 0.5;
-        },
-        force3D: true,
-        onComplete: () => {
-          setIsAnimating(false);
-          resolve();
         }
       });
     });
-  }, [cards.length]);
+  }, [cards.length, animationConfig, isAnimating]);
 
-  // Auto-play with setInterval instead of recursive setTimeout
-  useEffect(() => {
-    // Clear any existing interval
+  // Optimized auto-play function
+  const startAutoPlay = useCallback(() => {
     if (autoPlayIntervalRef.current) {
       clearInterval(autoPlayIntervalRef.current);
+      autoPlayIntervalRef.current = null;
     }
 
-    // Only start auto-play if conditions are met
-    if (!isAutoPlaying || isMobile || !isInView) return;
+    if (!isAutoPlaying || isMobile || !isInView || autoPlayPausedRef.current || isAnimating) return;
 
-    // Start auto-play with setInterval
     autoPlayIntervalRef.current = setInterval(() => {
-      // Double-check conditions before proceeding
-      if (!isAutoPlaying || isMobile || !isInView) {
+      if (!isAutoPlaying || isMobile || !isInView || autoPlayPausedRef.current || isAnimating) {
         if (autoPlayIntervalRef.current) {
           clearInterval(autoPlayIntervalRef.current);
           autoPlayIntervalRef.current = null;
@@ -134,90 +159,70 @@ const Mission: React.FC = () => {
 
       setCurrentIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % cards.length;
-        
-        // Don't animate if currently animating
-        if (!isAnimating) {
-          animateToIndex(nextIndex, 1.2);
-        }
-        
+        animateToIndex(nextIndex, 1.0);
         return nextIndex;
       });
-    }, 3000);
+    }, 3000); // Increased interval to 3s for smoother experience
+  }, [isAutoPlaying, isMobile, isInView, cards.length, animateToIndex, isAnimating]);
 
-    // Cleanup function
+  // Auto-play effect with cleanup
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      startAutoPlay();
+    }, 500); // Delay initial auto-play
+
     return () => {
+      clearTimeout(timer);
       if (autoPlayIntervalRef.current) {
         clearInterval(autoPlayIntervalRef.current);
         autoPlayIntervalRef.current = null;
       }
     };
-  }, [isAutoPlaying, isMobile, isInView, cards.length, animateToIndex]);
+  }, [startAutoPlay]);
 
-  // Desktop: Initial setup
+  // Desktop initialization - run once
   useEffect(() => {
-    if (isMobile || !containerRef.current || typeof window === 'undefined' || !isInView) return;
+    if (isMobile || !containerRef.current || typeof window === 'undefined' || 
+        !isInView || isInitializedRef.current) return;
 
     const cardElements = cardsRef.current.filter(Boolean);
     if (cardElements.length === 0) return;
 
-    const config = {
-      stackOffset: 15,
-      scaleStep: 0.03,
-      opacityStep: 0.2,
-      transformOrigin: "50% 50%"
-    };
-
-    // Initial stack setup
+    // Set initial positions immediately without animation
     gsap.set(cardElements, {
-      y: (index) => index * config.stackOffset,
+      y: (index) => index * animationConfig.stackOffset,
       x: 0,
       rotation: (index) => (index - Math.floor(cards.length / 2)) * 0.75,
       zIndex: (index) => cards.length - index,
-      opacity: (index) => Math.max(0.5, 1 - (index * config.opacityStep)),
-      scale: (index) => Math.max(0.85, 1 - (index * config.scaleStep)),
-      transformOrigin: config.transformOrigin,
-      willChange: 'transform, opacity',
-      force3D: true,
-      backfaceVisibility: 'hidden',
-      perspective: 1000,
-      transformStyle: 'preserve-3d'
+      opacity: (index) => Math.max(0.5, 1 - (index * animationConfig.opacityStep)),
+      scale: (index) => Math.max(0.85, 1 - (index * animationConfig.scaleStep)),
+      transformOrigin: animationConfig.transformOrigin,
+      force3D: true
     });
 
-  }, [cards.length, isMobile, isInView]);
+    isInitializedRef.current = true;
+  }, [cards.length, isMobile, isInView, animationConfig]);
 
-  // Mobile: Simple static cards
+  // Mobile scroll animations - optimized
   useEffect(() => {
     if (!isMobile || !containerRef.current || typeof window === 'undefined') return;
 
     const cardElements = cardsRef.current.filter(Boolean);
     if (cardElements.length === 0) return;
 
-    if (scrollTlRef.current) {
-      scrollTlRef.current.kill();
-      ScrollTrigger.getAll().forEach(st => st.kill());
-    }
+    // Clear any existing ScrollTriggers
+    ScrollTrigger.getAll().forEach(st => st.kill());
 
+    // Initial setup for mobile cards
     gsap.set(cardElements, {
       y: (i) => i * 20,
       opacity: 0,
       scale: 0.97,
       zIndex: (i, target, targets) => targets.length - i,
-      transformOrigin: "center center",
-      willChange: "transform, opacity",
-      filter: "blur(1px)",
+      force3D: true
     });
 
-    scrollTlRef.current = gsap.timeline({
-      defaults: { ease: "none" },
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 90%",
-        end: "center 10%",
-        scrub: 0.1,
-        invalidateOnRefresh: true,
-      }
-    });
-
+    // Animate cards in sequence
     cardElements.forEach((card, index) => {
       if (!card) return;
 
@@ -225,69 +230,30 @@ const Mission: React.FC = () => {
         opacity: 1,
         y: index * 8,
         scale: 1,
-        filter: "blur(0px)",
-        duration: 1,
+        duration: 0.8,
         delay: index * 0.1,
-        ease: "expo.out",
-        scrollTrigger: {
-          trigger: card,
-          start: "top 90%",
-          end: "top 70%",
-          once: true,
-          markers: false
-        }
-      });
-
-      const cardTl = gsap.timeline({
+        ease: "power2.out",
         scrollTrigger: {
           trigger: card,
           start: "top 85%",
-          end: "top 15%",
-          scrub: 1.5,
-          markers: false
+          end: "top 70%",
+          once: true,
+          toggleActions: "play none none none"
         }
       });
-
-      cardTl
-        .to(card, {
-          y: -index * 40,
-          ease: "sine.inOut"
-        }, 0)
-        .to(card, {
-          scale: 1.05,
-          zIndex: cardElements.length + index,
-          ease: "power1.in"
-        }, 0)
-        .to(card, {
-          boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-          ease: "power1.out"
-        }, 0);
-    });
-
-    gsap.to(containerRef.current, {
-      y: -15,
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1.5
-      }
     });
 
     return () => {
-      if (scrollTlRef.current) {
-        scrollTlRef.current.kill();
-        scrollTlRef.current = null;
-      }
       ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, [cards.length, isMobile]);
 
-  // Navigation dot click handler
+  // Optimized navigation function
   const goToCard = useCallback(async (targetIndex: number) => {
     if (isMobile || isAnimating || targetIndex === currentIndex) return;
 
-    // Temporarily pause auto-play
+    // Pause auto-play temporarily
+    autoPlayPausedRef.current = true;
     if (autoPlayIntervalRef.current) {
       clearInterval(autoPlayIntervalRef.current);
       autoPlayIntervalRef.current = null;
@@ -296,30 +262,58 @@ const Mission: React.FC = () => {
     setCurrentIndex(targetIndex);
     await animateToIndex(targetIndex, 0.6);
 
-    // Resume auto-play after 5 seconds
+    // Resume auto-play after delay
     setTimeout(() => {
+      autoPlayPausedRef.current = false;
       if (isAutoPlaying && !isMobile && isInView) {
-        setIsAutoPlaying(false);
-        setTimeout(() => setIsAutoPlaying(true), 100);
+        startAutoPlay();
       }
-    }, 5000);
-  }, [isMobile, isAnimating, currentIndex, animateToIndex, isAutoPlaying, isInView]);
+    }, 2000);
+  }, [isMobile, isAnimating, currentIndex, animateToIndex, isAutoPlaying, isInView, startAutoPlay]);
 
-  // Cleanup
+  // Optimized card click handler
+  const handleCardClick = useCallback((cardIndex: number, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!isMobile && !isAnimating) {
+      const nextIndex = cardIndex === currentIndex 
+        ? (currentIndex + 1) % cards.length 
+        : cardIndex;
+      goToCard(nextIndex);
+    }
+  }, [isMobile, currentIndex, goToCard, cards.length, isAnimating]);
+
+  // Mobile tap handler with haptic feedback
+  const handleMobileCardTap = useCallback((cardIndex: number) => {
+    if (!isMobile) return;
+    
+    const cardElement = cardsRef.current[cardIndex];
+    if (cardElement) {
+      gsap.to(cardElement, {
+        scale: 0.95,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.inOut"
+      });
+    }
+
+    // Haptic feedback if available
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+  }, [isMobile]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (animationRef.current) {
-        animationRef.current.kill();
-        animationRef.current = null;
-      }
-      if (scrollTlRef.current) {
-        scrollTlRef.current.kill();
-        scrollTlRef.current = null;
-      }
       if (autoPlayIntervalRef.current) {
         clearInterval(autoPlayIntervalRef.current);
         autoPlayIntervalRef.current = null;
       }
+      ScrollTrigger.getAll().forEach(st => st.kill());
+      gsap.killTweensOf("*");
     };
   }, []);
 
@@ -334,15 +328,15 @@ const Mission: React.FC = () => {
         }
       `}
       style={{
-        willChange: isMobile ? 'auto' : 'auto',
-        backfaceVisibility: 'hidden'
+        contain: 'layout style paint',
+        willChange: 'auto'
       }}
     >
       {/* Title */}
       <motion.h1
         ref={ref}
         initial={{ opacity: 0, y: isMobile ? -50 : -30 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? -50 : -30 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={`
           font-semibold text-center text-[#FFFDFA]
@@ -363,15 +357,9 @@ const Mission: React.FC = () => {
           : 'flex-row justify-center space-x-16 lg:space-x-20'
         }
       `}>
-        {/* GIF Container */}
-        <div className={`
-          flex-shrink-0 flex justify-center items-center
-          ${isMobile
-            ? 'w-full max-w-sm order-2'
-            : 'w-1/2 max-w-lg'
-          }
-        `}>
-          {!isMobile && (
+        {/* GIF Container - Desktop only */}
+        {!isMobile && (
+          <div className="flex-shrink-0 w-1/2 max-w-lg flex justify-center items-center">
             <div className="relative">
               <img
                 src="/Mision/f.gif"
@@ -379,16 +367,15 @@ const Mission: React.FC = () => {
                 width={500}
                 height={500}
                 className="w-[450px] h-[450px] lg:w-[500px] lg:h-[500px] rounded-2xl object-cover"
-                onLoad={() => console.log('GIF loaded successfully')}
-                onError={(e) => console.error('GIF failed to load:', e)}
+                loading="lazy"
                 style={{
                   willChange: 'auto',
-                  backfaceVisibility: 'hidden'
+                  contain: 'layout style paint'
                 }}
               />
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Cards Container */}
         <div className={`
@@ -398,6 +385,7 @@ const Mission: React.FC = () => {
           }
         `}>
           {isMobile ? (
+            // Mobile cards
             <>
               {cards.map((card, index) => (
                 <div
@@ -406,16 +394,18 @@ const Mission: React.FC = () => {
                   className="
                     MissionCard1 flex justify-center items-center text-center font-medium 
                     rounded-[20px] p-5 text-base leading-relaxed w-full 
-                    min-h-[140px] backdrop-blur-sm border border-white/10
+                    min-h-[140px] backdrop-blur-sm 
+                    cursor-pointer select-none
                   "
                   style={{
-                    position: 'relative',
-                    willChange: 'auto',
-                    transformStyle: 'preserve-3d',
-                    backfaceVisibility: 'hidden',
-                    wordBreak: 'break-word',
-                    hyphens: 'auto',
-                    boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                    contain: 'layout style paint',
+                    willChange: 'transform',
+                    touchAction: 'manipulation'
+                  }}
+                  onClick={() => handleMobileCardTap(index)}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    handleMobileCardTap(index);
                   }}
                 >
                   <span className="text-[#FFFDFA] relative z-10 leading-relaxed">
@@ -425,12 +415,12 @@ const Mission: React.FC = () => {
               ))}
             </>
           ) : (
+            // Desktop cards
             <>
               <div
                 className="relative flex items-center justify-center w-full h-full"
                 style={{
-                  willChange: 'auto',
-                  backfaceVisibility: 'hidden',
+                  contain: 'layout style paint',
                   perspective: '1000px'
                 }}
               >
@@ -441,19 +431,21 @@ const Mission: React.FC = () => {
                     className={`
                       ${index % 2 === 0 ? 'MissionCard1' : 'MissionCard2'} 
                       absolute flex justify-center items-center text-center 
-                      font-medium rounded-2xl backdrop-blur-sm border border-white/10
+                      font-medium rounded-2xl backdrop-blur-sm 
                       p-6 text-lg lg:text-xl leading-relaxed w-[500px] h-[180px]
+                      cursor-pointer select-none transition-shadow duration-200
+                     
                     `}
                     style={{
+                      contain: 'layout style paint',
                       willChange: 'transform, opacity',
-                      backfaceVisibility: 'hidden',
-                      transformStyle: 'preserve-3d',
                       top: '50%',
                       left: '50%',
                       marginTop: '-90px',
                       marginLeft: '-250px',
-                      boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+                      touchAction: 'manipulation'
                     }}
+                    onClick={(e) => handleCardClick(index, e)}
                   >
                     <span className="relative z-10 text-[#FFFDFA] leading-relaxed">
                       {card.title}
@@ -471,14 +463,15 @@ const Mission: React.FC = () => {
                     className={`
                       w-3 h-3 rounded-full transition-all duration-300 border-2
                       ${currentIndex === index
-                        ? 'bg-[#FFFDFA] border-[#FFFDFA] scale-110 shadow-lg'
-                        : 'bg-transparent border-[#FFFDFA]/50 hover:border-[#FFFDFA]/80 hover:scale-105'
+                        ? 'bg-[#FFFDFA] border-[#FFFDFA] scale-110'
+                        : 'bg-transparent border-[#FFFDFA]/50 hover:border-[#FFFDFA]/80'
                       }
-                      ${isAnimating ? 'pointer-events-none opacity-50' : 'cursor-pointer hover:shadow-md'}
-                      focus:outline-none focus:ring-2 focus:ring-[#FFFDFA]/50 focus:ring-offset-2 focus:ring-offset-transparent
+                      ${isAnimating ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      focus:outline-none focus:ring-2 focus:ring-[#FFFDFA]/50
                     `}
                     disabled={isAnimating}
                     aria-label={`Go to card ${index + 1}`}
+                    style={{ touchAction: 'manipulation' }}
                   />
                 ))}
               </div>
@@ -486,13 +479,6 @@ const Mission: React.FC = () => {
           )}
         </div>
       </div>
-      
-      {/* Debug Info - Remove in production
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 right-4 bg-black/50 text-white p-2 rounded text-xs">
-          Current: {currentIndex} | Auto: {isAutoPlaying ? 'ON' : 'OFF'} | Animating: {isAnimating ? 'YES' : 'NO'}
-        </div>
-      )} */}
     </div>
   );
 };
