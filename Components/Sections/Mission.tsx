@@ -26,7 +26,7 @@ const Mission: React.FC = () => {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const isInView = useInView(ref, { once: false, margin: '-100px' });
 
   const cards: Card[] = [
     {
@@ -487,12 +487,12 @@ const Mission: React.FC = () => {
         </div>
       </div>
       
-      {/* Debug Info - Remove in production */}
+      {/* Debug Info - Remove in production
       {process.env.NODE_ENV === 'development' && (
         <div className="fixed bottom-4 right-4 bg-black/50 text-white p-2 rounded text-xs">
           Current: {currentIndex} | Auto: {isAutoPlaying ? 'ON' : 'OFF'} | Animating: {isAnimating ? 'YES' : 'NO'}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -36,9 +36,12 @@ function Model({ modelPath, isMobile }: ModelProps) {
   const modelScale = isMobile ? 0.8 : 1.5;
 
   return (
-    <group ref={modelRef} scale={modelScale}  rotation={[0.4, 0, 0]} >
-      <primitive object={scene} />
-    </group>
+    <primitive
+    ref={modelRef}
+    object={scene}
+    scale={modelScale}
+    rotation={[Math.PI / 28, 0, 0]} 
+  />
   );
 }
 
@@ -63,7 +66,7 @@ export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
         width: '100%',
         
         pointerEvents: 'none', // ensures canvas doesn't block scrolling
-        touchAction: 'auto'    // ensures touch gestures pass through
+        touchAction: 'auto'    
       }}
     >
       <Canvas
