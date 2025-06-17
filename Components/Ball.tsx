@@ -40,7 +40,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
     ref={modelRef}
     object={scene}
     scale={modelScale}
-    rotation={[Math.PI / 28, 0, 0]} 
+    // rotation={[Math.PI / 28, 0, 0]} 
   />
   );
 }
