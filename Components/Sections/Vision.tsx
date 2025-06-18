@@ -39,9 +39,8 @@ const Vision = () => {
       "2xl:-bottom-25 2xl:-right-20 xl:-bottom-25 xl:-right-20 lg:-bottom-25 lg:-right-20 md:-bottom-25 md:-right-20 bottom-6 -right-15   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
       // "2xl:-top-27 2xl:-right-24 xl:-top-26 xl:-right-29 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 -left-21 xl:left-auto lg:left-auto md:left-auto   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
       // "2xl:-top-29 2xl:-right-26 xl:-top-39 xl:-left-32 lg:-top-28 lg:-right-23 md:-top-28 md:-left-23 bottom-6 -left-24  xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
-      "2xl:-top-27 2xl:-right-26 xl:-top-27 xl:-right-27.5 lg:-top-24 lg:-right-24 md:-top-24 md:-right-24 -top-24 -left-24  xl:left-auto lg:left-auto md:left-auto xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
-
-      "2xl:-bottom-24 2xl:-left-24 xl:-bottom-24 xl:-left-24 lg:-bottom-24 lg:-left-24 md:-bottom-24 md:-left-24 bottom-10 -right-15  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
+      "2xl:-top-35 2xl:-right-34 xl:-top-27 xl:-right-27.5 lg:-top-24 lg:-right-24 md:-top-24 md:-right-24 -top-24 -left-24  xl:left-auto lg:left-auto md:left-auto xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
+      "2xl:-bottom-31 2xl:-left-32 xl:-bottom-24 xl:-left-24 lg:-bottom-24 lg:-left-24 md:-bottom-24 md:-left-24 bottom-10 -right-15  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
       "2xl:-top-24 2xl:-left-24 xl:-top-24 xl:-left-24 lg:-top-24 lg:-left-24 md:-top-24 md:-left-24 -top-24 -left-24 xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
     ];
     return positions[index % positions.length];
