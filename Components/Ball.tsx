@@ -29,17 +29,17 @@ function Model({ modelPath, isMobile }: ModelProps) {
       const box = new THREE.Box3().setFromObject(modelRef.current);
       const center = box.getCenter(new THREE.Vector3());
       modelRef.current.position.sub(center);
-
+ 
       
 
     }
   }, []);
 
-  const modelScale = isMobile ? 0.8 : 1.5;
+  const modelScale = isMobile ? 0.5 : 1.5;
 
   return (
-    <group ref={modelRef} scale={modelScale} rotation={[0.4, 0, 0]}>
-      <primitive object={scene} position={[1.1, 0, 0]} />
+    <group ref={modelRef} scale={modelScale} rotation={[-0.70, -2.16, -0.6]} >
+      <primitive object={scene}  />
     </group>
   );
 }
@@ -69,13 +69,14 @@ export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
       }}
     >
       <Canvas
+      
       style={{
         pointerEvents: 'none',
         touchAction: 'auto'
       }}
         shadows
         gl={{ antialias: true }}
-        camera={{ position: [0, 1, 5], fov: 50 }}
+        camera={{ position: [0.9, 1, 5], fov: 50 }}
       >
         {/* Lights */}
         <ambientLight intensity={7.5} />
@@ -94,7 +95,7 @@ export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
       
         />
 
-        <Model modelPath={modelPath} isMobile={isMobile} />
+        <Model modelPath={modelPath} isMobile={isMobile}  />
       </Canvas>
     </div>
   );

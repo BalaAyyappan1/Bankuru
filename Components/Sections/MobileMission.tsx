@@ -64,7 +64,7 @@ const MobileMission: React.FC = () => {
     // Updated ScrollTrigger settings - shorter range so animation completes faster
     const scrollTriggerConfig = {
       trigger: containerRef.current,
-      start: isMobile ? "top 90%" : "center 80%",
+      start: isMobile ? "top 50%" : "center 80%",
       // Reduced end point so animation completes in less scroll distance
       end: isMobile ? "center 30%" : "center 40%", 
       scrub: isMobile ? 1.5 : 1, // Faster scrub for quicker completion
