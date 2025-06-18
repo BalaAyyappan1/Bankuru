@@ -38,7 +38,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
   const modelScale = isMobile ? 0.5 : 1.5;
 
   return (
-    <group ref={modelRef} scale={modelScale} rotation={[-0.70, -2.16, -0.6]} >
+    <group ref={modelRef} scale={modelScale} rotation={[-0.90, 1.9, 0.9]} >
       <primitive object={scene}  />
     </group>
   );
