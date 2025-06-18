@@ -155,7 +155,7 @@ const Building = () => {
               animate={isBlock2InView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.2, duration: 0.6 }}
             >
-              <Image src={QuickCook} alt="QuickCook" className='md:w-90 md:h-auto w-34 h-[600px]' />
+              <Image src={QuickCook} alt="QuickCook" className='md:w-90 md:h-auto w-34 h-[150px]' />
             </motion.div>
 
             <motion.div
