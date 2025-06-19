@@ -43,7 +43,7 @@ export default function Home() {
           <div className=" md:mt-[120px] xl:mb-[200px] lg:mb-[200px] md:mb-[200px] mb-[260px] mt-10">
             <Message />
           </div>
-          <div className=" md:mb-[10px]  hidden sm:block md:block">
+          <div className=" md:mb-[10px]  mt-10 hidden sm:block md:block">
             <Mission />
           </div>
           <div className="block md:hidden">
