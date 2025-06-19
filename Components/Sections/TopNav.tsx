@@ -163,10 +163,6 @@ const TopNav = () => {
     }
   };
 
-
-
-
-  
   return (
     <>
       <header className="absolute w-full z-50 md:mt-[24px] mt-[20px]  md:px-4 px-2 py-4 lg:px-[72px] ">
