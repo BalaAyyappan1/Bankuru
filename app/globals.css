@@ -119,3 +119,19 @@ canvas {
   pointer-events: none !important;
 }
 
+
+
+
+.blurBg {
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(8px);
+
+}
+
+
+.gradient-bg {
+  background: linear-gradient(90deg, #2D3467 0%, #5A67CD 100%);
+  
+  color: white;
+}

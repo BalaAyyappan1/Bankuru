@@ -165,21 +165,22 @@ const TopNav = () => {
 
   return (
     <>
-      <header className="absolute w-full z-50 md:mt-[24px] mt-[20px]  md:px-4 px-2 py-4 lg:px-[72px] ">
+      {/* md:mt-[24px] mt-[20px]  */}
+      <header className="fixed w-full z-50  md:px-4 px-2 py-4 lg:px-[72px] gradient-bg">
         <div className="flex justify-between items-center max-w-screen-xl mx-auto">
           {/* Logo */}
           <div className="flex items-start gap-1">
             <Link href="/">
-            <Image
-              src={CompanyLogo}
-              alt="Company Logo"
-              width={1000}
-              height={1000}
-              className="w-[188px] h-[61px]"
-              priority
-            />
+              <Image
+                src={CompanyLogo}
+                alt="Company Logo"
+                width={1000}
+                height={1000}
+                className="w-[108px] h-[36px]"
+                priority
+              />
             </Link>
-           
+
             {/* <span className='font-semibold text-[20px] text-[#FFFDFA] leading-5'>
               Bankuru <br /> Services <br /> Pvt.Ltd.
             </span> */}
@@ -193,10 +194,10 @@ const TopNav = () => {
                   <Link
                     href={item.link}
                     onClick={(e) => handleScrollToSection(e, item.sectionId)}
-                    className={`px-1 py-2 text-[18px] tracking-[0.5px] transition-colors font-medium hover:text-white ${
-                      activeSection === item.sectionId 
-                        ? 'text-white font-bold' 
-                        : 'text-[#BEBCBA]'
+                    className={`px-1 py-2 text-[16px] tracking-[0.5px] transition-colors leading-[20px]  hover:text-white ${
+                      activeSection === item.sectionId
+                        ? "text-white font-bold"
+                        : "text-[#BEBCBA]"
                     }`}
                   >
                     {item.name}
@@ -289,9 +290,9 @@ const TopNav = () => {
                       <Link
                         href={item.link}
                         className={`block py-3 text-center text-2xl font-medium transition-colors duration-200 ${
-                          activeSection === item.sectionId 
-                            ? 'text-white font-bold' 
-                            : 'text-gray-600 hover:text-gray-400'
+                          activeSection === item.sectionId
+                            ? "text-white font-bold"
+                            : "text-gray-600 hover:text-gray-400"
                         }`}
                         onClick={(e) => {
                           handleScrollToSection(e, item.sectionId);
