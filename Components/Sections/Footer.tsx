@@ -3,6 +3,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { CompanyLogo, InstaLogo, LinkLogo, xLogo, YouLogo } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
 import Link from 'next/link';
+import { link } from 'fs';
 
 interface FormData {
   name: string;
@@ -52,17 +53,22 @@ const Footer = () => {
 
   const contents = [
     {
-      image: LinkLogo
+      image: LinkLogo,
+      link:'https://www.linkedin.com/company/bankuru-services-private-limited/'
     },
+    {
+      image: InstaLogo,
+      link:'https://www.instagram.com/bankuruservices?igsh=OTA1aW1xd3Q4b2x1&utm_source=qr'
+    },
+    {
+      image: xLogo,
+      link:'https://x.com/bankuruservices?s=11'
 
-    {
-      image: InstaLogo
     },
     {
-      image: xLogo
-    },
-    {
-      image: YouLogo
+      image: YouLogo,
+      link:'https://www.instagram.com/bankuruservices?igsh=OTA1aW1xd3Q4b2x1&utm_source=qr'
+
     },
   ]
 
@@ -400,16 +406,19 @@ const Footer = () => {
 
           <div className="grid grid-cols-2 w-full h-[80px] rounded-[28px] md:grid-cols-4 gap-4 px-[48.5px] mb-5">
             {contents.map((item, index) => (
-              <div
+              <Link href={item.link}  target="_blank"
+  rel="noopener noreferrer"
                 key={index}
                 className="flex items-center justify-center bg-[#121212] rounded-lg  transition-colors duration-200"
               >
+               
                 <Image
                   src={item.image}
                   alt={`Social icon ${index}`}
                   className="h-8 w-8 object-contain"
                 />
-              </div>
+                
+              </Link>
             ))}
           </div>
 

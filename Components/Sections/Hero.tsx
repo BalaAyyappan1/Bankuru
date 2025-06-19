@@ -12,7 +12,7 @@ const Hero = () => {
   return (
     <div
       id="home-section"
-      className="relative bg-transparent md:min-h-screen   w-full  pointer-events-none"
+      className="relative bg-transparent md:h-dvh w-full  pointer-events-none"
     >
       {/* Middle Contents */}
       <RotatingModel modelPath="/bakballfinal2025e.glb" />
@@ -55,19 +55,22 @@ const Hero = () => {
       </div>
 
       {/* Bottom Contents */}
-      <div className="sm:hidden md:block absolute bottom-0 left-1/2 transform -translate-x-1/2 flex flex-row items-center justify-center gap-4 mb-4">
-        <motion.div
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <Image
-            src={ScrollDownIcon}
-            alt="Scroll Down Icon"
-            className="w-3 h-3"
-          />
-        </motion.div>
-        <span className="text-[16px] text-[#DEDCD9]">Scroll Down</span>
+      <div className='hidden sm:block md:block'>
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex flex-row items-center justify-center gap-4 mb-4">
+          <motion.div
+            animate={{ y: [0, -5, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Image
+              src={ScrollDownIcon}
+              alt="Scroll Down Icon"
+              className="w-3 h-3"
+            />
+          </motion.div>
+          <span className="text-[16px] text-[#DEDCD9]">Scroll Down</span>
+        </div>
       </div>
+
     </div>
   );
 };

@@ -118,12 +118,15 @@ const Building = () => {
                 An ecosystem around sustainable consulting and environmental impact, blending expertise with technology
               </p>
               <motion.button
-                whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-transparent border-1 border-[#FFFFFF2E] w-[120px] h-[40px] rounded-[30px] md:mt-7 mt-3 cursor-pointer text-white"
-              >
-                View
-              </motion.button>
+  whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+  whileTap={{ scale: 0.95 }}
+  className="bg-transparent border-1 border-[#FFFFFF2E] w-[120px] h-[40px] rounded-[30px] md:mt-7 mt-3 cursor-pointer text-white"
+  onClick={() => window.open("https://www.thebioalpha.com/", "_blank", "noopener,noreferrer")}
+>
+  View
+</motion.button>
+
+
             </motion.div>
 
             <motion.div
@@ -175,6 +178,7 @@ const Building = () => {
                 whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-transparent border-1 border-[#FFFFFF2E] w-[161px] h-[41px] rounded-[30px] md:mt-7 mt-3 cursor-pointer text-white"
+                onClick={() => window.open("https://quick2cook-launch-page.lovable.app/", "_blank", "noopener,noreferrer")}
               >
                 Keep me updated
               </motion.button>
