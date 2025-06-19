@@ -32,7 +32,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
     }
   }, []);
 
-  const modelScale = isMobile ? 0.8 : 2.2;
+  const modelScale = isMobile ? 1.4 : 2.2;
 
   return (
     <group ref={modelRef} scale={modelScale} rotation={[0.4, 0, 0]} position={[0, 0, 0]}>

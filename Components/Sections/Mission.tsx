@@ -323,7 +323,7 @@ const Mission: React.FC = () => {
         relative bg-transparent flex flex-col items-center justify-center mx-auto px-4
         ${isMobile
           ? 'h-[170vh] py-8 space-y-8 max-w-full'
-          : 'min-h-screen w-full space-y-15 max-w-7xl'
+          : 'min-h-screen w-full mt-10 space-y-15 max-w-7xl'
         }
       `}
       style={{
