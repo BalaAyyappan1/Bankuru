@@ -55,7 +55,7 @@ const Hero = () => {
       </div>
 
       {/* Bottom Contents */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex flex-row items-center justify-center gap-4 mb-4">
+      <div className="sm:hidden md:block absolute bottom-0 left-1/2 transform -translate-x-1/2 flex flex-row items-center justify-center gap-4 mb-4">
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
