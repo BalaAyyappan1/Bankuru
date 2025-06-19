@@ -40,10 +40,10 @@ export default function Home() {
           <div className="md:mt-[140px] md:mb-[150px]">
             <Building />
           </div>
-          <div className=" md:mt-[120px] md::mb-[200px] mb-15  mt-10">
+          <div className=" md:mt-[120px] xl:mb-[200px] lg:mb-[200px] md:mb-[200px] mb-[270px] mt-10">
             <Message />
           </div>
-          <div className="md:mt-[250px]   md:mb-[10px] hidden sm:block md:block">
+          <div className=" md:mb-[10px] hidden sm:block md:block">
             <Mission />
           </div>
           <div className="block md:hidden">

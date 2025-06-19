@@ -75,7 +75,7 @@ const Building = () => {
         <motion.h1
           ref={titleRef}
           variants={itemVariants}
-          className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center text-white inline-block"
+          className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center text-white inline-block gradient-text-alt3"
         >
           What We're Building
         </motion.h1>

@@ -37,7 +37,7 @@ const Message = () => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={isContainerInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="bg-[#FFFFFF33] md:h-[242px] xl:max-w-6xl lg:max-w-5xl md:max-w-4xl max-w-md mx-auto flex justify-center items-center rounded-[20px] xl:mt-[125px] lg:mt-[90px] md:mt-[70px] mt-[50px]"
+        className="bg-[#FFFFFF33] md:h-[242px] xl:max-w-6xl lg:max-w-5xl md:max-w-4xl max-w-md mx-auto flex justify-center items-center rounded-[20px] xl:mt-[80px] lg:mt-[80px] md:mt-[70px] mt-[50px]"
       >
         <div className="flex flex-col justify-between space-y-5 md:space-y-0 items-start h-full w-full xl:px-[73px] lg:px-[53px] md:px-[43px] px-[25px] py-8">
           <motion.h1

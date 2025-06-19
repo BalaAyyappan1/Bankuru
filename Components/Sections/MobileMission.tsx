@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useCallback, useState } from 'react';
-import { Group } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -137,7 +136,7 @@ const MobileMission: React.FC = () => {
       className={`
         relative bg-transparent flex flex-col items-center justify-center mx-auto px-4
         ${isMobile 
-          ? 'h-[95vh] mt-50 py-8 md:space-y-6 max-w-full' 
+          ? 'h-[90vh] mt-30 py-8 md:space-y-6 max-w-full' 
           : 'h-[100vh] space-y-15 max-w-6xl'
         }
       `}

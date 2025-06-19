@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Group } from '../ReuseableComponents/Icons';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

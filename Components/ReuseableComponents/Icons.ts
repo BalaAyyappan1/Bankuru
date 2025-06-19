@@ -27,7 +27,6 @@ export {default as PlaceHolder} from "@/public/Message/image.png";
 
 
 //Mission
-export {default as Group} from "@/public/Mision/grp.png";
 
 
 //Footer

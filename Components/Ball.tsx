@@ -20,7 +20,7 @@ function Model({ modelPath, isMobile }: ModelProps) {
       const canvasElement = canvasRef.current.querySelector('canvas');
       if (canvasElement) {
         canvasElement.style.touchAction = 'none';
-      }   
+      }
     }
   }, []);
 
@@ -29,17 +29,14 @@ function Model({ modelPath, isMobile }: ModelProps) {
       const box = new THREE.Box3().setFromObject(modelRef.current);
       const center = box.getCenter(new THREE.Vector3());
       modelRef.current.position.sub(center);
- 
-      
-
     }
   }, []);
 
-  const modelScale = isMobile ? 0.5 : 1.5;
+  const modelScale = isMobile ? 0.8 : 2.2;
 
   return (
-    <group ref={modelRef} scale={modelScale} rotation={[-0.90, 1.9, 0.9]} >
-      <primitive object={scene}  />
+    <group ref={modelRef} scale={modelScale} rotation={[0.4, 0, 0]} position={[0, 0, 0]}>
+      <primitive object={scene} />
     </group>
   );
 }
@@ -63,20 +60,21 @@ export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
       style={{
         height: '100vh',
         width: '100%',
-        
-        pointerEvents: 'none', // ensures canvas doesn't block scrolling
-        touchAction: 'auto'    // ensures touch gestures pass through
-      }}
-    >
-      <Canvas
-      
-      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         pointerEvents: 'none',
         touchAction: 'auto'
       }}
+    >
+      <Canvas
+        style={{
+          pointerEvents: 'none',
+          touchAction: 'auto'
+        }}
         shadows
         gl={{ antialias: true }}
-        camera={{ position: [0.9, 1, 5], fov: 50 }}
+        camera={{ position: [-5.5, 1, 5], fov: 50 }}
       >
         {/* Lights */}
         <ambientLight intensity={7.5} />
@@ -92,10 +90,9 @@ export default function StaticModel({ modelPath = '/bakballfinal2025e.glb' }) {
           enableRotate={false}
           autoRotateSpeed={3}
           autoRotate={true}
-      
         />
 
-        <Model modelPath={modelPath} isMobile={isMobile}  />
+        <Model modelPath={modelPath} isMobile={isMobile} />
       </Canvas>
     </div>
   );
