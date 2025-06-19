@@ -23,11 +23,11 @@ const Message = () => {
           initial={{ opacity: 0, y: -30 }}
           animate={isTitleInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center gradient-text-alt2 inline-block"
+          className="font-bold xl:text-[60px] lg:text-[45px] md:text-[35px] text-[30px] text-center gradient-text-alt1 inline-block"
         >
           More coming soon
         </motion.h1>
-        <p className="xl:text-[30px] lg:text-[25px] md:text-[20px] text-[18px] text-center gradient-text-alt1 inline-block mt-3">
+        <p className="xl:text-[30px] lg:text-[25px] md:text-[20px] text-[18px] text-center gradient-text-alt2 inline-block mt-3">
           built in India, made for the world
         </p>
       </div>
