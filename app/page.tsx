@@ -24,7 +24,7 @@ export default function Home() {
           <div className="md:mt-[120px]  xl:mb-[150px]">
             <About />
           </div>
-          <div className=" md:mt-[150px] mt-25 mb-[100px]">
+          <div className=" md:mt-[150px] mt-35 md:mb-[100px] mb-10">
             <Vision />
           </div>
           <>

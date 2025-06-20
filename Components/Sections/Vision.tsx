@@ -13,7 +13,8 @@ const Vision = () => {
     {
       title: '	Innovation First – We think ahead',
       description: "We constantly push boundaries and explore new technologies to create groundbreaking solutions. Innovation isn't just a buzzword for us—it's our foundation. We invest in research, encourage experimentation, and celebrate creative thinking at every level.",
-      image: VisionImage1
+      image: VisionImage1,
+      mobileImage: VisionImage3
     },
     {
       title: '	User-Centric – We solve real problems',
@@ -28,20 +29,16 @@ const Vision = () => {
     {
       title: '	Creating Impact - Homegrown Ideas, Global Impact',
       description: "Rooted in India but with a global vision, we create solutions that transcend boundaries. We believe that great ideas can come from anywhere and reach everywhere.",
-      image: VisionImage3
+      image: VisionImage1
     },
   ]
-
-
 
   const getImagePosition = (index: number) => {
     const positions = [
       "2xl:-bottom-25 2xl:-right-20 xl:-bottom-25 xl:-right-20 lg:-bottom-25 lg:-right-20 md:-bottom-25 md:-right-20 bottom-9 -right-18   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      // "2xl:-top-27 2xl:-right-24 xl:-top-26 xl:-right-29 lg:-top-28 lg:-right-23 md:-top-28 md:-right-23 bottom-6 -left-21 xl:left-auto lg:left-auto md:left-auto   xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      // "2xl:-top-29 2xl:-right-26 xl:-top-39 xl:-left-32 lg:-top-28 lg:-right-23 md:-top-28 md:-left-23 bottom-6 -left-24  xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
       "2xl:-top-35 2xl:-right-34 xl:-top-32 xl:-right-32.5 lg:-top-26 lg:-right-26 md:-top-26 md:-right-26 -top-24 -left-24  xl:left-auto lg:left-auto md:left-auto xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
       "2xl:-bottom-31 2xl:-left-32 xl:-bottom-30 xl:-left-30 lg:-bottom-24 lg:-left-24 md:-bottom-24 md:-left-24 bottom-10 -right-19  xl:w-[300px] lg:w-[250px] md:w-[220px] sm:w-[200px] w-[180px]",
-      "2xl:-top-30 2xl:-left-32 xl:-top-27 xl:-left-27 lg:-top-27 lg:-left-27 md:-top-26 md:-left-26 -top-24 -left-24 xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
+      "2xl:-top-30 2xl:-left-32 xl:-top-29 xl:-left-29 lg:-top-27 lg:-left-25 md:-top-25 md:-left-27 -top-24 -left-24 xl:w-[320px] lg:w-[270px] md:w-[240px] sm:w-[220px] w-[200px]",
     ];
     return positions[index % positions.length];
   };
@@ -56,9 +53,8 @@ const Vision = () => {
     return positions[index % positions.length];
   };
 
-
   return (
-    <div id='vision-section' className="relative flex flex-col space-y-15 bg-transparent  w-full">
+    <div id='vision-section' className="relative flex flex-col md:space-y-15 space-y-5 bg-transparent  w-full">
 
       <motion.h1
         ref={ref}
@@ -100,8 +96,9 @@ const Vision = () => {
               <p className="xl:text-[16px] lg:text-[14px] md:text-[12px] sm:text-[10px] text-[12px] text-[#BEBCBA] xl:leading-5 lg:leading-4 md:leading-3.5 sm:leading-3.5 leading-3 mt-1">{content.description}</p>
             </div>
 
+            {/* Desktop and Tablet Image */}
             <motion.div
-              className={`absolute ${getImagePosition(index)}`}
+              className={`absolute ${getImagePosition(index)} ${content.mobileImage ? 'hidden sm:block' : 'block'}`}
               style={{
                 animation: index === 1 || index === 2 ? 'rotate 15s linear infinite' : 'none',
                 transformOrigin: 'center center',
@@ -114,7 +111,6 @@ const Vision = () => {
                 hover: {
                   scale: 1.1,
                   y: -5,
-
                 }
               }}
               transition={{
@@ -125,27 +121,57 @@ const Vision = () => {
                 damping: 20
               }}
             >
-
-
               <Image src={content.image} alt={content.title} style={{
                 width: '100%',
                 height: 'auto',
                 transformOrigin: 'center center'
               }} />
-
-
-              <style jsx>{`
-  @keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-`}</style>
             </motion.div>
+
+            {/* Mobile Image - Only show if mobileImage exists */}
+            {content.mobileImage && (
+              <motion.div
+                className={`absolute ${getImagePosition(index)} block sm:hidden`}
+                style={{
+                  animation: index === 1 || index === 2 ? 'rotate 15s linear infinite' : 'none',
+                  transformOrigin: 'center center',
+                }}
+                variants={{
+                  rest: {
+                    scale: 1,
+                    y: 0
+                  },
+                  hover: {
+                    scale: 1.1,
+                    y: -5,
+                  }
+                }}
+                transition={{
+                  duration: 0.4,
+                  ease: "easeOut",
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20
+                }}
+              >
+                <Image src={content.mobileImage} alt={content.title} style={{
+                  width: '100%',
+                  height: 'auto',
+                  transformOrigin: 'center center'
+                }} />
+              </motion.div>
+            )}
+
+            <style jsx>{`
+              @keyframes rotate {
+                0% {
+                  transform: rotate(0deg);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+            `}</style>
           </motion.div>
         ))}
       </div>
