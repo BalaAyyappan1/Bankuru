@@ -14,6 +14,8 @@ export {default as ScrollDownIcon} from "@/public/Home/Frame 1321317434.svg";
 //Vision
 export {default as VisionImage1} from "@/public/Vision/image1.png";
 export {default as VisionImage2} from "@/public/Vision/image2.png";
+export {default as VisionImage3} from "@/public/Vision/image3.png";
+
 
 
 //building
